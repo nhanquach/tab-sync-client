@@ -10,7 +10,7 @@ import { getUser, signUp, signIn, resetPassword } from "./clients";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 
-import { ROUTES } from "./app/routes";
+import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
 import { drawerWidth } from "./utils/dimensions";

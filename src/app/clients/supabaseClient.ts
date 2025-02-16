@@ -8,8 +8,8 @@ import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
 
 const rootClient = createClient(
-  import.meta.env.VITE_SUPABASE_URL!,
-  import.meta.env.VITE_SUPABASE_KEY!
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY!
 );
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let client: SupabaseClient<any, "public", any> | null;
@@ -39,8 +39,8 @@ export const getClient = async () => {
     }
 
     client = createClient(
-      import.meta.env.VITE_SUPABASE_URL!,
-      import.meta.env.VITE_SUPABASE_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_KEY!,
       {
         global: {
           headers: {
@@ -73,10 +73,14 @@ export const signIn = async ({
   email: string;
   password: string;
 }) => {
-  const user = await rootClient.auth.signInWithPassword({
+  const { data, error } = await rootClient.auth.signInWithPassword({
     email,
     password,
   });
+
+  if (error) {
+    throw error;
+  }
 
   const tabSyncSettings = await getLocalSettings();
   localStorage.setItem(
@@ -84,13 +88,13 @@ export const signIn = async ({
     JSON.stringify({
       tabSyncSettings: {
         ...tabSyncSettings,
-        user: user.data.user,
-        token: user?.data?.session || tabSyncSettings.token,
+        user: data.user,
+        token: data.session || tabSyncSettings.token,
       },
     })
   );
 
-  return user;
+  return data;
 };
 
 export const signUp = async ({
