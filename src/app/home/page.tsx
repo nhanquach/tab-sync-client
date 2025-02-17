@@ -1,12 +1,9 @@
 import FloatingBubblesBackground from "@components/FloatingBubble";
 import Logo from "@components/Logo";
-import SignInForm from "@components/SignInForm";
 
-interface IHomeProps {}
-
-const Home: React.FC<IHomeProps> = () => {
+const Home = () => {
   return (
-    <div className="flex flex-wrap items-center justify-center min-h-screen">
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <div className="w-full blur-2xl md:block md:w-1/2 md:blur-none">
         <FloatingBubblesBackground />
       </div>
@@ -15,8 +12,6 @@ const Home: React.FC<IHomeProps> = () => {
           <Logo />
           TabSync
         </h2>
-
-        <SignInForm />
       </div>
     </div>
   );

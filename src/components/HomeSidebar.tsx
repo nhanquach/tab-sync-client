@@ -14,7 +14,7 @@ import {
 
 import QRCode from "./QRCode";
 import DownloadCard from "./CardDownload";
-import { TABS_VIEWS } from "../interfaces/iView";
+import { TABS_VIEWS } from "../app/interfaces/iView";
 import CardShare from "./CardShare";
 
 interface IHomeSidebarProps {

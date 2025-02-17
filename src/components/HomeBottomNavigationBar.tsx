@@ -2,7 +2,7 @@ import React, { memo } from "react";
 import { CloudSyncTwoTone, ArchiveTwoTone } from "@mui/icons-material";
 import { Paper, BottomNavigation, BottomNavigationAction } from "@mui/material";
 
-import { TABS_VIEWS } from "../interfaces/iView";
+import { TABS_VIEWS } from "../app/interfaces/iView";
 import { isMobileApp } from "../utils/isMobile";
 
 interface IHomeBottomNavigationBarProps {

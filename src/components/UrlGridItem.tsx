@@ -11,7 +11,7 @@ import {
 import dayjs from "dayjs";
 import React from "react";
 
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../app/interfaces/iTab";
 
 import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
 

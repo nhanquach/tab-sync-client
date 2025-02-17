@@ -25,7 +25,7 @@ import {
   Divider,
 } from "@mui/material";
 import { useKeyPress } from "../hooks/useKeyPress";
-import { Layout } from "../interfaces/Layout";
+import { Layout } from "../app/interfaces/Layout";
 import { isMobileDevice } from "../utils/isMobile";
 import { ORDER } from "../utils/constants";
 

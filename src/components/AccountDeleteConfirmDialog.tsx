@@ -9,7 +9,7 @@ import {
   CircularProgress,
 } from "@mui/material";
 
-import { signOut, deleteAccount } from "../clients/supabaseClient";
+import { signOut, deleteAccount } from "../app/clients/supabaseClient";
 
 interface IAccountDeleteConfirmDialogProps {
   open: boolean;

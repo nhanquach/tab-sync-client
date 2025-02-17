@@ -3,7 +3,7 @@ import { WebStoriesTwoTone } from "@mui/icons-material";
 import { Box, Link } from "@mui/material";
 import dayjs from "dayjs";
 
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../app/interfaces/iTab";
 import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
 
 interface IUrlListItem {

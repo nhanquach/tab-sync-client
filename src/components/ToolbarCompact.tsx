@@ -24,7 +24,7 @@ import {
   useTheme,
 } from "@mui/material";
 import React from "react";
-import { Layout } from "../interfaces/Layout";
+import { Layout } from "../app/interfaces/Layout";
 import { ORDER } from "../utils/constants";
 import { isMobileDevice } from "../utils/isMobile";
 

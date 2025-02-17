@@ -12,30 +12,30 @@ import {
   removeArchivedTabs,
   sendTab,
 } from "./clients";
-import UrlList from "./components/UrlList";
+import UrlList from "../components/UrlList";
 import { ITab } from "./interfaces/iTab";
 import { TABS_VIEWS } from "./interfaces/iView";
 import { IDatabaseUpdatePayload } from "./interfaces/IDatabaseUpdate";
-import { sortByTimeStamp } from "./utils/sortByTimeStamp";
-import UrlGrid from "./components/UrlGrid";
-import { sortByTitle } from "./utils/sortByTitle";
-import HomeSidebar from "./components/HomeSidebar";
-import Toolbar from "./components/Toolbar";
-import HomeAppBar from "./components/HomeAppBar";
-import NoData from "./components/NoData";
-import TipsFooter from "./components/TipsFooter";
-import HomeBottomNavigationBar from "./components/HomeBottomNavigationBar";
-import { isHistoryApiSupported } from "./utils/isHistoryAPISupported";
-import { getItem, saveItem } from "./utils/LocalStorageHelper";
+import { sortByTimeStamp } from "../utils/sortByTimeStamp";
+import UrlGrid from "../components/UrlGrid";
+import { sortByTitle } from "../utils/sortByTitle";
+import HomeSidebar from "../components/HomeSidebar";
+import Toolbar from "../components/Toolbar";
+import HomeAppBar from "../components/HomeAppBar";
+import NoData from "../components/NoData";
+import TipsFooter from "../components/TipsFooter";
+import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
+import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
+import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
   LAST_SAVED_DISPLAYED_BROWSERS_KEY,
   LAST_SAVED_ORDER_BY_KEY,
   LAYOUT,
   LAYOUT_KEY,
   ORDER,
-} from "./utils/constants";
+} from "../utils/constants";
 import { Layout } from "./interfaces/Layout";
-import FloatingBubblesBackground from "./components/FloatingBubble";
+import FloatingBubblesBackground from "../components/FloatingBubble";
 
 interface IHomeProps {
   user?: any;

@@ -1,7 +1,7 @@
 import React, { useRef } from "react";
 
 import { useTheme, useMediaQuery } from "@mui/material";
-import { Layout } from "../interfaces/Layout";
+import { Layout } from "../app/interfaces/Layout";
 import ToolbarStandard from "./ToolbarStandard";
 import ToolbarCompact from "./ToolbarCompact";
 import { saveItem } from "../utils/LocalStorageHelper";

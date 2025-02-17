@@ -24,7 +24,7 @@ import {
 import ChangePasswordForm from "./ChangePasswordForm";
 import TransitionComponent from "./TransitionComponent";
 import { isMobileApp } from "../utils/isMobile";
-import { signOut } from "../clients/supabaseClient";
+import { signOut } from "../app/clients/supabaseClient";
 import { AccountDeleteConfirmDialog } from "./AccountDeleteConfirmDialog";
 
 interface IAccountSettingsProps {

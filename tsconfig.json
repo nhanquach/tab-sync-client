@@ -18,8 +18,16 @@
         "name": "next"
       }
     ],
+    /* Alias */
+    "baseUrl": "src/",
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["*"],
+      "@components/*": ["components/*"],
+      "@hooks/*": ["hooks/*"],
+      "@styles/*": ["./styles/*"],
+      "@utils/*": ["utils/*"],
+      "@types/*": ["./types/*"],
+      "@clients/*": ["clients/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
@@ -28,5 +36,5 @@
   "references": [
     { "path": "./tsconfig.app.json" },
     { "path": "./tsconfig.node.json" }
-  ]
+  ],
 }

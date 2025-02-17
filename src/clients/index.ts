@@ -33,6 +33,7 @@ export const signUp = async ({
 };
 
 export const getUser = async () => {
+  console.log("get user");
   return (await getClient()).getUser();
 };
 
@@ -50,7 +51,7 @@ export const resetPassword = async ({ email }: { email: string }) => {
 
 export const deleteAccount = async () => {
   return (await getClient()).deleteAccount();
-}
+};
 
 export const getOpenTabs = async () => {
   return (await getClient()).getOpenTabs();

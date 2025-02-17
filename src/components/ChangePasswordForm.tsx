@@ -10,7 +10,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { changePassword } from "../clients";
+import { changePassword } from "../app/clients";
 import { isMobileApp } from "../utils/isMobile";
 
 interface IChangePasswordFormProps {

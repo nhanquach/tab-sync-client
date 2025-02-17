@@ -7,27 +7,22 @@ import {
   Card,
   CardContent,
   CardHeader,
-  Grid,
   IconButton,
   Tooltip,
-  useTheme,
 } from "@mui/material";
 import { ArchiveTwoTone, DeleteForeverTwoTone } from "@mui/icons-material";
 
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../app/interfaces/iTab";
+import { TABS_VIEWS } from "../app/interfaces/iView";
+import UrlListItem from "./UrlListItem";
 
-import { TABS_VIEWS } from "../interfaces/iView";
-import UrlGridItem from "./UrlGridItem";
-
-interface IUrlGridProps {
+interface IUrlListProps {
   view: TABS_VIEWS;
   onClear: (deviceName: string) => void;
   urls: ITab[];
 }
 
-const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
-  const theme = useTheme();
-
+const UrlList: React.FC<IUrlListProps> = ({ onClear, urls, view }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
 
@@ -39,10 +34,9 @@ const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
           <Card
             key={name}
             variant="outlined"
-            sx={{ mb: 2, wordBreak: "break-word", border: 0 }}
+            sx={{ mb: 2, wordBreak: "break-word" }}
           >
             <CardHeader
-              sx={{ borderBottom: `0.5px solid ${theme.palette.grey[400]}` }}
               title={name || "Unknown ¯\\_(ツ)_/¯ "}
               action={
                 <Box>
@@ -58,11 +52,9 @@ const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
               }
             />
             <CardContent>
-              <Grid container spacing={2} alignItems="stretch">
-                {tabs.map((tab: ITab) => {
-                  return <UrlGridItem key={tab.id} tab={tab} />;
-                })}
-              </Grid>
+              {tabs.map((tab: ITab) => {
+                return <UrlListItem tab={tab} key={tab.id} />;
+              })}
             </CardContent>
           </Card>
         );
@@ -71,4 +63,4 @@ const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
   );
 };
 
-export default UrlGrid;
+export default UrlList;

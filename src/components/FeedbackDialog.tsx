@@ -13,7 +13,7 @@ import {
   useTheme,
   IconButton,
 } from "@mui/material";
-import { sendFeedback } from "../clients/supabaseClient";
+import { sendFeedback } from "../app/clients/supabaseClient";
 import FeedbackForm from "./FeedbackForm";
 import TransitionComponent from "./TransitionComponent";
 import { isMobileApp } from "../utils/isMobile";
