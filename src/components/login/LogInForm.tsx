@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 
-import { getUser, resetPassword, signIn } from "@clients/index";
+import { login } from "./login";
 
-interface ISignInFormProps {}
+interface ILogInFormProps {}
 
 const STATUS = {
   idle: "idle",
@@ -13,27 +13,24 @@ const STATUS = {
   resettingPassword: "resettingPassword",
 };
 
-const SignInForm: React.FC<ISignInFormProps> = () => {
+const LogInForm: React.FC<ILogInFormProps> = () => {
   const [status, setStatus] = useState(STATUS.idle);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
 
   const [message, setMessage] = useState("");
 
-  const handleSignIn = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password) {
-      setMessage("Please enter your email and password");
-      return;
-    }
-
+  const handleSignIn = async (formData: FormData) => {
     try {
       setStatus(STATUS.signingIn);
-      await signIn({ email, password });
+      // const { error } = await signIn({ email, password });
+      const { error } = await login(formData);
+
+      if (error) {
+        throw error;
+      }
+
+      // router.push("/home");
     } catch (error) {
-      console.error(error);
+      console.error(error as Error);
       setMessage((error as Error).message);
     } finally {
       setStatus(STATUS.idle);
@@ -41,48 +38,30 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
   };
 
   const handleResetPassword = async () => {
-    try {
-      setStatus(STATUS.resettingPassword);
-
-      if (!email) {
-        setMessage("Please enter your email");
-        return;
-      }
-
-      setMessage("");
-      const { error } = await resetPassword({ email });
-
-      if (error) {
-        throw error;
-      }
-
-      setMessage("Please check your email for a link to reset your password");
-    } catch (error) {
-      console.error(error);
-      setMessage((error as Error).message);
-    } finally {
-      setStatus(STATUS.idle);
-    }
+    // try {
+    //   setStatus(STATUS.resettingPassword);
+    //   if (!email) {
+    //     setMessage("Please enter your email");
+    //     return;
+    //   }
+    //   setMessage("");
+    //   const { error } = await resetPassword({ email });
+    //   if (error) {
+    //     throw error;
+    //   }
+    //   setMessage("Please check your email for a link to reset your password");
+    // } catch (error) {
+    //   console.error(error);
+    //   setMessage((error as Error).message);
+    // } finally {
+    //   setStatus(STATUS.idle);
+    // }
   };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const user = await getUser();
-
-        if (user) {
-          window.location.href = "/home";
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    })();
-  }, []);
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xl">Sign in</p>
-      <form onSubmit={handleSignIn} className="flex flex-col gap-4">
+      <p className="text-xl">Log in</p>
+      <form action={handleSignIn} className="flex flex-col gap-4">
         <label className="form-control">
           <div className="label">
             <span className="label-text">Email</span>
@@ -91,8 +70,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
             type="email"
             placeholder="your@email.com"
             className="input input-bordered w-full"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
           />
         </label>
         <label className="form-control">
@@ -102,8 +80,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
           <input
             type="password"
             className="input input-bordered w-full"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
           />
         </label>
 
@@ -142,4 +119,4 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
   );
 };
 
-export default SignInForm;
+export default LogInForm;

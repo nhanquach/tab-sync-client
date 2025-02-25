@@ -1,9 +1,8 @@
-// @ts-ignore
 import { SupabaseClient, createClient } from "@supabase/supabase-js";
 
 import { TABLES } from "./constants";
 import { ITabSyncSettings } from "../interfaces/TabSyncSettings";
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../interfaces/Tab";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
 
@@ -124,16 +123,16 @@ export const getUser = async () => {
 
   const session = await rootClient.auth.getSession();
 
-  localStorage.setItem(
-    "tabSyncSettings",
-    JSON.stringify({
-      tabSyncSettings: {
-        ...tabSyncSettings,
-        user: user.data.user,
-        token: session.data.session || tabSyncSettings.token,
-      },
-    })
-  );
+  // localStorage?.setItem(
+  //   "tabSyncSettings",
+  //   JSON.stringify({
+  //     tabSyncSettings: {
+  //       ...tabSyncSettings,
+  //       user: user.data.user,
+  //       token: session.data.session || tabSyncSettings.token,
+  //     },
+  //   })
+  // );
 
   return user?.data?.user;
 };
@@ -162,46 +161,63 @@ export const deleteAccount = async () => {
 };
 
 export const getOpenTabs = async (
-  deviceName?: string
+  deviceName?: string,
+  limit: number = 10
 ): Promise<{
   data: ITab[];
+  count: number;
   error?: string;
 }> => {
   const { client, userId } = await getClient();
 
   if (client && userId) {
-    const { data, error } = deviceName
+    const { data, error, count } = deviceName
       ? await client
           .from(TABLES.OPEN_TABS)
-          .select()
+          .select("*", { count: "exact" })
+          .limit(limit)
           .eq("deviceName", deviceName)
-      : await client.from(TABLES.OPEN_TABS).select();
+      : await client
+          .from(TABLES.OPEN_TABS)
+          .select("*", { count: "exact" })
+          .limit(limit);
+
     return {
       data: data as ITab[],
+      count: count as unknown as number,
       error: error?.message,
     };
   }
 
-  return { data: [], error: "No user id" };
+  return { data: [], count: 0, error: "No user id" };
 };
 
-export const getArchivedTabs = async (deviceName?: string) => {
+export const getArchivedTabs = async (
+  deviceName?: string,
+  limit: number = 10
+) => {
   const { client, userId } = await getClient();
 
   if (client && userId) {
-    const { data, error } = deviceName
+    const { data, error, count } = deviceName
       ? await client
           .from(TABLES.ARCHIVED_TABS)
-          .select()
+          .select("*", { count: "exact" })
           .eq("deviceName", deviceName)
-      : await client.from(TABLES.ARCHIVED_TABS).select();
+          .limit(limit)
+      : await client
+          .from(TABLES.ARCHIVED_TABS)
+          .select("*", { count: "exact" })
+          .limit(limit);
+
     return {
       data: data as ITab[],
+      count: count as unknown as number,
       error: error?.message,
     };
   }
 
-  return { data: [], error: "No user id" };
+  return { data: [], count: 0, error: "No user id" };
 };
 
 export const sendTab = async (
@@ -380,13 +396,7 @@ const getNewToken = async () => {
 };
 
 const getLocalSettings = (): ITabSyncSettings => {
-  const tabSyncSettings = localStorage.getItem("tabSyncSettings");
-
-  if (tabSyncSettings) {
-    return JSON.parse(tabSyncSettings).tabSyncSettings;
-  }
-
-  return {
+  const defaultValue = {
     deviceName: "",
     token: {
       refresh_token: "",
@@ -409,4 +419,19 @@ const getLocalSettings = (): ITabSyncSettings => {
       created_at: "",
     },
   };
+
+  try {
+  const tabSyncSettings =
+    typeof window !== "undefined"
+      ? localStorage?.getItem("tabSyncSettings")
+      : null;
+
+  if (tabSyncSettings) {
+    return JSON.parse(tabSyncSettings).tabSyncSettings;
+  }
+
+  return defaultValue;
+  } catch(e) {
+    return defaultValue;
+  } 
 };

@@ -24,10 +24,10 @@
       "@/*": ["*"],
       "@components/*": ["components/*"],
       "@hooks/*": ["hooks/*"],
-      "@styles/*": ["./styles/*"],
+      "@styles/*": ["styles/*"],
       "@utils/*": ["utils/*"],
-      "@types/*": ["./types/*"],
-      "@clients/*": ["clients/*"]
+      "@interfaces/*": ["interfaces/*"],
+      "@client": ["clients/index.ts"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

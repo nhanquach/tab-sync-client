@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-import { signUp } from "@clients/index";
+import { signUp } from "@client";
 
 interface ISignInFormProps {}
 

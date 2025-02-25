@@ -1,5 +1,5 @@
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../interfaces/Tab";
 import * as supabaseClient from "./supabaseClient";
 
 var backend: typeof supabaseClient;
@@ -33,7 +33,6 @@ export const signUp = async ({
 };
 
 export const getUser = async () => {
-  console.log("get user");
   return (await getClient()).getUser();
 };
 

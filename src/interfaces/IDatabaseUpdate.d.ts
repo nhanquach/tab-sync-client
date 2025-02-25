@@ -1,4 +1,4 @@
-import { ITab } from "./iTab";
+import { ITab } from "./Tab";
 
 export interface IDatabaseUpdatePayload {
   new: ITab;

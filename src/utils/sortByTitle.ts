@@ -1,4 +1,4 @@
-import { ITab } from "../interfaces/iTab";
+import { ITab } from "../interfaces/Tab";
 
 export const sortByTitle = (a: ITab, b: ITab) => {
   const titleA = a.title.toUpperCase();
