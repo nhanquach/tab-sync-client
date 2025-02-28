@@ -5,7 +5,9 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@utils/supabase/server";
 
-export async function login(formData: FormData) {
+const login = async (
+  formData: FormData
+): Promise<{ data: any; error: any }> => {
   const supabase = await createClient();
 
   // type-casting here for convenience
@@ -19,30 +21,38 @@ export async function login(formData: FormData) {
 
   if (error) {
     // redirect("/error");
-    return { error };
+    return { data: null, error };
   }
 
-  revalidatePath("/home", "layout");
-  redirect("/home");
-}
+  revalidatePath("/dashboard", "layout");
+  redirect("/dashboard");
+};
 
-export async function signup(formData: FormData) {
-  const supabase = await createClient();
+const resetPassword = async (
+  email: string
+): Promise<{ data: any; error: any }> => {
+  try {
+    if (!email) {
+      throw new Error("Email is required");
+    }
 
-  // type-casting here for convenience
-  // in practice, you should validate your inputs
-  const data = {
-    email: formData.get("email") as string,
-    password: formData.get("password") as string,
-  };
+    const supabase = await createClient();
 
-  const { error } = await supabase.auth.signUp(data);
+    const { data, error } = await supabase.auth.resetPasswordForEmail(email);
 
-  if (error) {
-    // redirect("/error");
-    return { error };
+    if (error) {
+      throw error;
+    }
+
+    revalidatePath("/", "layout");
+    redirect("/");
+
+    return { data, error: null };
+  } catch (error) {
+    console.error(error);
+
+    return { data: null, error: (error as Error).message };
   }
+};
 
-  revalidatePath("/", "layout");
-  redirect("/");
-}
+export { login, resetPassword };

@@ -1,4 +1,6 @@
 import Logo from "../../components/Logo";
+import EmptyState from "../../components/EmptyState";
+
 import Link from "next/link";
 import { getOpenTabs, getArchivedTabs } from "./actions";
 
@@ -12,8 +14,14 @@ const Home = async () => {
     count: archivedTabsCount,
   } = await getArchivedTabs();
 
+  if (!tabs) return <EmptyState />;
+
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen max-w-4xl mx-auto pb-12">
+    <div className="flex flex-col items-center justify-center mx-auto pb-12 overflow-auto">
+      <h1 className="text-3xl font-bold mb-8 tracking-tighter flex gap-2 items-center text-left w-full">
+        <Logo className="bg-primary" />
+        Dashboard
+      </h1>
       <div className="flex justify-space-between w-full py-8 gap-8">
         <div className="stats shadow flex-1">
           <div className="stat">

@@ -3,11 +3,11 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-import { signUp } from "@client";
+import { signup } from "./signup";
 
-interface ISignInFormProps {}
+interface ISignUpFormProps {}
 
-const SignInForm: React.FC<ISignInFormProps> = () => {
+const SignUpForm: React.FC<ISignUpFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [email, setEmail] = useState("");
@@ -16,26 +16,13 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
 
   const [message, setMessage] = useState({ type: "error", message: "" });
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!email || !password || !repeatPassword) {
-      setMessage({
-        type: "error",
-        message: "Please enter your email and password",
-      });
-      return;
-    }
-
-    if (password !== repeatPassword) {
-      setMessage({ type: "error", message: "Passwords do not match" });
-      return;
-    }
-
+  const handleSignUp = async (formData: FormData) => {
     try {
       setIsLoading(true);
 
-      const { data, error } = await signUp({ email, password });
+      const { data, error } = await signup(formData);
+
+      console.log("🚀 . data:", data);
 
       if (error) {
         throw error;
@@ -56,7 +43,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
   return (
     <div className="flex flex-col gap-4">
       <p className="text-xl">Sign up</p>
-      <form onSubmit={handleSignUp} className="flex flex-col gap-4">
+      <form action={handleSignUp} className="flex flex-col gap-4">
         <label className="form-control">
           <div className="label">
             <span className="label-text">Email</span>
@@ -65,8 +52,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
             type="email"
             placeholder="your@email.com"
             className="input input-bordered w-full"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            name="email"
           />
         </label>
         <label className="form-control">
@@ -76,8 +62,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
           <input
             type="password"
             className="input input-bordered w-full"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            name="password"
           />
         </label>
         <label className="form-control">
@@ -87,8 +72,7 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
           <input
             type="password"
             className="input input-bordered w-full"
-            value={repeatPassword}
-            onChange={(e) => setRepeatPassword(e.target.value)}
+            name="repeatPassword"
           />
         </label>
 
@@ -123,4 +107,4 @@ const SignInForm: React.FC<ISignInFormProps> = () => {
   );
 };
 
-export default SignInForm;
+export default SignUpForm;

@@ -3,7 +3,7 @@
 import React, { useState } from "react";
 import Link from "next/link";
 
-import { login } from "./login";
+import { login, resetPassword } from "./login";
 
 interface ILogInFormProps {}
 
@@ -16,19 +16,18 @@ const STATUS = {
 const LogInForm: React.FC<ILogInFormProps> = () => {
   const [status, setStatus] = useState(STATUS.idle);
 
+  const [email, setEmail] = useState("");
+
   const [message, setMessage] = useState("");
 
   const handleSignIn = async (formData: FormData) => {
     try {
       setStatus(STATUS.signingIn);
-      // const { error } = await signIn({ email, password });
       const { error } = await login(formData);
 
       if (error) {
         throw error;
       }
-
-      // router.push("/home");
     } catch (error) {
       console.error(error as Error);
       setMessage((error as Error).message);
@@ -38,24 +37,21 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
   };
 
   const handleResetPassword = async () => {
-    // try {
-    //   setStatus(STATUS.resettingPassword);
-    //   if (!email) {
-    //     setMessage("Please enter your email");
-    //     return;
-    //   }
-    //   setMessage("");
-    //   const { error } = await resetPassword({ email });
-    //   if (error) {
-    //     throw error;
-    //   }
-    //   setMessage("Please check your email for a link to reset your password");
-    // } catch (error) {
-    //   console.error(error);
-    //   setMessage((error as Error).message);
-    // } finally {
-    //   setStatus(STATUS.idle);
-    // }
+    try {
+      setStatus(STATUS.resettingPassword);
+      setMessage("");
+
+      const { error } = await resetPassword(email);
+      if (error) {
+        throw error;
+      }
+      setMessage("Please check your email for a link to reset your password");
+    } catch (error) {
+      console.error(error);
+      setMessage((error as Error).message);
+    } finally {
+      setStatus(STATUS.idle);
+    }
   };
 
   return (
@@ -71,6 +67,8 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
             placeholder="your@email.com"
             className="input input-bordered w-full"
             name="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
         </label>
         <label className="form-control">
