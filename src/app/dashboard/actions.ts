@@ -12,6 +12,7 @@ const getOpenTabs = async (): Promise<{
   const { data, error, count } = await supabase
     .from(TABLES.OPEN_TABS)
     .select("*", { count: "exact" })
+    .order("timeStamp", { ascending: false })
     .limit(10);
 
   if (error) {
@@ -32,7 +33,7 @@ const getArchivedTabs = async (): Promise<{
     .from(TABLES.ARCHIVED_TABS)
     .select("*", {
       count: "exact",
-      limit: 10,
+      limit: 0,
     });
 
   if (error) {

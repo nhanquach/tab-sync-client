@@ -1,8 +1,7 @@
 "use client";
-import { Bookmark, Grid3X3, Home, Plus, Settings, User } from "lucide-react";
+import { Bookmark, Grid3X3, Home, Plus, Settings, User, Laptop } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 import { signout } from "./actions";
 
@@ -16,17 +15,22 @@ const navItems = [
   },
   {
     title: "Links",
-    href: "/dashboard/links",
+    href: "/links",
     icon: Bookmark,
   },
   {
+    title: "Devices",
+    href: "/devices",
+    icon: Laptop,
+  },
+  {
     title: "Categories",
-    href: "/dashboard/categories",
+    href: "/categories",
     icon: Grid3X3,
   },
   {
     title: "Settings",
-    href: "/dashboard/settings",
+    href: "/settings",
     icon: Settings,
   },
 ];
@@ -72,10 +76,13 @@ const Appbar = ({ user }: { user: IUser }) => {
               className="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm"
             >
               <li>
+                <a className="text-blue-300">Give Feedback</a>
+              </li>
+              <li>
                 <a>Settings</a>
               </li>
               <li>
-                <a onClick={handleSignout}>Sign out</a>
+                <button onClick={handleSignout}>Sign out</button>
               </li>
             </ul>
           </div>

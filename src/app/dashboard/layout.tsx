@@ -9,6 +9,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
 
   const { data, error } = await supabase.auth.getUser();
 
+  console.log("🚀 . data:", data);
   if (error || !data?.user) {
     redirect("/");
   }
@@ -19,7 +20,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
       <div className="drawer-content flex flex-col items-center justify-center">
         <label
           htmlFor="drawer"
-          className="btn btn-soft drawer-button lg:hidden absolute right-8 top-8"
+          className="btn btn-soft drawer-button lg:hidden absolute right-6 top-6"
         >
           <Menu />
         </label>
