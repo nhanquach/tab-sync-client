@@ -1,8 +1,9 @@
 "use server";
+
 import { revalidatePath } from "next/cache";
 import { createClient } from "@utils/supabase/server";
 
-const signup = async (
+const signUp = async (
   formData: FormData
 ): Promise<{ data: any; error: any }> => {
   const email = formData.get("email") as string;
@@ -35,4 +36,4 @@ const signup = async (
   }
 };
 
-export { signup };
+export { signUp };

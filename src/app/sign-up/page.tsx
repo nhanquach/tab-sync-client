@@ -1,6 +1,6 @@
-import FloatingBubblesBackground from "../../components/FloatingBubble";
-import Logo from "../../components/Logo";
-import SignUpForm from "@components/signup/SignUpForm";
+import FloatingBubblesBackground from "@components/FloatingBubble";
+import Logo from "@components/Logo";
+import SignUpForm from "@components/sign-up/SignUpForm";
 
 interface ISignUpProps {}
 
@@ -13,7 +13,7 @@ const SignUp: React.FC<ISignUpProps> = () => {
       <div className="w-full p-12 absolute md:w-1/2 md:relative">
         <h2 className="text-3xl font-bold mb-8 tracking-tighter">
           <Logo />
-          Trying out TabSync
+          Welcome onboard
         </h2>
 
         <SignUpForm />

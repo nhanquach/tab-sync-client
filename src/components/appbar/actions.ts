@@ -12,7 +12,7 @@ const signout = async () => {
     await supabase.auth.signOut();
 
     revalidatePath("/", "layout");
-    redirect("/");
+    redirect("/sign-in");
   } catch (error) {
     console.error(error);
   }

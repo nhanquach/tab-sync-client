@@ -1,24 +1,18 @@
 import Logo from "../../components/Logo";
 import EmptyState from "../../components/EmptyState";
 
-import Link from "next/link";
 import { getOpenTabs, getArchivedTabs } from "./actions";
 
-import { ExternalLink, Archive } from "lucide-react";
 import LinkItem from "../../components/link-item/LinkItem";
 
 const Home = async () => {
-  const { data: tabs, count, error } = await getOpenTabs();
-  const {
-    data: archivedTabs,
-    error: archivedTabsError,
-    count: archivedTabsCount,
-  } = await getArchivedTabs();
+  const { data: tabs, count } = await getOpenTabs();
+  const { count: archivedTabsCount } = await getArchivedTabs();
 
   if (!tabs) return <EmptyState />;
 
   return (
-    <div className="flex flex-col items-center justify-center mx-auto pb-12 overflow-auto w-full lg:w-4xl">
+    <div className="flex flex-col items-center justify-center mx-auto pb-6 overflow-auto w-full lg:w-4xl">
       <div className="flex w-full items-center justify-between flex-col md:flex-row">
         <h1 className="text-3xl font-bold mb-2 tracking-tighter flex gap-2 items-center text-left w-full">
           <Logo className="bg-primary" />

@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 
 import { createClient } from "@utils/supabase/server";
 
-const login = async (
+const signIn = async (
   formData: FormData
 ): Promise<{ data: any; error: any }> => {
   const supabase = await createClient();
@@ -17,10 +17,9 @@ const login = async (
     password: formData.get("password") as string,
   };
 
-  const { error, ...rest } = await supabase.auth.signInWithPassword(data);
+  const { error } = await supabase.auth.signInWithPassword(data);
 
   if (error) {
-    // redirect("/error");
     return { data: null, error };
   }
 
@@ -55,4 +54,4 @@ const resetPassword = async (
   }
 };
 
-export { login, resetPassword };
+export { signIn, resetPassword };

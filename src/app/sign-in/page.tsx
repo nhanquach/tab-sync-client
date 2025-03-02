@@ -1,6 +1,6 @@
 import FloatingBubblesBackground from "@components/FloatingBubble";
 import Logo from "@components/Logo";
-import LogInForm from "@components/login/LogInForm";
+import SignInForm from "@components/sign-in/SignInForm";
 
 interface IHomeProps {}
 
@@ -16,7 +16,7 @@ const Home: React.FC<IHomeProps> = () => {
           TabSync
         </h2>
 
-        <LogInForm />
+        <SignInForm />
       </div>
     </div>
   );

@@ -2,17 +2,14 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Loader2Icon } from "lucide-react";
 
-import { signup } from "./signup";
+import { signUp } from "./actions";
 
 interface ISignUpFormProps {}
 
 const SignUpForm: React.FC<ISignUpFormProps> = () => {
   const [isLoading, setIsLoading] = useState(false);
-
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [repeatPassword, setRepeatPassword] = useState("");
 
   const [message, setMessage] = useState({ type: "error", message: "" });
 
@@ -20,9 +17,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = () => {
     try {
       setIsLoading(true);
 
-      const { data, error } = await signup(formData);
-
-      console.log("🚀 . data:", data);
+      const { data, error } = await signUp(formData);
 
       if (error) {
         throw error;
@@ -89,7 +84,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = () => {
         )}
 
         <div className="flex justify-end items-center">
-          <Link href="/" className="link link-hover py-4">
+          <Link href="/sign-in" className="link link-hover py-4">
             Already have an account?
           </Link>
         </div>
@@ -99,7 +94,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = () => {
           type="submit"
           disabled={isLoading}
         >
-          {isLoading && <span className="loading loading-spinner"></span>}
+          {isLoading && <Loader2Icon className="animate-spin mr-2" />}
           Sign up
         </button>
       </form>

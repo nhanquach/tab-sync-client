@@ -2,18 +2,19 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Loader2Icon } from "lucide-react";
 
-import { login, resetPassword } from "./login";
+import { signIn, resetPassword } from "./actions";
 
-interface ILogInFormProps {}
+interface ISignInFormProps {}
 
 const STATUS = {
   idle: "idle",
-  signingIn: "signingIn",
-  resettingPassword: "resettingPassword",
+  signIn: "signIn",
+  resetPassword: "resetPassword",
 };
 
-const LogInForm: React.FC<ILogInFormProps> = () => {
+const SignInForm: React.FC<ISignInFormProps> = () => {
   const [status, setStatus] = useState(STATUS.idle);
 
   const [email, setEmail] = useState("");
@@ -21,27 +22,35 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
   const [message, setMessage] = useState("");
 
   const handleSignIn = async (formData: FormData) => {
+    setStatus(STATUS.signIn);
+
     try {
-      setStatus(STATUS.signingIn);
-      const { error } = await login(formData);
+      const { error } = await signIn(formData);
 
       if (error) {
         throw error;
       }
     } catch (error) {
+      if ((error as Error).message === "NEXT_REDIRECT") {
+        return;
+      }
+
       console.error(error as Error);
       setMessage((error as Error).message);
     } finally {
-      setStatus(STATUS.idle);
+      setTimeout(() => {
+        setStatus(STATUS.idle);
+      }, 1000);
     }
   };
 
   const handleResetPassword = async () => {
-    try {
-      setStatus(STATUS.resettingPassword);
-      setMessage("");
+    setStatus(STATUS.resetPassword);
+    setMessage("");
 
+    try {
       const { error } = await resetPassword(email);
+
       if (error) {
         throw error;
       }
@@ -50,13 +59,15 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
       console.error(error);
       setMessage((error as Error).message);
     } finally {
-      setStatus(STATUS.idle);
+      setTimeout(() => {
+        setStatus(STATUS.idle);
+      }, 500);
     }
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-xl">Log in</p>
+      <p className="text-xl">Sign in</p>
       <form action={handleSignIn} className="flex flex-col gap-4">
         <label className="form-control">
           <div className="label">
@@ -89,9 +100,9 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
             className="link link-hover py-4"
             type="button"
             onClick={handleResetPassword}
-            disabled={status === STATUS.resettingPassword}
+            disabled={status === STATUS.resetPassword}
           >
-            {status === STATUS.resettingPassword && (
+            {status === STATUS.resetPassword && (
               <span className="loading loading-spinner" />
             )}
             Forgot password?
@@ -101,10 +112,10 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
         <button
           className="btn btn-primary btn-block"
           type="submit"
-          disabled={status === STATUS.signingIn}
+          disabled={status === STATUS.signIn}
         >
-          {status === STATUS.signingIn && (
-            <span className="loading loading-spinner" />
+          {status === STATUS.signIn && (
+            <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
           )}
           Sign in
         </button>
@@ -117,4 +128,4 @@ const LogInForm: React.FC<ILogInFormProps> = () => {
   );
 };
 
-export default LogInForm;
+export default SignInForm;

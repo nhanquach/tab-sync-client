@@ -1,11 +1,22 @@
 "use client";
-import { Bookmark, Grid3X3, Home, Plus, Settings, User, Laptop } from "lucide-react";
+
+import {
+  Bookmark,
+  Grid3X3,
+  Home,
+  Plus,
+  Settings,
+  User,
+  Laptop,
+  Loader2,
+} from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 import { signout } from "./actions";
 
 import Logo from "../Logo";
+import { useState } from "react";
 
 const navItems = [
   {
@@ -40,8 +51,17 @@ type IUser = {
 };
 
 const Appbar = ({ user }: { user: IUser }) => {
+  const [loading, setLoading] = useState(false);
+
   const handleSignout = async () => {
-    await signout();
+    try {
+      setLoading(true);
+      await signout();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const pathname = usePathname();
@@ -56,7 +76,10 @@ const Appbar = ({ user }: { user: IUser }) => {
         <div className="space-y-1">
           <ul className="menu rounded-box w-full">
             {navItems.map((item) => (
-              <li key={item.href} className={pathname === item.href ? "py-2" : "py-2 opacity-60"}>
+              <li
+                key={item.href}
+                className={pathname === item.href ? "py-2" : "py-2 opacity-60"}
+              >
                 <Link href={item.href}>
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}
@@ -82,7 +105,10 @@ const Appbar = ({ user }: { user: IUser }) => {
                 <a>Settings</a>
               </li>
               <li>
-                <button onClick={handleSignout}>Sign out</button>
+                <button onClick={handleSignout}>
+                  {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{" "}
+                  Sign out
+                </button>
               </li>
             </ul>
           </div>
