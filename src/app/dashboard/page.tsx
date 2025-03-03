@@ -1,13 +1,17 @@
 import Logo from "../../components/Logo";
 import EmptyState from "../../components/EmptyState";
 
-import { getOpenTabs, getArchivedTabs } from "./actions";
+import { getOpenTabs, getArchivedTabs, getDevices } from "./actions";
 
 import LinkItem from "../../components/link-item/LinkItem";
+import Stats from "../../components/stats/Stats";
 
 const Home = async () => {
-  const { data: tabs, count } = await getOpenTabs();
-  const { count: archivedTabsCount } = await getArchivedTabs();
+  const openTabs = await getOpenTabs();
+  const archivedTabs = await getArchivedTabs();
+  const devices = await getDevices();
+
+  const { data: tabs } = openTabs;
 
   if (!tabs) return <EmptyState />;
 
@@ -24,27 +28,12 @@ const Home = async () => {
           placeholder="Search..."
         />
       </div>
-      <div className="flex justify-space-between w-full py-4 gap-8 flex-wrap">
-        <div className="stats shadow flex-1">
-          <div className="stat">
-            <div className="stat-title">All Tabs</div>
-            <div className="stat-value">{count + archivedTabsCount}</div>
-          </div>
-        </div>
-        <div className="stats shadow flex-1">
-          <div className="stat">
-            <div className="stat-title">Your Synced Tabs</div>
-            <div className="stat-value">{count}</div>
-          </div>
-        </div>
-        <div className="stats shadow flex-1">
-          <div className="stat">
-            <div className="stat-title">Your Archived Tabs</div>
-            <div className="stat-value">{archivedTabsCount}</div>
-          </div>
-        </div>
+
+      <div className="my-2 bg-base-200 w-full px-6 rounded-2xl">
+        <Stats openTabs={openTabs} archivedTabs={archivedTabs} devices={devices} />
       </div>
-      <ul className="list bg-base-100 rounded-box shadow-md w-full">
+
+      <ul className="list bg-base-100 rounded-box w-full">
         <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">Recently</li>
         {tabs.map((tab, index) => (
           <LinkItem key={tab.id} tab={tab} index={index} />

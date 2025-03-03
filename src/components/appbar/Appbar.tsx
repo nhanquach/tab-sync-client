@@ -70,7 +70,7 @@ const Appbar = ({ user }: { user: IUser }) => {
     <div className="border-r bg-muted/40 block h-screen backdrop-blur-2xl">
       <div className="flex h-full w-[240px] flex-col px-4 py-8">
         <h2 className="mb-6 px-2 text-lg font-semibold tracking-tight flex gap-2">
-          <Logo />
+          <Logo className="bg-neutral" />
           TabSync
         </h2>
         <div className="space-y-1">

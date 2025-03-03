@@ -10,13 +10,22 @@ import Link from "next/link";
 import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import dayjs from "dayjs";
+import { Loader, Loader2Icon } from "lucide-react";
+import EmptyState from "../../components/EmptyState";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
 
+const TABS = {
+  RECENT: TABLES.OPEN_TABS,
+  ARCHIVED: TABLES.ARCHIVED_TABS,
+};
+
 const Links = () => {
   const [loading, setLoading] = useState(false);
-  const [tabs, setTabs] = useState<ITab[]>([]);
+  const [activeTab, setActiveTab] = useState(TABS.RECENT);
+
+  const [tabList, setTabList] = useState<ITab[]>([]);
 
   const [colDefs, setColDefs] = useState([
     {
@@ -43,25 +52,28 @@ const Links = () => {
     { field: "deviceName" },
   ]);
 
-  const getTabs = async () => {
+  const getTabs = async (table = TABLES.OPEN_TABS) => {
     try {
       setLoading(true);
       const supabase = await createClient();
 
       const { data, error, count } = await supabase
-        .from(TABLES.OPEN_TABS)
+        .from(table)
         .select("*", { count: "exact" })
+        .limit(1)
         .order("timeStamp", { ascending: false });
 
       if (error) {
         console.error(error);
       }
 
-      setTabs(data);
+      setTabList(data as ITab[]);
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 500);
     }
   };
 
@@ -69,9 +81,14 @@ const Links = () => {
     getTabs();
   }, []);
 
+  const onTabChange = (table: string) => {
+    setActiveTab(table);
+    getTabs(table);
+  };
+
   return (
     <div className="flex flex-col items-center justify-center mx-auto overflow-auto w-full h-[calc(100vh-50px)]">
-      <div className="flex w-full items-center justify-between flex-col md:flex-row">
+      <div className="flex w-full items-center justify-between flex-col md:flex-row py-2">
         <h1 className="text-3xl font-bold mb-2 tracking-tighter flex gap-2 items-center text-left w-full">
           <Logo className="bg-primary" />
           Links
@@ -82,14 +99,53 @@ const Links = () => {
           placeholder="Search..."
         />
       </div>
-      <div className="w-full flex-1 py-4">
-        <AgGridReact
-          loading={loading}
-          rowData={tabs}
-          columnDefs={colDefs}
-          autoSizeStrategy={{ type: "fitCellContents" }}
-        />
+      <div className="flex justify-start w-full py-2">
+        <div role="tablist" className="tabs tabs-box tabs-sm">
+          <button
+            role="tab"
+            className={`tab ${activeTab === TABS.RECENT ? "tab-active" : ""}`}
+            onClick={() => onTabChange(TABS.RECENT)}
+          >
+            {loading && activeTab === TABS.RECENT && (
+              <Loader2Icon className="h-4 w-4 animate-spin mr-2" />
+            )}
+            Recently Opened
+          </button>
+          <button
+            role="tab"
+            className={`tab ${activeTab === TABS.ARCHIVED ? "tab-active" : ""}`}
+            onClick={() => onTabChange(TABS.ARCHIVED)}
+          >
+            {loading && activeTab === TABS.ARCHIVED && (
+              <Loader2Icon className="h-4 w-4 animate-spin mr-2" />
+            )}
+            Archived
+          </button>
+        </div>
       </div>
+      {loading && (
+        <div className="flex flex-col items-center justify-center flex-1 gap-4">
+          <span className="loading loading-ring w-32 h-32"></span>
+          <span className="animate-pulse text-neutral-300">Working...</span>
+        </div>
+      )}
+      {!loading && tabList.length === 0 && (
+        <div className="flex-1">
+          <EmptyState />
+        </div>
+      )}
+      {!loading && tabList.length > 0 && (
+        <>
+          <div className="w-full flex-1">
+            <AgGridReact
+              loading={loading}
+              rowData={tabList}
+              columnDefs={colDefs}
+              autoSizeStrategy={{ type: "fitCellContents" }}
+            />
+          </div>
+        </>
+      )}
     </div>
   );
 };

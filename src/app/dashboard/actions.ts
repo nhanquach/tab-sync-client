@@ -43,4 +43,30 @@ const getArchivedTabs = async (): Promise<{
   return { data, count, error };
 };
 
-export { getOpenTabs, getArchivedTabs };
+const getDevices = async (): Promise<{
+  devices: string[];
+  error?: string;
+}> => {
+  const devices: string[] = [];
+
+  const supabase = await createClient();
+
+  const { data, error }: { data: { deviceName: string }[]; error?: string } =
+    await supabase
+      .from(TABLES.OPEN_TABS)
+      .select("deviceName", { count: "exact", distinct: true });
+
+  if (error) {
+    console.error(error);
+  }
+
+  data.forEach(({ deviceName }) => {
+    if (!devices.includes(deviceName)) {
+      devices.push(deviceName!);
+    }
+  });
+
+  return { devices, error };
+};
+
+export { getOpenTabs, getArchivedTabs, getDevices };
