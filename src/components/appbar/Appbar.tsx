@@ -8,6 +8,7 @@ import {
   Laptop,
   Loader2,
   UserIcon,
+  Search,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -22,6 +23,11 @@ const navItems = [
     title: "Dashboard",
     href: "/dashboard",
     icon: Home,
+  },
+  {
+    title: "Search",
+    href: "/search",
+    icon: Search,
   },
   {
     title: "Links",

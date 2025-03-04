@@ -22,7 +22,6 @@ const ProfileForm = ({ user }: TProps) => {
     try {
       setLoading(true);
       const { data, error } = await updateProfile(formData);
-      console.log("🚀 . { data, error }:", { data, error });
 
       if (error) {
         setMessage({ type: "error", message: (error as Error).message });
@@ -78,7 +77,7 @@ const ProfileForm = ({ user }: TProps) => {
               name="numberOfTabs"
               defaultValue={user.user_metadata.numberOfTabs}
             />
-            <p className="validator-hint">We can show atmost 1000 Urls</p>
+            <p className="validator-hint">We can show atmost 100 Urls</p>
           </fieldset>
           {message && (
             <div

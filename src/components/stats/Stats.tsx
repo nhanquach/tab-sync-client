@@ -32,7 +32,7 @@ const Stats = ({ openTabs, archivedTabs, devices }: StatsProps) => {
         <div className="stat-title">Open Tabs</div>
         <div className="stat-value text-secondary">{openTabs.count}</div>
         <div className="stat-desc">
-          <Link href="/links">View open tabs</Link>
+          <Link href="/links?view=open_tabs">View open tabs</Link>
         </div>
       </div>
 
@@ -43,7 +43,7 @@ const Stats = ({ openTabs, archivedTabs, devices }: StatsProps) => {
         <div className="stat-title">Archived Tabs</div>
         <div className="stat-value text-secondary">{archivedTabs.count}</div>
         <div className="stat-desc">
-          <Link href="/links">View archived tabs</Link>
+          <Link href="/links?view=archived_tabs">View archived tabs</Link>
         </div>
       </div>
 

@@ -25,19 +25,19 @@ const LinkActionCell = ({
   return (
     <div className="join w-full justify-center align-center">
       <button
-        className="btn btn-sm hover:text-primary/70 join-item"
+        className="btn btn-xs hover:text-primary/70 join-item"
         onClick={handleArchive}
       >
         <Archive className="h-4 w-4" />
-        Archive
+        <span className="hidden md:block">Archive</span>
       </button>
       <Link
         href={data.url}
         target="_blank"
-        className="btn btn-sm hover:text-primary/70 join-item"
+        className="btn btn-xs hover:text-primary/70 join-item"
       >
         <ExternalLinkIcon className="h-4 w-4" />
-        Open
+        <span className="hidden md:block">Open</span>
       </Link>
     </div>
   );

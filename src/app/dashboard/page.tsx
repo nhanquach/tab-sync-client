@@ -23,11 +23,6 @@ const Home = async () => {
           <Logo className="bg-primary" />
           Dashboard
         </h1>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-md"
-          placeholder="Search..."
-        />
       </div>
 
       <div className="my-2 bg-base-200 w-full px-6 rounded-2xl">
