@@ -35,7 +35,7 @@ const LinkItem = ({ tab, index }: TLinkItemProps) => {
   return (
     <Link key={tab.id} href={tab.url} target="_blank" rel="noreferrer">
       <li
-        className={`list-row cursor-pointer group hover:bg-base-200 ${
+        className={`list-row cursor-pointer group hover:bg-base-200 items-center ${
           isLoading ? "opacity-50" : ""
         }`}
       >
@@ -53,11 +53,14 @@ const LinkItem = ({ tab, index }: TLinkItemProps) => {
         </div>
         <div className="list-col-grow">
           <div>{tab.title}</div>
-          <div className="text-xs opacity-60">{tab.url}</div>
+          <div className="text-xs opacity-60 line-clamp-1">{tab.url}</div>
         </div>
 
+        <div className="badge bg-base-100 badge-sm translate-x-full group-hover:translate-x-0 transition-all hidden md:block">
+          {tab.deviceName}
+        </div>
         <button
-          className={`btn btn-sm btn-ghost invisible group-hover:visible ${
+          className={`btn btn-xs btn-ghost translate-x-[120%] group-hover:translate-x-0 transition-all hidden md:block ${
             isLoading ? "visible" : ""
           }`}
           onClick={handleArchive}
