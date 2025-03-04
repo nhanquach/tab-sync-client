@@ -48,11 +48,11 @@ const Stats = ({ openTabs, archivedTabs, devices }: StatsProps) => {
       </div>
 
       <div className="stat">
-        <div className="stat-figure text-info-content">
-          <Laptop className="h-8 w-8 text-info-content" />
+        <div className="stat-figure text-info">
+          <Laptop className="h-8 w-8 text-info" />
         </div>
         <div className="stat-title">Devices</div>
-        <div className="stat-value text-info-content">
+        <div className="stat-value text-info">
           {devices.devices.length}
         </div>
         <div className="stat-desc">

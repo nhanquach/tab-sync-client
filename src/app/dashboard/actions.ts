@@ -9,11 +9,13 @@ const getOpenTabs = async (): Promise<{
 }> => {
   const supabase = await createClient();
 
+  const user = await supabase.auth.getUser();
+
   const { data, error, count } = await supabase
     .from(TABLES.OPEN_TABS)
     .select("*", { count: "exact" })
     .order("timeStamp", { ascending: false })
-    .limit(10);
+    .limit(user.data.user?.user_metadata?.numberOfTabs || 10);
 
   if (error) {
     console.error(error);

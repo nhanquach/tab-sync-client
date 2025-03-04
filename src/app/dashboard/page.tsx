@@ -5,6 +5,7 @@ import { getOpenTabs, getArchivedTabs, getDevices } from "./actions";
 
 import LinkItem from "../../components/link-item/LinkItem";
 import Stats from "../../components/stats/Stats";
+import ReloadButton from "../../components/reload-button/ReloadButton";
 
 const Home = async () => {
   const openTabs = await getOpenTabs();
@@ -30,11 +31,20 @@ const Home = async () => {
       </div>
 
       <div className="my-2 bg-base-200 w-full px-6 rounded-2xl">
-        <Stats openTabs={openTabs} archivedTabs={archivedTabs} devices={devices} />
+        <Stats
+          openTabs={openTabs}
+          archivedTabs={archivedTabs}
+          devices={devices}
+        />
       </div>
 
       <ul className="list bg-base-100 rounded-box w-full">
-        <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">Recently</li>
+        <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+          <div className="flex align-center justify-between">
+            <span>Recently</span>
+            <ReloadButton />
+          </div>
+        </li>
         {tabs.map((tab, index) => (
           <LinkItem key={tab.id} tab={tab} index={index} />
         ))}

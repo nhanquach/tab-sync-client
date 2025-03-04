@@ -7,11 +7,12 @@ import { TABLES } from "../../clients/constants";
 import { ITab } from "../../interfaces/Tab";
 import Link from "next/link";
 
-import { AllCommunityModule, ModuleRegistry } from "ag-grid-community";
+import { AllCommunityModule, ColDef, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import dayjs from "dayjs";
-import { Loader, Loader2Icon } from "lucide-react";
+import { Loader2Icon } from "lucide-react";
 import EmptyState from "../../components/EmptyState";
+import LinkActionCell from "../../components/grid-renderer/LinkActionCell";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -27,31 +28,6 @@ const Links = () => {
 
   const [tabList, setTabList] = useState<ITab[]>([]);
 
-  const [colDefs, setColDefs] = useState([
-    {
-      field: "timeStamp",
-      valueFormatter: (p) => dayjs(p.value).format("DD-MM-YYYY HH:mm:ss"),
-    },
-    {
-      field: "title",
-      cellRenderer: (params: CustomCellRendererProps) => (
-        <Link href={params.data.url} target="_blank">
-          {params.value}
-        </Link>
-      ),
-    },
-    {
-      field: "url",
-      minWidth: 100,
-      cellRenderer: (params: CustomCellRendererProps) => (
-        <Link href={params.data.url} target="_blank">
-          {params.value}
-        </Link>
-      ),
-    },
-    { field: "deviceName" },
-  ]);
-
   const getTabs = async (table = TABLES.OPEN_TABS) => {
     try {
       setLoading(true);
@@ -60,7 +36,7 @@ const Links = () => {
       const { data, error, count } = await supabase
         .from(table)
         .select("*", { count: "exact" })
-        .limit(1)
+        .limit(3)
         .order("timeStamp", { ascending: false });
 
       if (error) {
@@ -85,6 +61,43 @@ const Links = () => {
     setActiveTab(table);
     getTabs(table);
   };
+
+  const [colDefs, setColDefs] = useState([
+    {
+      headerName: "Time",
+      field: "timeStamp",
+      valueFormatter: (p) => dayjs(p.value).format("DD MMM YYYY"),
+    },
+    {
+      field: "title",
+      cellRenderer: (params: CustomCellRendererProps) => (
+        <Link href={params.data.url} target="_blank">
+          {params.value}
+        </Link>
+      ),
+    },
+    {
+      field: "url",
+      minWidth: 100,
+      cellRenderer: (params: CustomCellRendererProps) => (
+        <Link href={params.data.url} target="_blank">
+          {params.value}
+        </Link>
+      ),
+    },
+    { field: "deviceName" },
+    {
+      pinned: "right",
+      field: "actions",
+      headerName: "Actions",
+      align: "center",
+      headerClass: ["text-center", "w-full"],
+      cellRenderer: LinkActionCell,
+      cellRendererParams: {
+        setTabList,
+      },
+    },
+  ] as ColDef[]);
 
   return (
     <div className="flex flex-col items-center justify-center mx-auto overflow-auto w-full h-[calc(100vh-50px)]">

@@ -4,11 +4,10 @@ import {
   Bookmark,
   Grid3X3,
   Home,
-  Plus,
   Settings,
-  User,
   Laptop,
   Loader2,
+  UserIcon,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -67,7 +66,7 @@ const Appbar = ({ user }: { user: IUser }) => {
   const pathname = usePathname();
 
   return (
-    <div className="border-r bg-muted/40 block h-screen backdrop-blur-2xl">
+    <div className="border-r bg-muted/40 block h-screen backdrop-blur-xl bg-base-400">
       <div className="flex h-full w-[240px] flex-col px-4 py-8">
         <h2 className="mb-6 px-2 text-lg font-semibold tracking-tight flex gap-2">
           <Logo className="bg-neutral" />
@@ -91,8 +90,8 @@ const Appbar = ({ user }: { user: IUser }) => {
         <div className="mt-auto flex flex-col gap-4">
           <div className="dropdown dropdown-top">
             <button className="btn btn-ghost w-full cursor-pointer rounded-sm overflow-ellipsis">
-              <User className="scale-[2]" />
-              {user.email}
+              <UserIcon className="mr-2" />
+              {user.user_metadata?.name || user.email.split("@")[0]}
             </button>
             <ul
               tabIndex={0}
@@ -102,7 +101,7 @@ const Appbar = ({ user }: { user: IUser }) => {
                 <a className="text-blue-300">Give Feedback</a>
               </li>
               <li>
-                <a>Settings</a>
+                <Link href="/settings">Settings</Link>
               </li>
               <li>
                 <button onClick={handleSignout}>
@@ -112,12 +111,6 @@ const Appbar = ({ user }: { user: IUser }) => {
               </li>
             </ul>
           </div>
-          <Link href="/dashboard/links/new">
-            <button className="btn btn-outline rounded-sm w-full flex items-center gap-2">
-              <Plus className="mr-2 h-4 w-4" />
-              Add New Link
-            </button>
-          </Link>
         </div>
       </div>
     </div>
