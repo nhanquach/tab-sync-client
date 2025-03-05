@@ -7,7 +7,6 @@ import { Brain, Calendar, Check, Grid3X3Icon, Loader2 } from "lucide-react";
 
 import ai from "../../services/gemini-service";
 import { createClient } from "../../utils/supabase/client";
-import { ITab } from "../../interfaces/Tab";
 import Link from "next/link";
 
 import { saveItem, getItem } from "../../utils/localStorage";
@@ -59,7 +58,7 @@ const Categories = () => {
 
   const getCategories = async () => {
     try {
-      const data = await ai.chat({
+      const data = await ai.categorizeByAI({
         messages: JSON.stringify(
           tabList.map(({ title, url }) => ({ title, url }))
         ),

@@ -27,7 +27,7 @@ const navItems = [
   },
   {
     title: "Search",
-    href: "/search",
+    href: "/advance-search",
     icon: Search,
     beta: true,
   },
@@ -46,11 +46,6 @@ const navItems = [
     title: "Settings",
     href: "/settings",
     icon: Settings,
-  },
-  {
-    title: "Upcomming",
-    href: "/upcomming",
-    icon: Clock,
   },
 ];
 
