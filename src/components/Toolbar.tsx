@@ -4,7 +4,7 @@ import { useTheme, useMediaQuery } from "@mui/material";
 import { Layout } from "../app/interfaces/Layout";
 import ToolbarStandard from "./ToolbarStandard";
 import ToolbarCompact from "./ToolbarCompact";
-import { saveItem } from "../utils/LocalStorageHelper";
+import { saveItem } from "../utils/localStorage";
 import { LAST_SAVED_DISPLAYED_BROWSERS_KEY, ORDER } from "../utils/constants";
 
 interface IToolbarProps {

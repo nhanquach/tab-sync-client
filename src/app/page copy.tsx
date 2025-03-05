@@ -26,7 +26,7 @@ import NoData from "../components/NoData";
 import TipsFooter from "../components/TipsFooter";
 import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
-import { getItem, saveItem } from "../utils/LocalStorageHelper";
+import { getItem, saveItem } from "../utils/localStorage";
 import {
   LAST_SAVED_DISPLAYED_BROWSERS_KEY,
   LAST_SAVED_ORDER_BY_KEY,

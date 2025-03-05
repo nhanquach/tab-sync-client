@@ -56,12 +56,12 @@ const LinkItem = ({ tab, index }: TLinkItemProps) => {
           <div className="text-xs opacity-60 line-clamp-1">{tab.url}</div>
         </div>
 
-        <div className="badge bg-base-100 badge-sm translate-x-full group-hover:translate-x-0 transition-all hidden md:block">
+        <div className="badge bg-base-100 badge-sm translate-x-full group-hover:translate-x-0 transition-all hidden md:block line-clamp-2">
           {tab.deviceName}
         </div>
         <button
           className={`btn btn-xs btn-ghost translate-x-[120%] group-hover:translate-x-0 transition-all hidden md:block ${
-            isLoading ? "visible" : ""
+            isLoading ? "visible translate-x-0" : ""
           }`}
           onClick={handleArchive}
         >

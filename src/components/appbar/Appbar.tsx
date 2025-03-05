@@ -9,6 +9,7 @@ import {
   Loader2,
   UserIcon,
   Search,
+  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,6 +29,7 @@ const navItems = [
     title: "Search",
     href: "/search",
     icon: Search,
+    beta: true,
   },
   {
     title: "Links",
@@ -35,19 +37,20 @@ const navItems = [
     icon: Bookmark,
   },
   {
-    title: "Devices",
-    href: "/devices",
-    icon: Laptop,
-  },
-  {
     title: "Categories",
     href: "/categories",
     icon: Grid3X3,
+    beta: true,
   },
   {
     title: "Settings",
     href: "/settings",
     icon: Settings,
+  },
+  {
+    title: "Upcomming",
+    href: "/upcomming",
+    icon: Clock,
   },
 ];
 
@@ -88,6 +91,11 @@ const Appbar = ({ user }: { user: IUser }) => {
                 <Link href={item.href}>
                   <item.icon className="mr-2 h-4 w-4" />
                   {item.title}
+                  {item.beta && (
+                    <span className="badge badge-ghost badge-sm opacity-60">
+                      Beta
+                    </span>
+                  )}
                 </Link>
               </li>
             ))}

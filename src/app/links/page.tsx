@@ -32,7 +32,7 @@ const Links = () => {
 
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(
-    view === TABS.RECENT ? TABS.RECENT : TABS.ARCHIVED
+    view === TABS.ARCHIVED ? TABS.ARCHIVED : TABS.RECENT
   );
 
   const [tabList, setTabList] = useState<ITab[]>([]);
@@ -47,8 +47,8 @@ const Links = () => {
       const { data, error } = await supabase
         .from(table)
         .select("*", { count: "exact" })
+        .order("timeStamp", { ascending: false })
         .limit(3)
-        .order("timeStamp", { ascending: false });
 
       if (error) {
         console.error(error);
@@ -70,12 +70,12 @@ const Links = () => {
   }, []);
 
   const onTabChange = (table: string) => {
-    router.push(`?view=${table}`);
+    router.replace(`?view=${table}`);
     setActiveTab(table);
     getTabs(table);
   };
 
-  const [colDefs, setColDefs] = useState([
+  const [colDefs] = useState([
     {
       headerName: "Time",
       field: "timeStamp",

@@ -35,9 +35,10 @@ const getArchivedTabs = async (): Promise<{
     .from(TABLES.ARCHIVED_TABS)
     .select("*", {
       count: "exact",
-      limit: 0,
-    });
+    })
+    .limit(1);
 
+  console.log("🚀 . data:", data);
   if (error) {
     console.error(error);
   }
