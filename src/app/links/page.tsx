@@ -48,7 +48,7 @@ const Links = () => {
         .from(table)
         .select("*", { count: "exact" })
         .order("timeStamp", { ascending: false })
-        .limit(3)
+        .limit(30)
 
       if (error) {
         console.error(error);

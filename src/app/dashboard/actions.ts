@@ -1,11 +1,12 @@
+import { PostgrestError } from "@supabase/supabase-js";
 import { createClient } from "@utils/supabase/server";
 import { TABLES } from "../../clients/constants";
 import { ITab } from "@interfaces/Tab";
 
 const getOpenTabs = async (): Promise<{
-  data: ITab[];
-  error?: string;
-  count: number;
+  data: ITab[] | null;
+  error: PostgrestError | null;
+  count: number | null;
 }> => {
   const supabase = await createClient();
 
@@ -25,9 +26,9 @@ const getOpenTabs = async (): Promise<{
 };
 
 const getArchivedTabs = async (): Promise<{
-  data: ITab[];
-  error?: string;
-  count: number;
+  data: ITab[] | null;
+  error: PostgrestError | null;
+  count: number | null;
 }> => {
   const supabase = await createClient();
 
@@ -38,7 +39,6 @@ const getArchivedTabs = async (): Promise<{
     })
     .limit(1);
 
-  console.log("🚀 . data:", data);
   if (error) {
     console.error(error);
   }
@@ -47,23 +47,24 @@ const getArchivedTabs = async (): Promise<{
 };
 
 const getDevices = async (): Promise<{
-  devices: string[];
-  error?: string;
+  devices: string[] | null;
+  error: PostgrestError | null;
 }> => {
   const devices: string[] = [];
 
   const supabase = await createClient();
 
-  const { data, error }: { data: { deviceName: string }[]; error?: string } =
-    await supabase
-      .from(TABLES.OPEN_TABS)
-      .select("deviceName", { count: "exact", distinct: true });
+  // TODO: Add unique_device VIEW
+  const { data, error } = await supabase
+    .from(TABLES.OPEN_TABS)
+    .select("deviceName", { count: "exact" })
+    
 
   if (error) {
     console.error(error);
   }
 
-  data.forEach(({ deviceName }) => {
+  data?.forEach(({ deviceName }: { deviceName: string }) => {
     if (!devices.includes(deviceName)) {
       devices.push(deviceName!);
     }

@@ -3,14 +3,23 @@ import EmptyState from "../../components/EmptyState";
 
 import { getOpenTabs, getArchivedTabs, getDevices } from "./actions";
 
-import LinkItem from "../../components/link-item/LinkItem";
 import Stats from "../../components/stats/Stats";
 import ReloadButton from "../../components/reload-button/ReloadButton";
+import LinkList from "./LinkList";
+
+// Fetches all the data needed for the dashboard in parallel
+const getData = async () => {
+  const [openTabs, archivedTabs, devices] = await Promise.all([
+    getOpenTabs(),
+    getArchivedTabs(),
+    getDevices(),
+  ]);
+
+  return { openTabs, archivedTabs, devices };
+};
 
 const Home = async () => {
-  const openTabs = await getOpenTabs();
-  const archivedTabs = await getArchivedTabs();
-  const devices = await getDevices();
+  const { openTabs, archivedTabs, devices } = await getData();
 
   const { data: tabs } = openTabs;
 
@@ -40,12 +49,12 @@ const Home = async () => {
             <ReloadButton />
           </div>
         </li>
-        {tabs.map((tab, index) => (
-          <LinkItem key={tab.id} tab={tab} index={index} />
-        ))}
+        <LinkList linkList={tabs} />
       </ul>
     </div>
   );
 };
 
 export default Home;
+
+export const dynamic = "force-dynamic";

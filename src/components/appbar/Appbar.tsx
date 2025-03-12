@@ -5,11 +5,9 @@ import {
   Grid3X3,
   Home,
   Settings,
-  Laptop,
   Loader2,
   UserIcon,
   Search,
-  Clock,
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -49,7 +47,8 @@ const navItems = [
   },
 ];
 
-type IUser = {
+export type IUser = {
+  user_metadata: any;
   email: string;
 };
 

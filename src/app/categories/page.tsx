@@ -229,7 +229,7 @@ const Categories = () => {
 
           {status === STATUS.IDLE && Object.keys(categoryList).length > 0
             ? Object.keys(categoryList).map((key, index) => {
-                const list = categoryList[key];
+                const list = categoryList[key as keyof typeof categoryList];
 
                 return (
                   <motion.div

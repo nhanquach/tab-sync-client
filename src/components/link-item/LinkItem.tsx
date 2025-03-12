@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { startTransition, useState } from "react";
 import Link from "next/link";
 import { Archive, Loader2 } from "lucide-react";
 
@@ -11,14 +11,19 @@ import { archiveTab } from "./actions";
 type TLinkItemProps = {
   tab: ITab;
   index: number;
+  removeLink: (removedLink: ITab) => void;
 };
 
-const LinkItem = ({ tab, index }: TLinkItemProps) => {
+const LinkItem = ({ tab, index, removeLink }: TLinkItemProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleArchive = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+
+    startTransition(() => {
+      removeLink(tab);
+    });
 
     try {
       setIsLoading(true);
