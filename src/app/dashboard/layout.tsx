@@ -1,8 +1,10 @@
 import { redirect } from "next/navigation";
 
+import { Menu } from "lucide-react";
+
 import { createClient } from "@utils/supabase/server";
 import Appbar, { IUser } from "@components/appbar/Appbar";
-import { Menu } from "lucide-react";
+import NinjaKeys from "../../components/ninja-keys";
 
 const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
   const supabase = await createClient();
@@ -25,6 +27,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
           <Menu />
         </label>
         <main className="flex-1 p-6 md:p-8">{children}</main>
+        <NinjaKeys />
       </div>
       <div className="drawer-side">
         <label

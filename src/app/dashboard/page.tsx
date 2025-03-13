@@ -42,7 +42,7 @@ const Home = async () => {
         />
       </div>
 
-      <ul className="list bg-base-100 rounded-box w-full">
+      <ul className="list bg-base-100 rounded-box w-full overflow-hidden">
         <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
           <div className="flex align-center justify-between">
             <span>Recently</span>
