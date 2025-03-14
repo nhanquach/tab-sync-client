@@ -1,6 +1,6 @@
-import FloatingBubblesBackground from "@components/FloatingBubble";
-import Logo from "@components/Logo";
-import SignUpForm from "@components/sign-up/SignUpForm";
+import FloatingBubblesBackground from "components/FloatingBubble";
+import Logo from "components/Logo";
+import SignUpForm from "components/sign-up/SignUpForm";
 
 interface ISignUpProps {}
 

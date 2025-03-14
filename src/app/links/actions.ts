@@ -2,7 +2,7 @@
 
 import { cache } from "react";
 
-import { createClient } from "../../utils/supabase/server";
+import { createClient } from "utils/supabase/server";
 
 const getTabsFromTable = cache(async (table: string) => {
   const supabase = await createClient();

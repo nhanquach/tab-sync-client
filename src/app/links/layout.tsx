@@ -1,6 +1,6 @@
 import { Menu } from "lucide-react";
 
-import Appbar from "@components/appbar/Appbar";
+import Appbar from "components/appbar/Appbar";
 
 const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
   return (

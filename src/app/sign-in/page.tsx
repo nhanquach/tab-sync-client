@@ -1,6 +1,6 @@
-import FloatingBubblesBackground from "@components/FloatingBubble";
-import Logo from "@components/Logo";
-import SignInForm from "@components/sign-in/SignInForm";
+import FloatingBubblesBackground from "components/FloatingBubble";
+import Logo from "components/Logo";
+import SignInForm from "components/sign-in/SignInForm";
 
 interface IHomeProps {}
 

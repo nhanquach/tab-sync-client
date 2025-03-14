@@ -2,7 +2,7 @@
 
 import { cache } from "react";
 
-import { createClient } from "@utils/supabase/server";
+import { createClient } from "utils/supabase/server";
 
 import ai from "../../services/gemini-service";
 import { SimplifiedTab } from "../../interfaces/Tab";

@@ -2,12 +2,12 @@
 
 import { useContext, useEffect, useOptimistic } from "react";
 
-import LinkItem from "@components/link-item/LinkItem";
+import LinkItem from "components/link-item/LinkItem";
 import NinjaKeysContext, {
   NinjaKeysContextType,
-} from "@components/ninja-keys/context";
+} from "components/ninja-keys/context";
 
-import { ITab } from "@interfaces/Tab";
+import { ITab } from "interfaces/Tab";
 
 type LinkListProps = {
   linkList: ITab[];

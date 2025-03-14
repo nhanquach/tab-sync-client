@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { TABLES } from "../../clients/constants";
 import { createClient } from "../../utils/supabase/server";
-import { ITab } from "@interfaces/Tab";
+import { ITab } from "interfaces/Tab";
 
 export const archiveTab = async (tab: ITab) => {
   const supabase = await createClient();

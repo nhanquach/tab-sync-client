@@ -1,7 +1,7 @@
 import { Menu } from "lucide-react";
 
-import Appbar from "@components/appbar/Appbar";
-import NinjaKeys from "@components/ninja-keys";
+import Appbar from "components/appbar/Appbar";
+import NinjaKeys from "components/ninja-keys";
 
 const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
   return (

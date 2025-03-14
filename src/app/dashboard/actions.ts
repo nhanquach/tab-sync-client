@@ -1,7 +1,7 @@
 import { PostgrestError } from "@supabase/supabase-js";
-import { createClient } from "@utils/supabase/server";
+import { createClient } from "utils/supabase/server";
 import { TABLES } from "../../clients/constants";
-import { ITab } from "@interfaces/Tab";
+import { ITab } from "interfaces/Tab";
 
 const getOpenTabs = async (): Promise<{
   data: ITab[] | null;

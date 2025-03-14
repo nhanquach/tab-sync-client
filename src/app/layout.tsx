@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
-import NinjaKeys from "@components/ninja-keys";
-import NinjaKeysProvider from "@components/ninja-keys/provider";
+import NinjaKeys from "components/ninja-keys";
+import NinjaKeysProvider from "components/ninja-keys/provider";
 
 import "./globals.css";
 

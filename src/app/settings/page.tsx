@@ -1,7 +1,7 @@
 import { SettingsIcon } from "lucide-react";
 import { getUser } from "./actions";
-import ProfileForm from "@components/profile-form/ProfileForm";
-import ChangePasswordForm from "@components/change-password-form/ChangePasswordForm";
+import ProfileForm from "components/profile-form/ProfileForm";
+import ChangePasswordForm from "components/change-password-form/ChangePasswordForm";
 import { IUser } from "../../interfaces/IUser";
 
 const Settings = async () => {

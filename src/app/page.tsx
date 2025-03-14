@@ -12,8 +12,8 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
-import Logo from "@components/Logo";
-import NetworkGraph from "@components/network-graph/NetworkGraph";
+import Logo from "components/Logo";
+import NetworkGraph from "components/network-graph/NetworkGraph";
 import { EXTENSION_PAGE } from "../utils/constants";
 
 export default function LandingPage() {

@@ -5,12 +5,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Brain, Calendar, Check, Grid3X3Icon, Loader2 } from "lucide-react";
 
-import ai from "../../services/gemini-service";
-import { createClient } from "../../utils/supabase/client";
 import Link from "next/link";
 
 import { saveItem, getItem } from "../../utils/localStorage";
-import { uniqeArray } from "../../utils/unique";
+
+import { getUniqueOpenTabs, buildCategories } from "./actions";
 
 type SimplifiedTab = {
   title: string;
@@ -23,34 +22,25 @@ const STATUS = {
   GET_CATEGORIES: "getCategories",
 };
 
+const oneDayInMilliseconds = 24 * 60 * 60 * 1000;
+
 const Categories = () => {
   const [status, setStatus] = useState(STATUS.IDLE);
   const [tabList, setTabList] = useState<SimplifiedTab[]>([]);
   const [categoryList, setCategoryList] = useState<any[]>([]);
 
-  const getTabs = async (table = "unique_open_tabs") => {
+  const getTabs = async () => {
     try {
       setStatus(STATUS.GET_TABS);
-      const supabase = await createClient();
+      const { data } = await getUniqueOpenTabs();
 
-      const { data, error } = await supabase
-        .from(table)
-        .select("title, url")
-        .order("timeStamp", { ascending: false })
-        .limit(30);
+      setTabList(data);
 
-      if (error) {
-        console.error(error);
-      }
+      setTimeout(() => {
+        setStatus(STATUS.GET_CATEGORIES);
+      }, 2000);
 
-      if (data) {
-        const list = uniqeArray<SimplifiedTab[]>(data, "title");
-        setTabList(list);
-
-        setTimeout(() => {
-          setStatus(STATUS.GET_CATEGORIES);
-        }, 2000);
-      }
+      return data;
     } catch (error) {
       console.error(error);
     }
@@ -58,17 +48,17 @@ const Categories = () => {
 
   const getCategories = async () => {
     try {
-      const data = await ai.categorizeByAI({
-        messages: JSON.stringify(
-          tabList.map(({ title, url }) => ({ title, url }))
-        ),
-      });
-
-      const groupedData = groupBy(data.object, "category");
-
-      setCategoryList(groupedData);
-
-      saveItem("categories", JSON.stringify(groupedData));
+      const tabList = await getTabs();
+      
+      if (!tabList) {
+        throw new Error("No tabs found");
+      }
+      
+      const data = await buildCategories(tabList!);
+      
+      setCategoryList(data);
+      saveItem("categories", JSON.stringify(data));
+      saveItem("categoriesTime", Date.now().toString());
     } catch (error) {
       console.error(error);
     } finally {
@@ -76,30 +66,28 @@ const Categories = () => {
     }
   };
 
-  const groupBy = (array: any[], key: string) => {
-    return array.reduce((result, currentValue) => {
-      (result[currentValue[key]] = result[currentValue[key]] || []).push(
-        ...currentValue.urls
-      );
-      return result;
-    }, {});
-  };
-
   useEffect(() => {
-    const categories = getItem<any>("categories");
-    if (categories) {
-      setCategoryList(JSON.parse(categories));
-      return;
-    } else {
-      getTabs();
-    }
-  }, []);
+    const categories = getItem<string>("categories");
+    const time = getItem<string>("categoriesTime") || 0;
+    console.log("🚀 . time:", time, Date.now() - Number(time));
 
-  useEffect(() => {
-    if (status === STATUS.GET_CATEGORIES) {
+    try {
+      const parsedCategories = categories ? JSON.parse(categories) : null;
+
+      if (
+        !parsedCategories ||
+        Object.keys(parsedCategories).length === 0 ||
+        Date.now() - Number(time) >= oneDayInMilliseconds
+      ) {
+        getCategories();
+      } else {
+        setCategoryList(parsedCategories);
+      }
+    } catch (error) {
+      console.error(error);
       getCategories();
     }
-  }, [tabList.length, status]);
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center mx-auto pb-6 overflow-auto w-full lg:max-w-6xl">

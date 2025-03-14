@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Logo from "@components/Logo";
+import Logo from "components/Logo";
 import { createClient } from "../../utils/supabase/client";
 import { TABLES } from "../../clients/constants";
 import { ITab } from "../../interfaces/Tab";
@@ -14,8 +14,8 @@ import dayjs from "dayjs";
 import { Bookmark, LinkIcon, Loader2Icon } from "lucide-react";
 
 import { getTabsFromTable } from "./actions";
-import EmptyState from "@components/EmptyState";
-import LinkActionCell from "@components/grid-renderer/LinkActionCell";
+import EmptyState from "components/EmptyState";
+import LinkActionCell from "components/grid-renderer/LinkActionCell";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
