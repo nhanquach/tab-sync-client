@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 /**
  * This function takes an array of objects and a key
  * and returns a new array with unique items based on that key

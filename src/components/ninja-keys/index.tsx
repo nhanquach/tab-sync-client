@@ -17,8 +17,13 @@ const NinjaKeys = () => {
   const ninjaKeys = useRef(null);
 
   const context = useContext(NinjaKeysContext);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  useEffect(() => {
+    if (window) {
+      setIsDarkMode(window?.matchMedia("(prefers-color-scheme: dark)").matches);
+    }
+  }, []);
 
   const [hotkeys] = useState([
     {
@@ -64,7 +69,7 @@ const NinjaKeys = () => {
     },
   ]);
 
-  const buildLinkListToHotKeys = (linkList?: ITab[] ) => {
+  const buildLinkListToHotKeys = (linkList?: ITab[]) => {
     if (!linkList) {
       return [];
     }
@@ -83,7 +88,7 @@ const NinjaKeys = () => {
 
   useEffect(() => {
     if (ninjaKeys.current) {
-      ninjaKeys.current.data = [
+      (ninjaKeys.current as any).data = [
         ...hotkeys,
         ...buildLinkListToHotKeys(context?.linkList),
       ];
@@ -96,6 +101,7 @@ const NinjaKeys = () => {
 
   return (
     <>
+      {/* @ts-ignore */}
       <ninja-keys
         ref={ninjaKeys}
         class={isDarkMode ? "dark" : "light"}

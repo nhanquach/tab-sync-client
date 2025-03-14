@@ -14,7 +14,7 @@ type LinkListProps = {
 };
 
 const LinkList = (props: LinkListProps) => {
-  const context = useContext<NinjaKeysContextType>(NinjaKeysContext);
+  const context = useContext<NinjaKeysContextType | null>(NinjaKeysContext);
 
   useEffect(() => {
     context?.setLinkList(props.linkList);

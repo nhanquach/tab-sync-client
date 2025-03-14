@@ -11,13 +11,7 @@ const ChangePasswordForm = () => {
   const handleUpdatePassword = async (formData: FormData) => {
     try {
       setLoading(true);
-      const { data, error } = await updatePassword(formData);
-      console.log("🚀 . { data, error }:", { data, error });
-
-      if (error) {
-        setMessage({ type: "error", message: (error as Error).message });
-        return;
-      }
+      const { user: _user } = await updatePassword(formData);
 
       setMessage({
         type: "success",

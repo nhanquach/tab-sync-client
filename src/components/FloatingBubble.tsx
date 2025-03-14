@@ -44,8 +44,8 @@ function FloatingBubbles() {
   useEffect(() => {
     const newBubbles = Array.from({ length: 50 }, (_, i) => ({
       id: i,
-      x: Math.random() * window.innerWidth,
-      y: Math.random() * window.innerHeight,
+      x: Math.random() * window?.innerWidth,
+      y: Math.random() * window?.innerHeight,
       size: Math.random() * 20 + 5,
       color: `rgba(${Math.random() * 255},${Math.random() * 255},${
         Math.random() * 255

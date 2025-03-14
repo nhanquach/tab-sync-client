@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, MouseEvent } from "react";
 import { networkGraphNodes } from "./constants";
 
 let count = 1;
@@ -26,9 +26,11 @@ const NetworkGraph = () => {
   const [selectedNode, setSelectedNode] = useState(null);
   const [draggedNode, setDraggedNode] = useState(null);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
-  const [pulseConnections, setPulseConnections] = useState({});
+  const [pulseConnections, setPulseConnections] = useState<
+    Record<string, { progress: number; direction: number }>
+  >({});
   const svgRef = useRef(null);
-  const animationRef = useRef(null);
+  const animationRef = useRef<number|null>(null);
   const [isAnimating, setIsAnimating] = useState(true);
 
   // Initialize node velocities
@@ -39,15 +41,17 @@ const NetworkGraph = () => {
     }))
   );
 
-  const intervalId = useRef<any>(0);
+  const intervalId = useRef<NodeJS.Timeout | null>(null);
 
   // Handle node click
-  const handleNodeClick = (node) => {
+  const handleNodeClick = (node: { id: any; label?: string; x?: number; y?: number; connections: any; color?: string; }) => {
     setSelectedNode(selectedNode === node.id ? null : node.id);
 
     // Create pulse effect for connections
-    const newPulseConnections = {};
-    node.connections?.forEach((targetId) => {
+    const newPulseConnections: Record<
+      string, { progress: number; direction: number }
+    > = {};
+    node.connections?.forEach((targetId: number) => {
       const connectionId = `${Math.min(node.id, targetId)}-${Math.max(
         node.id,
         targetId
@@ -58,10 +62,14 @@ const NetworkGraph = () => {
   };
 
   // Handle mouse down for dragging
-  const handleMouseDown = (e, node) => {
+  const handleMouseDown = (e: MouseEvent<SVGGElement, MouseEvent>, node: { id: any; label?: string; x: any; y: any; connections?: number[]; color?: string; }) => {
     e.stopPropagation();
-    const svgRect = svgRef.current.getBoundingClientRect();
-    setDraggedNode(node.id);
+    const svgRect = (svgRef.current as unknown as SVGSVGElement)?.getBoundingClientRect();
+    if (!svgRect) {
+      return;
+    }
+
+      setDraggedNode(node.id);
     setDragOffset({
       x: e.clientX - (node.x - svgRect.left),
       y: e.clientY - (node.y - svgRect.top),
@@ -70,9 +78,12 @@ const NetworkGraph = () => {
   };
 
   // Handle mouse move during drag
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: { clientX: number; clientY: number; }) => {
     if (draggedNode) {
-      const svgRect = svgRef.current.getBoundingClientRect();
+      const svgRect = (svgRef.current as unknown as SVGSVGElement)?.getBoundingClientRect();
+      if (!svgRect) {
+        return;
+      }
       const x = e.clientX - dragOffset.x + svgRect.left;
       const y = e.clientY - dragOffset.y + svgRect.top;
 
@@ -97,7 +108,7 @@ const NetworkGraph = () => {
     const animate = () => {
       setNodes((prevNodes) => {
         // Get SVG dimensions
-        const svgRect = svgRef.current?.getBoundingClientRect();
+        const svgRect = (svgRef.current as unknown as SVGSVGElement)?.getBoundingClientRect();
         if (!svgRect) return prevNodes;
 
         const width = svgRect.width;
@@ -125,7 +136,9 @@ const NetworkGraph = () => {
 
       // Update pulse animations
       setPulseConnections((prev) => {
-        const newPulseConnections = { ...prev };
+        const newPulseConnections: Record<
+          string, { progress: number; direction: number }
+        > = { ...prev };
         Object.keys(newPulseConnections).forEach((key) => {
           const conn = newPulseConnections[key];
           conn.progress += 0.02 * conn.direction;
@@ -153,19 +166,21 @@ const NetworkGraph = () => {
 
   // Add event listeners for dragging
   useEffect(() => {
-    window.addEventListener("mousemove", handleMouseMove);
-    window.addEventListener("mouseup", handleMouseUp);
+    window?.addEventListener("mousemove", handleMouseMove);
+    window?.addEventListener("mouseup", handleMouseUp);
 
     return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-      window.removeEventListener("mouseup", handleMouseUp);
+      window?.removeEventListener("mousemove", handleMouseMove);
+      window?.removeEventListener("mouseup", handleMouseUp);
     };
   }, [draggedNode, dragOffset]);
 
   useEffect(() => {
-    intervalId.current = setInterval(() => {
+    intervalId.current = setInterval(() => {      
       if (count === initialNodes.length) {
-        clearInterval(intervalId.current);
+        if (intervalId.current) {
+          clearInterval(intervalId.current);
+      }
       }
 
       setNodes((prev) => {
@@ -179,7 +194,11 @@ const NetworkGraph = () => {
       count++;
     }, 500);
 
-    return () => clearInterval(intervalId.current);
+    return () => {
+      if (intervalId.current) {
+        clearInterval(intervalId.current);
+      }
+    }
   }, []);
 
   // Handle background click to deselect
@@ -195,7 +214,7 @@ const NetworkGraph = () => {
           className="w-full h-full min-h-[800px]"
           onClick={handleBackgroundClick}
         >
-          <defs>
+          <defs> 
             <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
               <feGaussianBlur stdDeviation="5" result="blur" />
               <feComposite in="SourceGraphic" in2="blur" operator="over" />
@@ -205,7 +224,7 @@ const NetworkGraph = () => {
 
           {/* Draw connection lines */}
           {nodes.map((node) =>
-            node.connections.map((targetId) => {
+            node.connections?.map((targetId) => {
               const targetNode = nodes.find((n) => n.id === targetId);
               if (!targetNode) {
                 return;
@@ -285,7 +304,7 @@ const NetworkGraph = () => {
                 e.stopPropagation();
                 handleNodeClick(node);
               }}
-              onMouseDown={(e) => handleMouseDown(e, node)}
+              onMouseDown={(e) => handleMouseDown(e as any, node)}
               className="cursor-pointer"
             >
               <circle

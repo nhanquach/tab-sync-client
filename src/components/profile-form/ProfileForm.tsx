@@ -3,15 +3,10 @@
 import { Loader2Icon, SaveIcon } from "lucide-react";
 import { useState } from "react";
 import { updateProfile } from "./actions";
+import { IUser } from "../../interfaces/IUser";
 
 type TProps = {
-  user: {
-    email: string;
-    user_metadata: {
-      name?: string;
-      numberOfTabs?: number;
-    };
-  };
+  user: IUser;
 };
 
 const ProfileForm = ({ user }: TProps) => {
@@ -21,7 +16,7 @@ const ProfileForm = ({ user }: TProps) => {
   const handleUpdateProfile = async (formData: FormData) => {
     try {
       setLoading(true);
-      const { data, error } = await updateProfile(formData);
+      const { data: _data, error } = await updateProfile(formData);
 
       if (error) {
         setMessage({ type: "error", message: (error as Error).message });

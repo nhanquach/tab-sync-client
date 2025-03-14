@@ -2,7 +2,7 @@ import Logo from "@components/Logo";
 import ReloadButton from "@components/reload-button/ReloadButton";
 import Stats from "@components/stats/Stats";
 
-const emptyData = { count: 0, data: [] };
+const emptyData = { count: 0, data: [], error: null };
 
 export default function Loading() {
   return (
@@ -18,7 +18,7 @@ export default function Loading() {
         <Stats
           openTabs={emptyData}
           archivedTabs={emptyData}
-          devices={{ devices: [] }}
+          devices={{ devices: [], error: null }}
         />
       </div>
 

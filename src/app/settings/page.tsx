@@ -2,6 +2,7 @@ import { SettingsIcon } from "lucide-react";
 import { getUser } from "./actions";
 import ProfileForm from "@components/profile-form/ProfileForm";
 import ChangePasswordForm from "@components/change-password-form/ChangePasswordForm";
+import { IUser } from "../../interfaces/IUser";
 
 const Settings = async () => {
   const { data } = await getUser();
@@ -15,7 +16,7 @@ const Settings = async () => {
         </h1>
       </div>
       <div className="flex flex-col md:flex-row w-full gap-2">
-        <ProfileForm user={data.user} />
+        <ProfileForm user={data.user as IUser} />
         <ChangePasswordForm />
       </div>
     </div>

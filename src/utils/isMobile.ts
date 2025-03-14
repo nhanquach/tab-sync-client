@@ -1,5 +1,5 @@
 export const isMobileApp = () => {
-  return window.location.pathname === "/mobileapp";
+  return window?.location.pathname === "/mobileapp";
 };
 
 export const isMobileDevice = (navigator: any) => {
