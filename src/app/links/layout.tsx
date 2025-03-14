@@ -1,19 +1,8 @@
-import { redirect } from "next/navigation";
-
-import { createClient } from "@utils/supabase/server";
-import Appbar, { IUser } from "@components/appbar/Appbar";
 import { Menu } from "lucide-react";
 
+import Appbar from "@components/appbar/Appbar";
+
 const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
-  const supabase = await createClient();
-
-  const { data, error } = await supabase.auth.getUser();
-
-  console.log("🚀 . data:", data);
-  if (error || !data?.user) {
-    redirect("/");
-  }
-
   return (
     <div className="drawer lg:drawer-open">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
@@ -32,7 +21,7 @@ const HomeLayout = async ({ children }: { children: React.ReactNode }) => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <Appbar user={data.user as IUser} />
+        <Appbar />
       </div>
     </div>
   );

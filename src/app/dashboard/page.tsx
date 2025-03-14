@@ -1,10 +1,10 @@
-import Logo from "../../components/Logo";
-import EmptyState from "../../components/EmptyState";
+import Logo from "@components/Logo";
+import EmptyState from "@components/EmptyState";
 
 import { getOpenTabs, getArchivedTabs, getDevices } from "./actions";
 
-import Stats from "../../components/stats/Stats";
-import ReloadButton from "../../components/reload-button/ReloadButton";
+import Stats from "@components/stats/Stats";
+import ReloadButton from "@components/reload-button/ReloadButton";
 import LinkList from "./LinkList";
 
 // Fetches all the data needed for the dashboard in parallel

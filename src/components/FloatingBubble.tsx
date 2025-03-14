@@ -74,7 +74,7 @@ export default function FloatingBubblesBackground({
   const words = title.split(" ");
 
   return (
-    <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900">
+    <div className="relative min-h-[calc(100vh-64px)] w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 dark:from-blue-900 dark:to-purple-900 rounded-l-2xl">
       <FloatingBubbles />
 
       <div className="relative z-10 container mx-auto px-4 md:px-6 text-center">

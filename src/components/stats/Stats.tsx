@@ -63,7 +63,6 @@ const Stats = ({ openTabs, archivedTabs, devices }: StatsProps) => {
         <div className="stat-title">Devices</div>
         <div className="stat-value text-info">{devices?.devices?.length || 0}</div>
         <div className="stat-desc">
-          <Link href="/devices">View devices</Link>
         </div>
       </div>
     </div>

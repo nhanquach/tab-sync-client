@@ -13,7 +13,10 @@ const NetworkGraph = () => {
       label: "TabSync",
       x: 800,
       y: 300,
-      connections: Array.from({ length: networkGraphNodes.length }, (_, i) => i + 1),
+      connections: Array.from(
+        { length: networkGraphNodes.length },
+        (_, i) => i + 1
+      ),
       color: "fill-primary",
     },
     ...networkGraphNodes,
@@ -274,9 +277,9 @@ const NetworkGraph = () => {
           )}
 
           {/* Draw nodes */}
-          {nodes.map((node) => (
+          {nodes.map((node, index) => (
             <g
-              key={node.id}
+              key={`${node.id}-${index}`}
               transform={`translate(${node.x}, ${node.y})`}
               onClick={(e) => {
                 e.stopPropagation();

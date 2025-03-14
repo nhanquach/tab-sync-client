@@ -8,3 +8,9 @@ export interface ITab {
   deviceName: string;
   windowId: string;
 }
+
+type SimplifiedTab = {
+  title: string;
+  url: string;
+  match?: number;
+};

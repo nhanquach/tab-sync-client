@@ -6,8 +6,8 @@ interface IHomeProps {}
 
 const Home: React.FC<IHomeProps> = () => {
   return (
-    <div className="flex flex-wrap items-center justify-center min-h-screen">
-      <div className="w-full blur-2xl md:block md:w-1/2 md:blur-none">
+    <div className="flex flex-wrap items-center justify-center min-h-[calc(100vh-320px)] p-6">
+      <div className="w-full blur-xl md:block md:w-1/2 md:blur-none">
         <FloatingBubblesBackground />
       </div>
       <div className="w-full p-12 absolute md:w-1/2 md:relative max-w-xl m-auto">

@@ -3,26 +3,14 @@
 import { useEffect, useState } from "react";
 
 import { motion } from "framer-motion";
-import {
-  Brain,
-  Calendar,
-  Check,
-  Grid3X3Icon,
-  Loader2,
-  SearchIcon,
-} from "lucide-react";
+import { SearchIcon, SearchSlashIcon } from "lucide-react";
 
-import ai from "../../services/gemini-service";
-import { createClient } from "../../utils/supabase/client";
 import Link from "next/link";
 
 import { uniqeArray } from "../../utils/unique";
+import { SimplifiedTab } from "../../interfaces/Tab";
 
-type SimplifiedTab = {
-  title: string;
-  url: string;
-  match?: number;
-};
+import { search, getUniqueOpenTabs } from "./actions";
 
 const STATUS = {
   IDLE: "idle",
@@ -38,16 +26,11 @@ const AdvanceSearch = () => {
   const [searchString, setSearchString] = useState("");
   const [result, setResult] = useState<SimplifiedTab[]>([]);
 
-  const getTabs = async (table = "unique_open_tabs") => {
+  const getTabs = async () => {
     try {
       setStatus(STATUS.GET_TABS);
-      const supabase = await createClient();
 
-      const { data, error } = await supabase
-        .from(table)
-        .select("title, url, timeStamp")
-        .order("timeStamp", { ascending: false })
-        .limit(30);
+      const { data, error } = await getUniqueOpenTabs();
 
       if (error) {
         console.error(error);
@@ -79,24 +62,21 @@ const AdvanceSearch = () => {
 
     try {
       setStatus(STATUS.SEARCH);
-      const { object: data } = await ai.searchByAI({
-        tabList: JSON.stringify(tabList),
-        searchString,
-      });
 
-      console.log("🚀 . data:", data);
+      const data = await search(tabList, searchString);
 
       setResult(data);
       hasResult = !!data.length;
     } catch (error) {
       console.error(error);
     } finally {
-      console.log("🚀 . result:", result);
-      if (!hasResult) {
-        setStatus(STATUS.NO_RESULT);
-      } else {
-        setStatus(STATUS.IDLE);
-      }
+      setTimeout(() => {
+        if (!hasResult) {
+          setStatus(STATUS.NO_RESULT);
+        } else {
+          setStatus(STATUS.IDLE);
+        }
+      }, 500);
     }
   };
 
@@ -104,10 +84,10 @@ const AdvanceSearch = () => {
     <div className="flex flex-col items-center justify-center mx-auto pb-6 overflow-auto w-full lg:max-w-6xl">
       <div className="flex w-full items-center justify-between">
         <h1 className="text-3xl font-bold mb-2 tracking-tighter flex gap-2 items-center text-left w-full">
-          <Grid3X3Icon className="text-primary w-8 h-8" />
+          <SearchSlashIcon className="text-primary w-8 h-8" />
           Advanced Search
           <div className="badge badge-soft badge-primary tracking-normal font-medium">
-            Beta {status}
+            Beta
           </div>
         </h1>
       </div>
@@ -133,31 +113,33 @@ const AdvanceSearch = () => {
             transition={{ duration: 0.2 }}
           >
             <div className="flex flex-col gap-2 max-w-2xl m-auto">
-              <div className="join">
-                <label className="w-full input join-item">
-                  <input
-                    type="search"
-                    placeholder="No guarantees, but it's fun to watch!"
-                    required
-                    value={searchString}
-                    onChange={(e) => setSearchString(e.target.value)}
-                  />
-                </label>
-                <button
-                  type="button"
-                  className="btn btn-soft join-item"
-                  disabled={status === STATUS.SEARCH}
-                  onClick={handleSearch}
-                >
-                  {status === STATUS.SEARCH ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <SearchIcon />
-                  )}{" "}
-                  with AI
-                </button>
-              </div>
-              <p className="text-base-content opacity-70 text-sm">
+              <form action={handleSearch}>
+                <div className="join w-full">
+                  <label className="w-full input join-item">
+                    <input
+                      type="search"
+                      placeholder="No guarantees, but it's fun to watch!"
+                      required
+                      value={searchString}
+                      onChange={(e) => setSearchString(e.target.value)}
+                    />
+                  </label>
+                  <button
+                    type="button"
+                    className="btn btn-soft join-item"
+                    disabled={status === STATUS.SEARCH}
+                    onClick={handleSearch}
+                  >
+                    {status === STATUS.SEARCH ? (
+                      <span className="loading" />
+                    ) : (
+                      <SearchIcon className="h-6 w-6" />
+                    )}{" "}
+                    with AI
+                  </button>
+                </div>
+              </form>
+              <p className="text-base-content opacity-60 text-sm max-w-2xl m-auto">
                 Give it a shot! Search tabs by date, title bits, what you were
                 after, or even what's on the page. We'll do our best to find
                 that tab – no promises, but it's always an adventure!
@@ -207,7 +189,7 @@ const AdvanceSearch = () => {
                           target="_blank"
                           rel="noreferrer"
                         >
-                          <li className="list-row hover:bg-base-200 hover:cursor-pointer">
+                          <div className="list-row hover:bg-base-200 hover:cursor-pointer">
                             <div className="list-col-grow">
                               <div>{title}</div>
                               <div className="text-xs font-semibold opacity-60 line-clamp-1">
@@ -230,7 +212,7 @@ const AdvanceSearch = () => {
                                 </span>
                               </div>
                             </div>
-                          </li>
+                          </div>
                         </Link>
                       </li>
                     </motion.div>

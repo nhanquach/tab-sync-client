@@ -1,19 +1,21 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Logo from "../../components/Logo";
+import Logo from "@components/Logo";
 import { createClient } from "../../utils/supabase/client";
 import { TABLES } from "../../clients/constants";
 import { ITab } from "../../interfaces/Tab";
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 
 import { AllCommunityModule, ColDef, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import dayjs from "dayjs";
 import { Bookmark, LinkIcon, Loader2Icon } from "lucide-react";
-import EmptyState from "../../components/EmptyState";
-import LinkActionCell from "../../components/grid-renderer/LinkActionCell";
-import { useRouter, useSearchParams } from "next/navigation";
+
+import { getTabsFromTable } from "./actions";
+import EmptyState from "@components/EmptyState";
+import LinkActionCell from "@components/grid-renderer/LinkActionCell";
 
 // Register all Community features
 ModuleRegistry.registerModules([AllCommunityModule]);
@@ -42,13 +44,8 @@ const Links = () => {
   const getTabs = async (table = TABLES.OPEN_TABS) => {
     try {
       setLoading(true);
-      const supabase = await createClient();
 
-      const { data, error } = await supabase
-        .from(table)
-        .select("*", { count: "exact" })
-        .order("timeStamp", { ascending: false })
-        .limit(30)
+      const { data, error } = await getTabsFromTable(table);
 
       if (error) {
         console.error(error);

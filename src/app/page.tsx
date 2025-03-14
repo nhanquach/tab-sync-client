@@ -12,8 +12,8 @@ import {
   Lock,
   Sparkles,
 } from "lucide-react";
-import Logo from "../components/Logo";
-import NetworkGraph from "../components/network-graph/NetworkGraph";
+import Logo from "@components/Logo";
+import NetworkGraph from "@components/network-graph/NetworkGraph";
 import { EXTENSION_PAGE } from "../utils/constants";
 
 export default function LandingPage() {
@@ -56,7 +56,10 @@ export default function LandingPage() {
       </header>
       <main className="flex-1 md:m-auto relative">
         {/* Hero Section */}
-        <section className="w-full py-12 md:py-24 lg:py-32 xl:py-48 z-10" id="cta">
+        <section
+          className="w-full py-12 md:py-24 lg:py-32 xl:py-48 z-10"
+          id="cta"
+        >
           <div className="container px-4 md:px-6">
             {/* lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px] */}
             <div className="flex flex-col lg:flex-row gap-6 ">
@@ -109,52 +112,57 @@ export default function LandingPage() {
                 </p>
               </div>
             </div>
-            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-6 py-12 md:grid-cols-2 lg:grid-cols-4">
-              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/10 p-4">
-                  <Globe className="h-6 w-6 text-primary" />
+
+            <div className="mx-auto grid max-w-5xl grid-cols-1 gap-2 py-12 md:grid-cols-2 lg:grid-cols-4">
+              <div className="card bg-base-100">
+                <div className="card-body">
+                  <div className="rounded-full bg-primary/10 w-12 h-12 m-auto">
+                    <Globe className="h-16 w-16 text-primary p-2" />
+                  </div>
+                  <div className="card-title min-h-20 justify-center py-2 text-center">
+                    Works on (Almost) Any Browser
+                  </div>
+                  <p className="text-center text-neutral-600">
+                    Compatible with Chromium, Chrome, Vivaldi, Opera, and
+                    Firefox (coming soon).
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-center">
-                  Works on (Almost) Any Browser
-                </h3>
-                <p className="text-center text-muted-foreground">
-                  Compatible with Chromium, Chrome, Vivaldi, Opera, and Firefox
-                  (coming soon).
-                </p>
               </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/10 p-4">
-                  <RefreshCw className="h-6 w-6 text-primary" />
+              <div className="card bg-base-100">
+                <div className="card-body">
+                  <div className="rounded-full bg-primary/10 w-12 h-12 m-auto">
+                    <RefreshCw className="h-16 w-16 text-primary p-2" />
+                  </div>
+                  <div className="card-title min-h-20 justify-center py-2 text-center">Updates in Real Time</div>
+                  <p className="text-center text-neutral-600">
+                    Instantly sync your tabs across all your devices with
+                    real-time updates.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-center">
-                  Updates in Real Time
-                </h3>
-                <p className="text-center text-muted-foreground">
-                  Instantly sync your tabs across all your devices with
-                  real-time updates.
-                </p>
               </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/10 p-4">
-                  <Shield className="h-6 w-6 text-primary" />
+              <div className="card bg-base-100">
+                <div className="card-body">
+                  <div className="rounded-full bg-primary/10 w-12 h-12 m-auto">
+                    <Shield className="h-16 w-16 text-primary p-2" />
+                  </div>
+                  <div className="card-title min-h-20 justify-center py-2 text-center">Safe and Sound</div>
+                  <p className="text-center text-neutral-600">
+                    Secure cloud storage with end-to-end encryption and strong
+                    privacy protections.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-center">
-                  Safe and Sound
-                </h3>
-                <p className="text-center text-muted-foreground">
-                  Secure cloud storage with end-to-end encryption and strong
-                  privacy protections.
-                </p>
               </div>
-              <div className="flex flex-col items-center space-y-2 rounded-lg border p-6 shadow-sm">
-                <div className="rounded-full bg-primary/10 p-4">
-                  <MousePointer className="h-6 w-6 text-primary" />
+              <div className="card bg-base-100">
+                <div className="card-body">
+                  <div className="rounded-full bg-primary/10 w-12 h-12 m-auto">
+                    <MousePointer className="h-16 w-16 text-primary p-2" />
+                  </div>
+                  <div className="card-title min-h-20 justify-center py-2 text-center">Easy to Use</div>
+                  <p className="text-center text-neutral-600">
+                    Intuitive interface that makes tab management simple and
+                    effortless.
+                  </p>
                 </div>
-                <h3 className="text-xl font-bold text-center">Easy to Use</h3>
-                <p className="text-center text-muted-foreground">
-                  Intuitive interface that makes tab management simple and
-                  effortless.
-                </p>
               </div>
             </div>
           </div>

@@ -1,29 +1,38 @@
 "use client";
 
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useContext } from "react";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 
 import "ninja-keys";
+import NinjaKeysContext from "./context";
+import { ITab } from "../../interfaces/Tab";
+import { HomeIC } from "./icons";
+
+const excludePaths = ["/", "/sign-in", "/sign-up", "/forgot-password"];
 
 const NinjaKeys = () => {
   const router = useRouter();
+  const pathname = usePathname();
   const ninjaKeys = useRef(null);
+
+  const context = useContext(NinjaKeysContext);
 
   const isDarkMode = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  const [hotkeys, setHotkeys] = useState([
+  const [hotkeys] = useState([
     {
       id: "Dashboard",
       title: "Open Dashboard",
       section: "Navigation",
+      icon: HomeIC,
       handler: () => {
         router.push("/dashboard");
       },
     },
     {
       id: "Open Your Tabs",
-      title: "Open Your Tabs",
+      title: "Open Links",
       section: "Navigation",
       handler: () => {
         router.push("/links");
@@ -53,21 +62,37 @@ const NinjaKeys = () => {
         router.push("/advance-categories");
       },
     },
-    {
-      id: "Your tab",
-      title: "Google",
-      section: "Your tab",
-      handler: () => {
-        router.push("https://google.com");
-      },
-    },
   ]);
+
+  const buildLinkListToHotKeys = (linkList?: ITab[] ) => {
+    if (!linkList) {
+      return [];
+    }
+
+    return linkList.map((link) => {
+      return {
+        id: link.title,
+        title: link.title,
+        section: "Your tab",
+        handler: () => {
+          router.push(link.url);
+        },
+      };
+    });
+  };
 
   useEffect(() => {
     if (ninjaKeys.current) {
-      ninjaKeys.current.data = hotkeys;
+      ninjaKeys.current.data = [
+        ...hotkeys,
+        ...buildLinkListToHotKeys(context?.linkList),
+      ];
     }
-  }, []);
+  }, [pathname, hotkeys, context?.linkList]);
+
+  if (excludePaths.includes(pathname)) {
+    return null;
+  }
 
   return (
     <>
