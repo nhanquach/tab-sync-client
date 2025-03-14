@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -22,31 +18,16 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src/",
     "paths": {
-      "@/*": [
-        "./src/*"
-      ],
-      "components": [
-        "./src/components/*"
-      ],
-      "hook": [
-        "./src/hooks/*"
-      ],
-      "styles": [
-        "./src/styles/*"
-      ],
-      "utils": [
-        "./src/utils/*"
-      ],
-      "interfaces": [
-        "./src/interfaces/*"
-      ],
-      "client": [
-        "./src/clients/index.ts"
-      ],
-      "services": [
-        "./src/services/*"
-      ]
+      "@/*": ["*"],
+      "components": ["components/*"],
+      "hook": ["hooks/*"],
+      "styles": ["styles/*"],
+      "utils": ["utils/*"],
+      "interfaces": ["interfaces/*"],
+      "client": ["clients/index.ts"],
+      "services": ["services/*"]
     }
   },
   "references": [
@@ -57,11 +38,6 @@
       "path": "./tsconfig.node.json"
     }
   ],
-  "include": [
-    "src",
-    ".next/types/**/*.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src/**/*.ts", "src/**/*.tsx", ".next/types/**/*.ts"],
+  "exclude": ["node_modules"]
 }
