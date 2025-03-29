@@ -91,10 +91,10 @@ const GradientMesh: React.FC<GradientMeshProps> = ({ className }) => {
         {Array.from({ length: 50 }).map((_, i) => (
           <div 
             key={`star-${i}`} 
-            className="absolute rounded-full bg-white animate-pulse-slow"
+            className="absolute rounded-full bg-white animate-ping"
             style={{ 
-              width: `${Math.random() * 2 + 1}px`, 
-              height: `${Math.random() * 2 + 1}px`,
+              width: `${Math.random() * 2 + 2}px`, 
+              height: `${Math.random() * 2 + 2}px`,
               top: `${Math.random() * 100}%`, 
               left: `${Math.random() * 100}%`,
               opacity: Math.random() * 0.8 + 0.2,
@@ -102,26 +102,6 @@ const GradientMesh: React.FC<GradientMeshProps> = ({ className }) => {
               animationDuration: `${Math.random() * 4 + 2}s`,
             }}
           />
-        ))}
-      </div>
-      
-      {/* Grid of dots with dynamic animation */}
-      <div className="absolute inset-0 grid grid-cols-12 md:grid-cols-24 grid-rows-12 md:grid-rows-24">
-        {Array.from({ length: 288 }).map((_, i) => (
-          <div 
-            key={i} 
-            className="dot relative flex items-center justify-center transition-all duration-300"
-          >
-            <div 
-              className="bg-white rounded-full opacity-40 animate-pulse-slow"
-              style={{ 
-                width: '1px',
-                height: '1px',
-                animationDelay: `${(i % 10) * 0.1}s`,
-                animationDuration: `${3 + (i % 4)}s` 
-              }}
-            ></div>
-          </div>
         ))}
       </div>
       

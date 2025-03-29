@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { motion } from "framer-motion";
 import { Brain, Calendar, Check, Grid3X3Icon, Loader2 } from "lucide-react";
@@ -29,7 +29,7 @@ const Categories = () => {
   const [tabList, setTabList] = useState<SimplifiedTab[]>([]);
   const [categoryList, setCategoryList] = useState<any[]>([]);
 
-  const getTabs = async () => {
+  const getTabs = useCallback(async () => {
     try {
       setStatus(STATUS.GET_TABS);
       const { data } = await getUniqueOpenTabs();
@@ -44,18 +44,18 @@ const Categories = () => {
     } catch (error) {
       console.error(error);
     }
-  };
+  }, []);
 
-  const getCategories = async () => {
+  const getCategories = useCallback(async () => {
     try {
       const tabList = await getTabs();
-      
+
       if (!tabList) {
         throw new Error("No tabs found");
       }
-      
+
       const data = await buildCategories(tabList!);
-      
+
       setCategoryList(data);
       saveItem("categories", JSON.stringify(data));
       saveItem("categoriesTime", Date.now().toString());
@@ -64,12 +64,11 @@ const Categories = () => {
     } finally {
       setStatus(STATUS.IDLE);
     }
-  };
+  }, [getTabs]);
 
   useEffect(() => {
     const categories = getItem<string>("categories");
     const time = getItem<string>("categoriesTime") || 0;
-    console.log("🚀 . time:", time, Date.now() - Number(time));
 
     try {
       const parsedCategories = categories ? JSON.parse(categories) : null;
@@ -87,7 +86,7 @@ const Categories = () => {
       console.error(error);
       getCategories();
     }
-  }, []);
+  }, [getCategories]);
 
   return (
     <div className="flex flex-col items-center justify-center mx-auto pb-6 overflow-auto w-full lg:max-w-6xl">

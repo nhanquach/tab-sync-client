@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, useEffect, useContext } from "react";
+import { useRef, useState, useEffect, useContext, useCallback } from "react";
 
 import { useRouter, usePathname } from "next/navigation";
 
@@ -69,7 +69,7 @@ const NinjaKeys = () => {
     },
   ]);
 
-  const buildLinkListToHotKeys = (linkList?: ITab[]) => {
+  const buildLinkListToHotKeys = useCallback((linkList?: ITab[]) => {
     if (!linkList) {
       return [];
     }
@@ -84,7 +84,7 @@ const NinjaKeys = () => {
         },
       };
     });
-  };
+  }, [router]);
 
   useEffect(() => {
     if (ninjaKeys.current) {
@@ -93,7 +93,7 @@ const NinjaKeys = () => {
         ...buildLinkListToHotKeys(context?.linkList),
       ];
     }
-  }, [pathname, hotkeys, context?.linkList]);
+  }, [pathname, hotkeys, context?.linkList, buildLinkListToHotKeys]);
 
   if (excludePaths.includes(pathname)) {
     return null;

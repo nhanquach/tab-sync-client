@@ -107,7 +107,7 @@ const HeroSection: React.FC = () => {
             ].map((card, index) => (
               <div
                 key={index}
-                className="bg-card/40 backdrop-blur-md p-6 rounded-xl border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 transform hover:-translate-y-1 group relative overflow-hidden"
+                className="bg-card/40 p-6 rounded-xl border border-white/10 hover:border-primary/30 transition-all duration-500 hover:shadow-xl hover:shadow-primary/5 transform hover:-translate-y-1 group relative overflow-hidden"
               >
                 {/* Background glow effect */}
                 <div

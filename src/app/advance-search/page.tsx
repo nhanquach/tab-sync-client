@@ -103,7 +103,7 @@ const AdvanceSearch = () => {
               <span className="text-primary text-md">with AI</span>
             </h1>
             <p className="text-muted-foreground max-w-xl mx-auto mb-8">
-              Search tabs based on what you're doing, not just what you've
+              Search tabs based on what you&apos;re doing, not just what you&apos;ve
               typed.
             </p>
           </motion.div>
@@ -141,8 +141,8 @@ const AdvanceSearch = () => {
               </form>
               <p className="text-base-content opacity-60 text-sm max-w-2xl m-auto">
                 Give it a shot! Search tabs by date, title bits, what you were
-                after, or even what's on the page. We'll do our best to find
-                that tab – no promises, but it's always an adventure!
+                after, or even what&apos;s on the page. We&apos;ll do our best to find
+                that tab – no promises, but it&apos;s always an adventure!
               </p>
             </div>
           </motion.div>

@@ -137,4 +137,5 @@ async function searchByAI({
   });
 }
 
-export default { categorizeByAI, geminiModels, searchByAI };
+const AI = { categorizeByAI, geminiModels, searchByAI };
+export default AI;

@@ -1,6 +1,7 @@
 "use client";
 
 import { useContext, useEffect, useOptimistic } from "react";
+import { motion } from "framer-motion";
 
 import LinkItem from "components/link-item/LinkItem";
 import NinjaKeysContext, {
@@ -18,7 +19,7 @@ const LinkList = (props: LinkListProps) => {
 
   useEffect(() => {
     context?.setLinkList(props.linkList);
-  }, []);
+  }, [props.linkList, context]);
 
   const [linkList, removeLink] = useOptimistic(
     props.linkList,
@@ -28,7 +29,14 @@ const LinkList = (props: LinkListProps) => {
   );
 
   return linkList.map((tab, index) => (
-    <LinkItem key={tab.id} tab={tab} index={index} removeLink={removeLink} />
+    <motion.div
+      key={tab.id}
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, delay: index * 0.05 }}
+    >
+      <LinkItem key={tab.id} tab={tab} index={index} removeLink={removeLink} />
+    </motion.div>
   ));
 };
 

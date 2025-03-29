@@ -25,13 +25,13 @@ const getUser = async (): Promise<{
 const signout = async () => {
   try {
     const supabase = await createClient();
-
     await supabase.auth.signOut();
 
     revalidatePath("/", "layout");
-    redirect("/sign-in");
   } catch (error) {
     console.error(error);
+  } finally {
+    redirect("/");
   }
 };
 
