@@ -58,7 +58,7 @@ const Appbar = () => {
     });
   }, []);
 
-  const handleSignout = async () => {
+  const handleSignOut = async () => {
     try {
       setLoading(true);
       await signout();
@@ -72,7 +72,7 @@ const Appbar = () => {
   const pathname = usePathname();
 
   return (
-    <div className="border-r bg-muted/40 block h-screen backdrop-blur-xl bg-base-400">
+    <div className="h-screen backdrop-blur-md md:bg-base-200 border-r border-primary md:border-none">
       <div className="flex h-full w-[240px] flex-col px-4 py-8">
         <h2 className="mb-6 px-2 text-lg font-semibold tracking-tight flex gap-2">
           <Logo className="bg-neutral" />
@@ -115,7 +115,7 @@ const Appbar = () => {
                 <Link href="/settings">Settings</Link>
               </li>
               <li>
-                <button onClick={handleSignout}>
+                <button onClick={handleSignOut}>
                   {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}{" "}
                   Sign out
                 </button>
