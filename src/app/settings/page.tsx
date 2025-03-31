@@ -24,7 +24,7 @@ const Settings = async () => {
         <ChangePasswordForm />
       </div>
       <div className="mt-16 p-4 flex flex-col gap-4 w-full text-left">
-        <DangerZone user={data.user} />
+        <DangerZone user={data.user as IUser} />
       </div>
     </div>
   );

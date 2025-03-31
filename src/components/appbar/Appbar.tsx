@@ -17,9 +17,9 @@ import { useState } from "react";
 import { IUser } from "../../interfaces/IUser";
 
 type AppbarProps = {
-  openFeebackDialog?: () => {};
+  openFeebackDialog?: () => void;
   user: IUser;
-  signOut: () => {};
+  signOut: () => void;
 };
 
 const navItems = [
@@ -58,7 +58,7 @@ const Appbar = ({ openFeebackDialog, user, signOut }: AppbarProps) => {
   const handleSignOut = async () => {
     try {
       setLoading(true);
-      await signout();
+      await signOut();
     } catch (error) {
       console.error(error);
     } finally {

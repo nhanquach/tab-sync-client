@@ -7,7 +7,7 @@ import FeedbackForm from "components/feedback-form/FeedbackForm";
 
 import NinjaKeys from "components/ninja-keys";
 Appbar;
-import { getUser, signOut } from "./actions.ts";
+import { getUser, signOut } from "./actions";
 import { IUser } from "interfaces/IUser";
 
 const AppLayout = ({ children }: { children: React.ReactNode }) => {
@@ -49,14 +49,17 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <Appbar
           openFeebackDialog={openFeedbackDialog}
           signOut={signOut}
-          user={user}
+          user={user as IUser}
         />
       </div>
       <dialog id="feedback-dialog" className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Send Feedback</h3>
           <p className="py-4">Share your thoughts to help us improve TabSync</p>
-          <FeedbackForm user={user} closeFeedbackDialog={closeFeedbackDialog} />
+          <FeedbackForm
+            user={user as IUser}
+            closeFeedbackDialog={closeFeedbackDialog}
+          />
         </div>
       </dialog>
     </div>
