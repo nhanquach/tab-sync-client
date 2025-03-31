@@ -12,11 +12,15 @@ import {
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { getUser, signout } from "./actions";
-
 import Logo from "../Logo";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { IUser } from "../../interfaces/IUser";
+
+type AppbarProps = {
+  openFeebackDialog?: () => {};
+  user: IUser;
+  signOut: () => {};
+};
 
 const navItems = [
   {
@@ -48,15 +52,8 @@ const navItems = [
   },
 ];
 
-const Appbar = () => {
+const Appbar = ({ openFeebackDialog, user, signOut }: AppbarProps) => {
   const [loading, setLoading] = useState(false);
-  const [user, setUser] = useState<IUser | null>(null);
-
-  useEffect(() => {
-    getUser().then(({ data }) => {
-      setUser(data.user as IUser);
-    });
-  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -109,7 +106,9 @@ const Appbar = () => {
               className="menu dropdown-content bg-base-200 rounded-box z-1 mt-4 w-52 p-2 shadow-sm"
             >
               <li>
-                <a className="text-blue-300">Give Feedback</a>
+                <button className="text-accent" onClick={openFeebackDialog}>
+                  Send Feedback
+                </button>
               </li>
               <li>
                 <Link href="/settings">Settings</Link>

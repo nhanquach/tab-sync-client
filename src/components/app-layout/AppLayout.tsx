@@ -1,9 +1,32 @@
+"use client";
+import { useState, useEffect } from "react";
 import { Menu } from "lucide-react";
 
 import Appbar from "components/appbar/Appbar";
-import NinjaKeys from "components/ninja-keys";
+import FeedbackForm from "components/feedback-form/FeedbackForm";
 
-const AppLayout = async ({ children }: { children: React.ReactNode }) => {
+import NinjaKeys from "components/ninja-keys";
+Appbar;
+import { getUser, signOut } from "./actions.ts";
+import { IUser } from "interfaces/IUser";
+
+const AppLayout = ({ children }: { children: React.ReactNode }) => {
+  const [user, setUser] = useState<IUser | null>(null);
+
+  useEffect(() => {
+    getUser().then(({ data }) => {
+      setUser(data.user as IUser);
+    });
+  }, []);
+
+  const openFeedbackDialog = () => {
+    (document.getElementById("feedback-dialog") as any).showModal();
+  };
+
+  const closeFeedbackDialog = () => {
+    (document.getElementById("feedback-dialog") as any).close();
+  };
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="drawer" type="checkbox" className="drawer-toggle" />
@@ -23,8 +46,19 @@ const AppLayout = async ({ children }: { children: React.ReactNode }) => {
           aria-label="close sidebar"
           className="drawer-overlay"
         ></label>
-        <Appbar />
+        <Appbar
+          openFeebackDialog={openFeedbackDialog}
+          signOut={signOut}
+          user={user}
+        />
       </div>
+      <dialog id="feedback-dialog" className="modal">
+        <div className="modal-box">
+          <h3 className="font-bold text-lg">Send Feedback</h3>
+          <p className="py-4">Share your thoughts to help us improve TabSync</p>
+          <FeedbackForm user={user} closeFeedbackDialog={closeFeedbackDialog} />
+        </div>
+      </dialog>
     </div>
   );
 };

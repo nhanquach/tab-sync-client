@@ -22,7 +22,7 @@ const getUser = async (): Promise<{
   return { data, error };
 };
 
-const signout = async () => {
+const signOut = async () => {
   try {
     const supabase = await createClient();
     await supabase.auth.signOut();
@@ -35,4 +35,4 @@ const signout = async () => {
   }
 };
 
-export { signout, getUser };
+export { signOut, getUser };

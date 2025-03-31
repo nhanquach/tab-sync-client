@@ -1,7 +1,11 @@
 import { SettingsIcon } from "lucide-react";
-import { getUser } from "./actions";
+
 import ProfileForm from "components/profile-form/ProfileForm";
 import ChangePasswordForm from "components/change-password-form/ChangePasswordForm";
+
+import { getUser } from "./actions";
+import DangerZone from "./DangerZone";
+
 import { IUser } from "../../interfaces/IUser";
 
 const Settings = async () => {
@@ -18,6 +22,9 @@ const Settings = async () => {
       <div className="flex flex-col md:flex-row w-full gap-2">
         <ProfileForm user={data.user as IUser} />
         <ChangePasswordForm />
+      </div>
+      <div className="mt-16 p-4 flex flex-col gap-4 w-full text-left">
+        <DangerZone user={data.user} />
       </div>
     </div>
   );

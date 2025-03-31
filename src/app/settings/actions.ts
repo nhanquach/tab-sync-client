@@ -12,4 +12,10 @@ const getUser = async () => {
   return { data, error };
 };
 
+const deleteAccount = async () => {
+  const supabase = await createClient();
+
+  // TODO: Add a new line to the Feedback table to delete the account with account id
+};
+
 export { getUser };
