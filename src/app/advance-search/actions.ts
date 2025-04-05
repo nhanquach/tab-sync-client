@@ -19,7 +19,7 @@ const getUser = async () => {
   return { data, error };
 };
 
-const getUniqueOpenTabs = cache(async (table = "unique_open_tabs") => {
+const getUniqueOpenTabs = cache(async (table = "unique_archived_tabs") => {
   const supabase = await createClient();
 
   const { data, error } = await supabase

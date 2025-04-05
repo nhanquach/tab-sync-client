@@ -11,7 +11,11 @@ export default function Loading() {
         <div className="loading loading-ring loading-xl"></div>
       </div>
 
-      <div className="flex-1"></div>
+      <div className="flex-1">
+        <div className="flex items-center mt-4">
+        <div className="loading loading-dots loading-xl mr-2"></div>Getting tabs...
+        </div>
+      </div>
     </div>
   );
 }

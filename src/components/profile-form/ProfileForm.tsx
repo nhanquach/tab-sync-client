@@ -28,7 +28,7 @@ const ProfileForm = ({ user }: TProps) => {
         message: "Profile updated successfully!",
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     } finally {
       setLoading(false);
     }

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import Logo from "components/Logo";
-import { createClient } from "../../utils/supabase/client";
+import { useEffect, useMemo, useState } from "react";
 import { TABLES } from "../../clients/constants";
 import { ITab } from "../../interfaces/Tab";
 import Link from "next/link";
@@ -11,7 +9,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { AllCommunityModule, ColDef, ModuleRegistry } from "ag-grid-community";
 import { AgGridReact, CustomCellRendererProps } from "ag-grid-react";
 import dayjs from "dayjs";
-import { Bookmark, LinkIcon, Loader2Icon } from "lucide-react";
+import { Bookmark, Loader2Icon } from "lucide-react";
 
 import { getTabsFromTable } from "./actions";
 import EmptyState from "components/EmptyState";
@@ -72,47 +70,55 @@ const Links = () => {
     getTabs(table);
   };
 
-  const [colDefs] = useState([
-    {
-      headerName: "Time",
-      field: "timeStamp",
-      valueFormatter: (p) => dayjs(p.value).format("DD MMM YYYY"),
-    },
-    {
-      field: "title",
-      cellRenderer: (params: CustomCellRendererProps) => (
-        <Link href={params.data.url} target="_blank">
-          {params.value}
-        </Link>
-      ),
-    },
-    {
-      field: "url",
-      width: 100,
-      cellRenderer: (params: CustomCellRendererProps) => (
-        <Link href={params.data.url} target="_blank">
-          {params.value}
-        </Link>
-      ),
-    },
-    { field: "deviceName" },
-    {
-      pinned: "right",
-      field: "actions",
-      headerName: "Actions",
-      align: "center",
-      headerClass: ["text-center", "w-full"],
-      cellRenderer: LinkActionCell,
-      cellRendererParams: {
-        setTabList,
-      },
-    },
-  ] as ColDef[]);
+  const colDefs = useMemo<ColDef[]>(
+    () =>
+      [
+        {
+          headerName: "Time",
+          field: "timeStamp",
+          valueFormatter: (p) => dayjs(p.value).format("DD MMM YYYY"),
+        },
+        {
+          field: "title",
+          cellRenderer: (params: CustomCellRendererProps) => (
+            <Link href={params.data.url} target="_blank">
+              {params.value}
+            </Link>
+          ),
+        },
+        {
+          field: "url",
+          width: 100,
+          maxWidth: 300,
+          cellRenderer: (params: CustomCellRendererProps) => (
+            <Link href={params.data.url} target="_blank">
+              {params.value}
+            </Link>
+          ),
+          tooltipValueGetter: (params: CustomCellRendererProps) => params.value,
+        },
+        { field: "deviceName", maxWidth: 300 },
+        {
+          pinned: "right",
+          field: "actions",
+          headerName: "Actions",
+          align: "center",
+          headerClass: ["text-center", "w-full"],
+          cellRenderer: LinkActionCell,
+          cellRendererParams: {
+            setTabList,
+            table: activeTab,
+          },
+        },
+      ] as ColDef[],
+    [activeTab, setTabList]
+  );
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchString(e.target.value);
+    const value = (e.target.value);
+    setSearchString(value);
 
-    if (!e.target.value) {
+    if (!value) {
       setTabList(originTabList);
       return;
     }
@@ -134,17 +140,8 @@ const Links = () => {
           <Bookmark className="w-8 h-8 text-primary" />
           Links
         </h1>
-        <input
-          type="text"
-          className="input input-bordered w-full max-w-md"
-          placeholder={`Search ${
-            activeTab === TABS.RECENT ? "recent tabs" : "archived tabs"
-          }...`}
-          value={searchString}
-          onChange={handleSearch}
-        />
       </div>
-      <div className="flex justify-start w-full py-2">
+      <div className="flex justify-between items-center w-full py-2">
         <div role="tablist" className="tabs tabs-box tabs-sm">
           <button
             role="tab"
@@ -167,6 +164,15 @@ const Links = () => {
             Archived
           </button>
         </div>
+        <input
+          type="text"
+          className="input input-bordered w-full max-w-md"
+          placeholder={`Search ${
+            activeTab === TABS.RECENT ? "recent tabs" : "archived tabs"
+          }...`}
+          value={searchString}
+          onChange={handleSearch}
+        />
       </div>
       {loading && (
         <div className="flex flex-col items-center justify-center flex-1 gap-4">

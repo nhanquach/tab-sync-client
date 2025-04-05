@@ -19,3 +19,18 @@ export const archiveTab = async (tab: ITab) => {
 
   revalidatePath("/links", "page");
 };
+
+export const deleteTab = async (tab: ITab, table: string) => {
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from(table)
+    .delete()
+    .eq("id", tab.id);
+  
+    if (error) {
+    console.error(error);
+    return error;
+  }
+  
+  revalidatePath("/links", "page");
+};

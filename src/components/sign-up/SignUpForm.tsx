@@ -28,7 +28,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = () => {
         message: "Thank you for signing up.",
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setMessage({ type: "error", message: (error as Error).message });
     } finally {
       setIsLoading(false);
