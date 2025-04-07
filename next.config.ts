@@ -1,18 +1,18 @@
-import type { NextConfig } from 'next'
+import type { NextConfig } from "next";
 
-const withPWA = require('next-pwa')({
-  dest: 'public'
-})
+const withPWA = require("next-pwa")({
+  dest: "public",
+});
 
 const config: NextConfig = withPWA({
   reactStrictMode: true,
   swcMinify: true,
   pwa: {
-    dest: 'public',
+    dest: "public",
     register: true,
     skipWaiting: true,
-    disable: process.env.NODE_ENV === 'development', // Disable PWA in development mode
+    disable: process.env.NODE_ENV === "development", // Disable PWA in development mode
   },
 });
 
-module.exports = config
+module.exports = config;
