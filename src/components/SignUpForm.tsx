@@ -7,6 +7,7 @@ import {
   Typography,
   TextField,
   Button,
+  CircularProgress,
 } from "@mui/material";
 
 import { ROUTES } from "../routes";
@@ -60,7 +61,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
           <TextField
             variant="outlined"
             fullWidth
-            type="text"
+            type="email"
             name="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
@@ -104,7 +105,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
             sx={{ my: 2, color: "white" }}
             disabled={isLoading}
           >
-            {isLoading ? "Loading..." : "Sign up"}
+            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Sign up"}
           </Button>
           <Button fullWidth onClick={() => setView(ROUTES.SIGN_IN)}>
             Already have an account? Sign in
