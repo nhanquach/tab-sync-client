@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-import { AlertColor, Box, Container, Grid2 } from "@mui/material";
+import { Box, Container, Grid2 } from "@mui/material";
+import type { AlertColor } from "@mui/material";
 
 import { ROUTES } from "../routes";
 import DownloadCard from "../components/CardDownload";
@@ -7,7 +8,6 @@ import AboutAccordion from "../components/AboutAccordion";
 import QRCode from "../components/QRCode";
 import SignInForm from "../components/SignInForm";
 import { AuthError } from "@supabase/supabase-js";
-import { isMobileApp } from "../utils/isMobile";
 
 interface ISignInProps {
   signIn: ({
@@ -36,7 +36,7 @@ const SignIn: React.FC<ISignInProps> = ({
   setView,
   onResetPassword,
 }) => {
-  const isMobile = isMobileApp();
+  const isMobile = window.location.pathname === "/mobileapp";
   const [isLoading, setIsLoading] = useState(false);
 
   const [message, setMessage] = useState<{ type: AlertColor; text: string }>({

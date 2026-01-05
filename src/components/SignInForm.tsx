@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
 import {
-  AlertColor,
   Card,
   CardContent,
   Typography,
@@ -10,6 +9,7 @@ import {
   Button,
   CircularProgress,
 } from "@mui/material";
+import type { AlertColor } from "@mui/material";
 
 import { ROUTES } from "../routes";
 
