@@ -39,7 +39,7 @@ const LogoWithTabSync: React.FC<{ fontSizeVariant?: FontSizeVariant, className?:
   className,
 }) => {
   return (
-    <div className={cn("flex gap-2 mb-2 items-center", sizeMap[fontSizeVariant], className)}>
+    <div className={cn("flex gap-2 mb-2 items-center text-foreground", sizeMap[fontSizeVariant], className)}>
       <Logo />
       <span>TabSync</span>
     </div>

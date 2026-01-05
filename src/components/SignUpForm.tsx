@@ -40,7 +40,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-         <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Create an account</h1>
          <p className="text-sm text-muted-foreground">
             <b>Hi, thank you for joining us.</b>
             <br />
@@ -50,7 +50,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
 
       <form onSubmit={handleSignUp} className="grid gap-4">
         <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
+            <Label htmlFor="email" className="text-foreground">Email</Label>
             <Input
               id="email"
               type="email"
@@ -59,10 +59,11 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
+              className="text-foreground bg-background"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-foreground">Password</Label>
             <Input
               id="password"
               type="password"
@@ -70,10 +71,11 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
+              className="text-foreground bg-background"
             />
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="repeatPassword">Confirm Password</Label>
+            <Label htmlFor="repeatPassword" className="text-foreground">Confirm Password</Label>
             <Input
               id="repeatPassword"
               type="password"
@@ -84,6 +86,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               }}
               required
               disabled={isLoading}
+              className="text-foreground bg-background"
             />
           </div>
 

@@ -54,15 +54,18 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
     <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10">
       <Card className={cn(
           "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl",
-          "backdrop-blur-xl bg-white/40 border border-white/40",
+           // Light mode: White glass
+           "backdrop-blur-xl bg-white/40 border border-white/40",
+           // Dark mode: Dark glass
+           "dark:bg-black/40 dark:border-white/10",
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20">
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20 dark:border-white/10">
             <div className="space-y-6">
                  <LogoWithTabSync />
                  <div className="space-y-2">
-                     <h2 className="text-2xl font-bold tracking-tight">Join TabSync today</h2>
+                     <h2 className="text-2xl font-bold tracking-tight text-foreground">Join TabSync today</h2>
                      <p className="text-muted-foreground">Sync your world, one tab at a time.</p>
                  </div>
             </div>
@@ -82,10 +85,10 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
         </div>
 
         {/* Right Panel: Form */}
-        <div className="p-8 md:p-12 flex flex-col justify-center bg-white/30 backdrop-blur-sm">
+        <div className="p-8 md:p-12 flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
              <div className="md:hidden flex flex-col items-center mb-6 space-y-2">
                  <LogoWithTabSync />
-                 <h2 className="text-xl font-bold text-center">TabSync</h2>
+                 <h2 className="text-xl font-bold text-center text-foreground">TabSync</h2>
             </div>
 
              <SignUpForm
@@ -95,7 +98,6 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
              />
         </div>
       </Card>
-      {/* AboutAccordion removed */}
     </div>
   );
 };

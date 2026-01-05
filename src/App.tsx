@@ -21,6 +21,16 @@ function AppContent() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  useEffect(() => {
+    if (prefersDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [prefersDarkMode]);
+
   useEffect(() => {
     getUser().then((userData) => {
       if (userData) {
@@ -78,8 +88,6 @@ function AppContent() {
   const onResetPassword = async ({ email }: { email: string }) => {
     return await resetPassword({ email });
   };
-
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const theme = React.useMemo(
     () =>

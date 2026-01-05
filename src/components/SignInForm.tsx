@@ -38,9 +38,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-        {/* Logo is handled in the parent layout for the unified look, or we can keep it here.
-            Let's keep it here for the "Right Pane" header. */}
-        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Sign in</h1>
         <p className="text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
@@ -48,7 +46,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
 
       <form onSubmit={handleSignIn} className="grid gap-4">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email" className="text-foreground">Email</Label>
           <Input
             id="email"
             type="email"
@@ -57,14 +55,15 @@ const SignInForm: React.FC<ISignInFormProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
+            className="text-foreground bg-background"
           />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password">Password</Label>
+            <Label htmlFor="password" className="text-foreground">Password</Label>
              <Button
                 variant="link"
-                className="px-0 font-normal h-auto text-xs"
+                className="px-0 font-normal h-auto text-xs text-primary"
                 type="button"
                 onClick={handleResetPassword}
                 disabled={isLoading}
@@ -79,6 +78,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
             onChange={(e) => setPassword(e.target.value)}
             required
             disabled={isLoading}
+            className="text-foreground bg-background"
           />
         </div>
 
