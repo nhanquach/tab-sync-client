@@ -51,9 +51,9 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10 animate-in fade-in duration-700">
       <Card className={cn(
-          "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl",
+          "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl transition-all duration-300",
            // Light mode: White glass
            "backdrop-blur-xl bg-white/40 border border-white/40",
            // Dark mode: Dark glass
@@ -62,7 +62,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
       )}>
         {/* Left Panel: Visuals & Download */}
         <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20 dark:border-white/10">
-            <div className="space-y-6">
+            <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100">
                  <LogoWithTabSync />
                  <div className="space-y-2">
                      <h2 className="text-2xl font-bold tracking-tight text-foreground">Join TabSync today</h2>
@@ -70,7 +70,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
                  </div>
             </div>
 
-            <div className="mt-8 flex flex-col items-center space-y-6">
+            <div className="mt-8 flex flex-col items-center space-y-6 animate-in slide-in-from-bottom-4 duration-700 delay-200">
                 {!isMobile && (
                     <>
                          <div className="transform scale-90 origin-bottom">
@@ -85,17 +85,20 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
         </div>
 
         {/* Right Panel: Form */}
-        <div className="p-8 md:p-12 flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
-             <div className="md:hidden flex flex-col items-center mb-6 space-y-2">
-                 <LogoWithTabSync />
-                 <h2 className="text-xl font-bold text-center text-foreground">TabSync</h2>
+        <div className="flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
+             {/* Mobile Header */}
+             <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2 rounded-t-xl">
+                 <LogoWithTabSync className="mb-0 scale-110" />
+                 <p className="text-sm font-medium text-muted-foreground">Join TabSync today</p>
             </div>
 
-             <SignUpForm
-                isLoading={isLoading}
-                message={message}
-                onSignUp={onSignUp}
-             />
+             <div className="p-8 md:p-12 pt-6 md:pt-12">
+                <SignUpForm
+                    isLoading={isLoading}
+                    message={message}
+                    onSignUp={onSignUp}
+                />
+             </div>
         </div>
       </Card>
     </div>
