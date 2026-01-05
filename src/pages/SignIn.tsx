@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Box, Container, Grid2 } from "@mui/material";
 import type { AlertColor } from "@mui/material";
+import { useLocation } from "react-router-dom";
 
-import { ROUTES } from "../routes";
 import DownloadCard from "../components/CardDownload";
 import AboutAccordion from "../components/AboutAccordion";
 import QRCode from "../components/QRCode";
@@ -28,15 +28,14 @@ interface ISignInProps {
         error: AuthError;
       }
   >;
-  setView: (view: ROUTES) => void;
 }
 
 const SignIn: React.FC<ISignInProps> = ({
   signIn,
-  setView,
   onResetPassword,
 }) => {
-  const isMobile = window.location.pathname === "/mobileapp";
+  const location = useLocation();
+  const isMobile = location.pathname === "/mobileapp";
   const [isLoading, setIsLoading] = useState(false);
 
   const [message, setMessage] = useState<{ type: AlertColor; text: string }>({
@@ -94,7 +93,6 @@ const SignIn: React.FC<ISignInProps> = ({
             message={message}
             isLoading={isLoading}
             onSignIn={onSignIn}
-            setView={setView}
             onResetPassword={resetPassword}
           />
         </Grid2>

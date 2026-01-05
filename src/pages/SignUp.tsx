@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Box, Container, Grid2 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "../routes";
 import AboutAccordion from "../components/AboutAccordion";
@@ -16,13 +17,13 @@ interface ISignUpProps {
     email: string;
     password: string;
   }) => Promise<{ data: any; error: string }>; // eslint-disable-line @typescript-eslint/no-explicit-any
-  setView: (view: ROUTES) => void;
 }
 
-const SignUp: React.FC<ISignUpProps> = ({ signUp, setView }) => {
+const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   const isMobile = isMobileApp();
   const [isLoading, setIsLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const navigate = useNavigate();
 
   const onSignUp = async ({
     email,
@@ -42,7 +43,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp, setView }) => {
     }
 
     if (!error && data) {
-      setView(ROUTES.HOME);
+      navigate(ROUTES.HOME);
     }
 
     setIsLoading(false);
@@ -61,7 +62,6 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp, setView }) => {
             isLoading={isLoading}
             message={message}
             onSignUp={onSignUp}
-            setView={setView}
           />
         </Grid2>
         {!isMobile && (

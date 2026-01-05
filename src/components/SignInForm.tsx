@@ -1,25 +1,28 @@
 import React, { useState } from "react";
+import type { AlertColor } from "@mui/material";
+import { Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
+import { ROUTES } from "../routes";
+import LogoWithTabSync from "./LogoWithTabSync";
+
+// Shadcn UI components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
-  Typography,
-  TextField,
-  Alert,
-  Button,
-  CircularProgress,
-} from "@mui/material";
-import type { AlertColor } from "@mui/material";
-
-import { ROUTES } from "../routes";
-
-import LogoWithTabSync from "./LogoWithTabSync";
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 interface ISignInFormProps {
   isLoading: boolean;
   message: { type: AlertColor; text: string };
   onSignIn: ({ email, password }: { email: string; password: string }) => void;
-  setView: (view: ROUTES) => void;
   onResetPassword: ({ email }: { email: string }) => void;
 }
 
@@ -27,7 +30,6 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   isLoading,
   message,
   onSignIn,
-  setView,
   onResetPassword,
 }) => {
   const [email, setEmail] = useState("");
@@ -43,58 +45,83 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   };
 
   return (
-    <Card
-      sx={{ backdropFilter: "blur(8px)", background: "none" }}
-      elevation={0}
-    >
-      <CardContent>
-        <LogoWithTabSync />
-        <form onSubmit={handleSignIn} action="none">
-          <Typography variant="h5">Sign in</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
-            type="email"
-            name="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            label="Email"
-            margin="normal"
-          />
+    <Card className="w-full max-w-md backdrop-blur-md bg-white/30 border-white/20 shadow-xl">
+      <CardHeader className="space-y-1">
+        <div className="flex justify-center mb-4">
+          <LogoWithTabSync />
+        </div>
+        <CardTitle className="text-2xl text-center">Sign in</CardTitle>
+        <CardDescription className="text-center">
+          Enter your email below to login to your account
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="grid gap-4">
+        <form onSubmit={handleSignIn} className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="m@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+            />
+          </div>
 
-          <TextField
-            variant="outlined"
-            fullWidth
-            label="Password"
-            type="password"
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            margin="normal"
-          />
-          <Button onClick={handleResetPassword} variant="text">
-            Forgot password?
-          </Button>
+          <div className="flex items-center justify-end">
+             <Button
+                variant="link"
+                className="px-0 font-normal"
+                type="button"
+                onClick={handleResetPassword}
+                disabled={isLoading}
+              >
+                Forgot password?
+              </Button>
+          </div>
 
           {!!message.text && (
-            <Alert severity={message.type}>{message.text}</Alert>
+            <div
+              className={`p-3 text-sm rounded-md ${
+                message.type === "error"
+                  ? "bg-destructive/15 text-destructive"
+                  : "bg-blue-100 text-blue-800"
+              }`}
+            >
+              {message.text}
+            </div>
           )}
-          <Button
-            variant={isLoading ? "outlined" : "contained"}
-            type="submit"
-            fullWidth
-            disabled={isLoading}
-            sx={{ my: 2, color: "white" }}
-          >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Sign in"}
-          </Button>
-          <Button fullWidth onClick={() => setView(ROUTES.SIGN_UP)}>
-            Create a new account
+
+          <Button className="w-full" type="submit" disabled={isLoading}>
+            {isLoading ? (
+              <CircularProgress size={20} color="inherit" />
+            ) : (
+              "Sign In"
+            )}
           </Button>
         </form>
       </CardContent>
+      <CardFooter>
+        <div className="w-full text-center text-sm">
+            Don't have an account?{" "}
+            <Link to={ROUTES.SIGN_UP} className="underline hover:text-primary">
+                Sign up
+            </Link>
+        </div>
+      </CardFooter>
     </Card>
   );
 };
