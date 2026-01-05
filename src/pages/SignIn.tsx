@@ -1,10 +1,8 @@
 import React, { useState } from "react";
-import { Box, Container } from "@mui/material";
-import type { AlertColor } from "@mui/material";
 import { useLocation } from "react-router-dom";
+import type { AlertColor } from "@mui/material";
 
 import DownloadCard from "../components/CardDownload";
-import AboutAccordion from "../components/AboutAccordion";
 import QRCode from "../components/QRCode";
 import SignInForm from "../components/SignInForm";
 import LogoWithTabSync from "../components/LogoWithTabSync";
@@ -84,7 +82,7 @@ const SignIn: React.FC<ISignInProps> = ({
   };
 
   return (
-    <Container maxWidth="lg" className="h-full flex flex-col justify-center items-center py-10">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10">
       <Card className={cn(
           "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl",
           "backdrop-blur-xl bg-white/40 border border-white/40",
@@ -93,9 +91,7 @@ const SignIn: React.FC<ISignInProps> = ({
         {/* Left Panel: Visuals & Download */}
         <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20">
             <div className="space-y-6">
-                 <div className="flex items-center space-x-2">
-                    <LogoWithTabSync />
-                 </div>
+                 <LogoWithTabSync />
                  <div className="space-y-2">
                      <h2 className="text-2xl font-bold tracking-tight">Sync your tabs across devices</h2>
                      <p className="text-muted-foreground">Seamlessly access your open tabs on any device, anywhere.</p>
@@ -108,11 +104,7 @@ const SignIn: React.FC<ISignInProps> = ({
                         <div className="transform scale-90 origin-bottom">
                             <QRCode width={180} height={180} text="Scan to get the mobile app" />
                         </div>
-                        {/* We use a div wrapper to style the DownloadCard content without its own card shadow conflicting */}
                         <div className="w-full max-w-xs opacity-90">
-                           {/* Reusing existing component but it has its own Card wrapper.
-                               Ideally we'd strip it too, but for now let's just let it sit.
-                               It has 'background: none' so it should blend. */}
                            <DownloadCard small />
                         </div>
                     </>
@@ -122,7 +114,7 @@ const SignIn: React.FC<ISignInProps> = ({
 
         {/* Right Panel: Form */}
         <div className="p-8 md:p-12 flex flex-col justify-center bg-white/30 backdrop-blur-sm">
-            {/* Mobile Header (since left panel is hidden) */}
+            {/* Mobile Header */}
             <div className="md:hidden flex flex-col items-center mb-6 space-y-2">
                  <LogoWithTabSync />
                  <h2 className="text-xl font-bold text-center">TabSync</h2>
@@ -136,11 +128,8 @@ const SignIn: React.FC<ISignInProps> = ({
             />
         </div>
       </Card>
-
-      <Box mt={4} width="100%" maxWidth="md">
-         <AboutAccordion />
-      </Box>
-    </Container>
+      {/* AboutAccordion removed as requested */}
+    </div>
   );
 };
 

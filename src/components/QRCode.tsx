@@ -1,5 +1,4 @@
 import * as React from "react";
-import { Box, Typography, useTheme } from "@mui/material";
 
 interface IQRCodeProps {
   width?: number;
@@ -12,26 +11,13 @@ const SVGComponent: React.FC<IQRCodeProps> = ({
   height = "264",
   text = "",
 }) => {
-  // QR Code needs to be black in order to be scannable on most devices.
-  const theme = useTheme();
-
   return (
-    <Box
-      mt={2}
-      sx={{ backdropFilter: "blur(8px)", borderRadius: 2 }}
-      display="flex"
-      flexDirection="column"
-      alignContent="center"
-    >
-      <Box
-        bgcolor={theme.palette.common.white}
-        borderRadius={6}
-        sx={{ opacity: 0.9}}
-      >
+    <div className="mt-2 backdrop-blur-sm rounded-lg flex flex-col content-center items-center">
+      <div className="bg-white/90 rounded-2xl p-2">
         <svg
           width={width}
           height={height}
-          fill={theme.palette.common.black}
+          fill="#000" // QR Code needs to be black
           viewBox="0 0 264 264"
           xmlns="http://www.w3.org/2000/svg"
           xmlnsXlink="http://www.w3.org/1999/xlink"
@@ -369,13 +355,13 @@ const SVGComponent: React.FC<IQRCodeProps> = ({
           <use xlinkHref="#a" x={224} y={224} />
           <g />
         </svg>
-      </Box>
+      </div>
       {text && (
-        <Typography textAlign="center" fontStyle="italic">
+        <span className="text-center italic mt-2 text-sm font-medium">
           {text}
-        </Typography>
+        </span>
       )}
-    </Box>
+    </div>
   );
 };
 export default SVGComponent;

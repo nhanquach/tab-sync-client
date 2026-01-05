@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "../routes";
-import AboutAccordion from "../components/AboutAccordion";
 import DownloadCard from "../components/CardDownload";
 import QRCode from "../components/QRCode";
 import SignUpForm from "../components/SignUpForm";
@@ -53,18 +51,16 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   };
 
   return (
-    <Container maxWidth="lg" className="h-full flex flex-col justify-center items-center py-10">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10">
       <Card className={cn(
           "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl",
           "backdrop-blur-xl bg-white/40 border border-white/40",
           "grid grid-cols-1 md:grid-cols-2"
       )}>
-        {/* Left Panel: Visuals & Download - Identical to SignIn for consistency */}
+        {/* Left Panel: Visuals & Download */}
         <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20">
             <div className="space-y-6">
-                 <div className="flex items-center space-x-2">
-                    <LogoWithTabSync />
-                 </div>
+                 <LogoWithTabSync />
                  <div className="space-y-2">
                      <h2 className="text-2xl font-bold tracking-tight">Join TabSync today</h2>
                      <p className="text-muted-foreground">Sync your world, one tab at a time.</p>
@@ -99,10 +95,8 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
              />
         </div>
       </Card>
-      <Box mt={4} width="100%" maxWidth="md">
-         <AboutAccordion />
-      </Box>
-    </Container>
+      {/* AboutAccordion removed */}
+    </div>
   );
 };
 

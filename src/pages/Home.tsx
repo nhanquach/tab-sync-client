@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Snackbar, Typography } from "@mui/material";
+import { Container, Snackbar, Typography } from "@mui/material";
 
 import {
   getOpenTabs,
@@ -33,6 +33,7 @@ import {
   ORDER,
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
+import { drawerWidth } from "../utils/dimensions";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -293,61 +294,72 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     <>
       <HomeAppBar user={user} />
       <HomeSidebar view={view} setView={setView} />
-      <Toolbar
-        isLoading={isLoading}
-        handleRefresh={handleRefresh}
-        searchString={searchString}
-        handleSearch={handleSearch}
-        browsers={browsers}
-        displayedBrowsers={displayedBrowsers}
-        setDisplayedBrowsers={setDisplayedBrowsers}
-        toggleLayout={toggleLayout}
-        layout={layout}
-        toggleOrderBy={toggleOrderBy}
-        orderBy={orderBy}
-        showThisWebsite={showThisWebsite}
-        setShowThisWebsite={setShowThisWebsite}
-      />
-      {isLoading && (
-        <Typography
-          my={12}
-          textAlign={{ xs: "center", md: "justify" }}
-          color="#696969"
-          variant="h5"
-        >
-          Getting your tabs ...
-        </Typography>
-      )}
-
-      {!isLoading && urls.length === 0 && (
-        <NoData isEmptySearch={!!searchString} />
-      )}
-
-      {!isLoading && urls.length > 0 && layout === "list" && (
-        <UrlList
-          view={view}
-          urls={urls}
-          onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+      <Container
+        sx={{
+          flexGrow: 1,
+          p: 3,
+          mt: 6,
+          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          pl: { md: `${drawerWidth}px` },
+        }}
+        component="main"
+      >
+        <Toolbar
+            isLoading={isLoading}
+            handleRefresh={handleRefresh}
+            searchString={searchString}
+            handleSearch={handleSearch}
+            browsers={browsers}
+            displayedBrowsers={displayedBrowsers}
+            setDisplayedBrowsers={setDisplayedBrowsers}
+            toggleLayout={toggleLayout}
+            layout={layout}
+            toggleOrderBy={toggleOrderBy}
+            orderBy={orderBy}
+            showThisWebsite={showThisWebsite}
+            setShowThisWebsite={setShowThisWebsite}
         />
-      )}
+        {isLoading && (
+            <Typography
+            my={12}
+            textAlign={{ xs: "center", md: "justify" }}
+            color="#696969"
+            variant="h5"
+            >
+            Getting your tabs ...
+            </Typography>
+        )}
 
-      {!isLoading && urls.length > 0 && layout === "grid" && (
-        <UrlGrid
-          view={view}
-          urls={urls}
-          onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+        {!isLoading && urls.length === 0 && (
+            <NoData isEmptySearch={!!searchString} />
+        )}
+
+        {!isLoading && urls.length > 0 && layout === "list" && (
+            <UrlList
+            view={view}
+            urls={urls}
+            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+            />
+        )}
+
+        {!isLoading && urls.length > 0 && layout === "grid" && (
+            <UrlGrid
+            view={view}
+            urls={urls}
+            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+            />
+        )}
+
+        <TipsFooter  />
+        <HomeBottomNavigationBar view={view} setView={setView} />
+        <Snackbar
+            open={toast.show}
+            autoHideDuration={1000}
+            onClose={closeToast}
+            message={toast.message || ""}
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
         />
-      )}
-
-      <TipsFooter  />
-      <HomeBottomNavigationBar view={view} setView={setView} />
-      <Snackbar
-        open={toast.show}
-        autoHideDuration={1000}
-        onClose={closeToast}
-        message={toast.message || ""}
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-      />
+      </Container>
     </>
   );
 };

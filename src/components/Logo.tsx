@@ -1,9 +1,6 @@
 import { SVGProps } from "react";
-import { useTheme } from "@mui/material";
 
 const Logo = (props: SVGProps<SVGSVGElement>) => {
-  const theme = useTheme();
-
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -11,7 +8,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => {
       height="1.5em"
       viewBox="0 0 132.813 120"
       style={{
-        backgroundColor: theme.palette.primary.main,
+        backgroundColor: "#8f94fb", // Using the primary color from App.tsx theme
         borderRadius: "20%",
       }}
       {...props}

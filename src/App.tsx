@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,7 +14,6 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
-import { drawerWidth } from "./utils/dimensions";
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -100,7 +99,6 @@ function AppContent() {
   );
 
   const showBackground = location.pathname !== ROUTES.HOME;
-  const isHome = location.pathname === ROUTES.HOME;
 
   if (loading) {
     return null; // Or a loading spinner
@@ -108,29 +106,16 @@ function AppContent() {
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
         <CssBaseline />
-        <div className="area">
+        <div className="area w-full">
           {showBackground && <LiveBackground fullHeight />}
-          <Container
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              mt: 6,
-              width: isHome
-                  ? { sm: `calc(100% - ${drawerWidth}px)` }
-                  : "100%",
-              pl: isHome ? { md: `${drawerWidth}px` } : {},
-            }}
-            component="main"
-          >
-            <Routes>
+          <Routes>
               <Route path={ROUTES.SIGN_IN} element={<SignIn signIn={onSignIn} onResetPassword={onResetPassword} />} />
               <Route path={ROUTES.SIGN_UP} element={<SignUp signUp={onSignUp} />} />
-              <Route path={ROUTES.HOME} element={user ? <Box pb={8}><Home user={user} /></Box> : <Navigate to={ROUTES.SIGN_IN} />} />
+              <Route path={ROUTES.HOME} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
               <Route path="*" element={<Navigate to={ROUTES.SIGN_IN} />} />
-            </Routes>
-          </Container>
+          </Routes>
         </div>
       </Box>
     </ThemeProvider>

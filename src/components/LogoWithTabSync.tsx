@@ -1,8 +1,6 @@
 import React from "react";
-
-import { Typography } from "@mui/material";
-
 import Logo from "./Logo";
+import { cn } from "@/lib/utils";
 
 export type FontSizeVariant =
   | "h1"
@@ -19,20 +17,32 @@ export type FontSizeVariant =
   | "button"
   | "overline";
 
-const LogoWithTabSync: React.FC<{ fontSizeVariant?: FontSizeVariant }> = ({
+// Mapping MUI variants to Tailwind classes roughly
+const sizeMap: Record<FontSizeVariant, string> = {
+  h1: "text-5xl font-light",
+  h2: "text-4xl font-light",
+  h3: "text-3xl font-normal",
+  h4: "text-2xl font-normal",
+  h5: "text-xl font-normal",
+  h6: "text-lg font-medium",
+  subtitle1: "text-base font-normal",
+  subtitle2: "text-sm font-medium",
+  body1: "text-base font-normal",
+  body2: "text-sm font-normal",
+  caption: "text-xs font-normal",
+  button: "text-sm font-medium uppercase",
+  overline: "text-xs font-normal uppercase",
+};
+
+const LogoWithTabSync: React.FC<{ fontSizeVariant?: FontSizeVariant, className?: string }> = ({
   fontSizeVariant = "h4",
+  className,
 }) => {
   return (
-    <Typography
-      variant={fontSizeVariant}
-      display="flex"
-      gap={2}
-      mb={2}
-      alignItems="center"
-    >
+    <div className={cn("flex gap-2 mb-2 items-center", sizeMap[fontSizeVariant], className)}>
       <Logo />
-      TabSync
-    </Typography>
+      <span>TabSync</span>
+    </div>
   );
 };
 
