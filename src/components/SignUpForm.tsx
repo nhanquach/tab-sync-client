@@ -3,20 +3,11 @@ import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 import { ROUTES } from "../routes";
-import LogoWithTabSync from "./LogoWithTabSync";
 
 // Shadcn UI components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 interface ISignUpFormProps {
   isLoading: boolean;
@@ -47,21 +38,18 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-md backdrop-blur-md bg-white/30 border-white/20 shadow-xl">
-      <CardHeader className="space-y-1">
-        <div className="flex justify-center mb-4">
-          <LogoWithTabSync />
-        </div>
-        <CardTitle className="text-2xl text-center">Sign up for a new account</CardTitle>
-        <CardDescription className="text-center">
-          <b>Hi, thank you for joining us.</b>
-          <br />
-          We only use your account in order to save your tabs.
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <form onSubmit={handleSignUp} className="grid gap-4">
-          <div className="grid gap-2">
+    <div className="w-full space-y-6">
+      <div className="flex flex-col space-y-2 text-center">
+         <h1 className="text-2xl font-semibold tracking-tight">Create an account</h1>
+         <p className="text-sm text-muted-foreground">
+            <b>Hi, thank you for joining us.</b>
+            <br />
+            We only use your account in order to save your tabs.
+         </p>
+      </div>
+
+      <form onSubmit={handleSignUp} className="grid gap-4">
+        <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
               id="email"
@@ -117,17 +105,15 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               "Sign Up"
             )}
           </Button>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <div className="w-full text-center text-sm">
+      </form>
+
+      <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to={ROUTES.SIGN_IN} className="underline hover:text-primary">
+            <Link to={ROUTES.SIGN_IN} className="underline hover:text-primary underline-offset-4">
                 Sign in
             </Link>
-        </div>
-      </CardFooter>
-    </Card>
+      </div>
+    </div>
   );
 };
 

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Box, Container, Grid2 } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
 import { ROUTES } from "../routes";
@@ -8,6 +8,9 @@ import DownloadCard from "../components/CardDownload";
 import QRCode from "../components/QRCode";
 import SignUpForm from "../components/SignUpForm";
 import { isMobileApp } from "../utils/isMobile";
+import { Card } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import LogoWithTabSync from "../components/LogoWithTabSync";
 
 interface ISignUpProps {
   signUp: ({
@@ -50,30 +53,55 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   };
 
   return (
-    <Container maxWidth="xl">
-      <Grid2
-        container
-        spacing={4}
-        justifyContent={{ xs: "center", md: "space-between" }}
-        alignItems="center"
-      >
-        <Grid2 size={{ md: 8, sm: 12 }}>
-          <SignUpForm
-            isLoading={isLoading}
-            message={message}
-            onSignUp={onSignUp}
-          />
-        </Grid2>
-        {!isMobile && (
-          <Grid2 size={{ md: 8, sm: 12 }} alignItems="center">
-            <Box display="flex" flexDirection={"column"} alignItems="center">
-              <DownloadCard />
-              <QRCode width={200} height={200} text="TabSync on your phone" />
-            </Box>
-          </Grid2>
-        )}
-      </Grid2>
-      <AboutAccordion />
+    <Container maxWidth="lg" className="h-full flex flex-col justify-center items-center py-10">
+      <Card className={cn(
+          "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl",
+          "backdrop-blur-xl bg-white/40 border border-white/40",
+          "grid grid-cols-1 md:grid-cols-2"
+      )}>
+        {/* Left Panel: Visuals & Download - Identical to SignIn for consistency */}
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20">
+            <div className="space-y-6">
+                 <div className="flex items-center space-x-2">
+                    <LogoWithTabSync />
+                 </div>
+                 <div className="space-y-2">
+                     <h2 className="text-2xl font-bold tracking-tight">Join TabSync today</h2>
+                     <p className="text-muted-foreground">Sync your world, one tab at a time.</p>
+                 </div>
+            </div>
+
+            <div className="mt-8 flex flex-col items-center space-y-6">
+                {!isMobile && (
+                    <>
+                         <div className="transform scale-90 origin-bottom">
+                            <QRCode width={180} height={180} text="Scan to get the mobile app" />
+                        </div>
+                        <div className="w-full max-w-xs opacity-90">
+                           <DownloadCard small />
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+
+        {/* Right Panel: Form */}
+        <div className="p-8 md:p-12 flex flex-col justify-center bg-white/30 backdrop-blur-sm">
+             <div className="md:hidden flex flex-col items-center mb-6 space-y-2">
+                 <LogoWithTabSync />
+                 <h2 className="text-xl font-bold text-center">TabSync</h2>
+            </div>
+
+             <SignUpForm
+                isLoading={isLoading}
+                message={message}
+                onSignUp={onSignUp}
+             />
+        </div>
+      </Card>
+      <Box mt={4} width="100%" maxWidth="md">
+         <AboutAccordion />
+      </Box>
     </Container>
   );
 };

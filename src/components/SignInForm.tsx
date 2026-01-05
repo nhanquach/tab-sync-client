@@ -4,20 +4,11 @@ import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
 
 import { ROUTES } from "../routes";
-import LogoWithTabSync from "./LogoWithTabSync";
 
 // Shadcn UI components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 interface ISignInFormProps {
   isLoading: boolean;
@@ -45,46 +36,35 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   };
 
   return (
-    <Card className="w-full max-w-md backdrop-blur-md bg-white/30 border-white/20 shadow-xl">
-      <CardHeader className="space-y-1">
-        <div className="flex justify-center mb-4">
-          <LogoWithTabSync />
-        </div>
-        <CardTitle className="text-2xl text-center">Sign in</CardTitle>
-        <CardDescription className="text-center">
+    <div className="w-full space-y-6">
+      <div className="flex flex-col space-y-2 text-center">
+        {/* Logo is handled in the parent layout for the unified look, or we can keep it here.
+            Let's keep it here for the "Right Pane" header. */}
+        <h1 className="text-2xl font-semibold tracking-tight">Sign in</h1>
+        <p className="text-sm text-muted-foreground">
           Enter your email below to login to your account
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="grid gap-4">
-        <form onSubmit={handleSignIn} className="grid gap-4">
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              disabled={isLoading}
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-            />
-          </div>
+        </p>
+      </div>
 
-          <div className="flex items-center justify-end">
+      <form onSubmit={handleSignIn} className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+            disabled={isLoading}
+          />
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password">Password</Label>
              <Button
                 variant="link"
-                className="px-0 font-normal"
+                className="px-0 font-normal h-auto text-xs"
                 type="button"
                 onClick={handleResetPassword}
                 disabled={isLoading}
@@ -92,37 +72,44 @@ const SignInForm: React.FC<ISignInFormProps> = ({
                 Forgot password?
               </Button>
           </div>
-
-          {!!message.text && (
-            <div
-              className={`p-3 text-sm rounded-md ${
-                message.type === "error"
-                  ? "bg-destructive/15 text-destructive"
-                  : "bg-blue-100 text-blue-800"
-              }`}
-            >
-              {message.text}
-            </div>
-          )}
-
-          <Button className="w-full" type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <CircularProgress size={20} color="inherit" />
-            ) : (
-              "Sign In"
-            )}
-          </Button>
-        </form>
-      </CardContent>
-      <CardFooter>
-        <div className="w-full text-center text-sm">
-            Don't have an account?{" "}
-            <Link to={ROUTES.SIGN_UP} className="underline hover:text-primary">
-                Sign up
-            </Link>
+          <Input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+            disabled={isLoading}
+          />
         </div>
-      </CardFooter>
-    </Card>
+
+        {!!message.text && (
+          <div
+            className={`p-3 text-sm rounded-md ${
+              message.type === "error"
+                ? "bg-destructive/15 text-destructive"
+                : "bg-blue-100 text-blue-800"
+            }`}
+          >
+            {message.text}
+          </div>
+        )}
+
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            "Sign In"
+          )}
+        </Button>
+      </form>
+
+      <div className="text-center text-sm text-muted-foreground">
+          Don't have an account?{" "}
+          <Link to={ROUTES.SIGN_UP} className="underline hover:text-primary underline-offset-4">
+              Sign up
+          </Link>
+      </div>
+    </div>
   );
 };
 
