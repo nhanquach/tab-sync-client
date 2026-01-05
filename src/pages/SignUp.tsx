@@ -15,7 +15,7 @@ interface ISignUpProps {
   }: {
     email: string;
     password: string;
-  }) => Promise<{ data: any; error: string }>;
+  }) => Promise<{ data: any; error: string }>; // eslint-disable-line @typescript-eslint/no-explicit-any
   setView: (view: ROUTES) => void;
 }
 

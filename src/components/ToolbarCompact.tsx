@@ -29,10 +29,12 @@ import { ORDER } from "../utils/constants";
 import { isMobileDevice } from "../utils/isMobile";
 
 interface IToolbarCompactProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   searchBoxRef: React.MutableRefObject<any>;
   handleRefresh: () => void;
   isLoading: boolean;
   searchString: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSearch: (e: any) => void;
   isSelectDeviceDropdownOpen: boolean;
   handleOpenSelectDevicesDropdown: (
@@ -47,6 +49,7 @@ interface IToolbarCompactProps {
   browsers: string[];
   toggleOrderBy: () => void;
   orderBy: ORDER;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectDeviceDropdownAnchorEl: any;
   handleCloseSelectDeviceDropdown: () => void;
 }

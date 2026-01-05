@@ -1,5 +1,5 @@
 import React from "react";
-// @ts-ignore
+// @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
 
 import {

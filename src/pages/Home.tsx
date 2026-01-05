@@ -35,6 +35,7 @@ import {
 import { Layout } from "../interfaces/Layout";
 
 interface IHomeProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
 }
 
@@ -237,13 +238,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             showToast("Tab is synced successfully!");
           });
         }
-      } catch (e) {
+      } catch {
         console.error("Is not valid url! Skipping...");
         showToast("Is not valid url! Skipping...");
       }
     }
   }, []);
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSearch = (e: any) => {
     setSearchString(e.target.value);
   };
