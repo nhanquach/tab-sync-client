@@ -3,6 +3,7 @@ import React from "react";
 import { LightbulbTwoTone } from "@mui/icons-material";
 import { Box, Typography, useMediaQuery, useTheme } from "@mui/material";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 interface ITtipsFooterProps {
   // isOpenTabsView: boolean;
 }

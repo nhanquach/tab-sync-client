@@ -2,14 +2,15 @@ import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { ITab } from "../interfaces/iTab";
 import * as supabaseClient from "./supabaseClient";
 
-var backend: typeof supabaseClient;
+let backend: typeof supabaseClient;
 
 const getClient = async () => {
   if (backend) {
     return backend;
   }
 
-  return supabaseClient;
+  backend = supabaseClient;
+  return backend;
 };
 
 export const signIn = async ({

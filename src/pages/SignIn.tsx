@@ -19,6 +19,7 @@ interface ISignInProps {
   }) => Promise<{ error: string }>;
   onResetPassword: ({ email }: { email: string }) => Promise<
     | {
+        // eslint-disable-next-line @typescript-eslint/no-empty-object-type
         data: {};
         error: null;
       }

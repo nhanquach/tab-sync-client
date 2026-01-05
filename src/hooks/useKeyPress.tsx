@@ -2,7 +2,9 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 
 interface IUseKeyPress {
   keys: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   callback: (event: { key: string }) => any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   node?: any;
   isCombinedWithCtrl?: boolean;
 }
@@ -37,10 +39,15 @@ export const useKeyPress = ({
     // target is either the provided node or the document
     const targetNode = node ?? document;
     // attach the event listener
-    targetNode && targetNode.addEventListener("keydown", handleKeyPress);
+    if (targetNode) {
+      targetNode.addEventListener("keydown", handleKeyPress);
+    }
 
     // remove the event listener
-    return () =>
-      targetNode && targetNode.removeEventListener("keydown", handleKeyPress);
+    return () => {
+      if (targetNode) {
+        targetNode.removeEventListener("keydown", handleKeyPress);
+      }
+    };
   }, [handleKeyPress, node]);
 };

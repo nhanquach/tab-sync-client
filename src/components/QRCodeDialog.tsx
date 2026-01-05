@@ -17,6 +17,7 @@ import CardShare from "./CardShare";
 
 import { isMobileApp } from "../utils/isMobile";
 
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type Props = {};
 
 const QRCodeDialog: React.FC<Props> = () => {

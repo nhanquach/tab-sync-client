@@ -11,6 +11,7 @@ interface IToolbarProps {
   handleRefresh(): void;
   isLoading: boolean;
   searchString: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSearch: (e: any) => void;
   browsers: string[];
   displayedBrowsers: string[];

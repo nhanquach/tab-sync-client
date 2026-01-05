@@ -33,6 +33,7 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
     setType(event.target.value as string);
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleDescriptionChange = (e: any) => {
     setDescription(e.target.value);
   };
