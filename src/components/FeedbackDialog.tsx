@@ -46,10 +46,10 @@ const FeedbackDialog = () => {
           "bg-white/80 dark:bg-black/80 backdrop-blur-md border border-white/20 shadow-xl",
           isMobile
             ? "h-screen w-screen max-w-none pt-10"
-            : "sm:max-w-4xl p-0 overflow-hidden"
+            : "sm:max-w-5xl p-0 overflow-hidden"
         )}
       >
-        <div className="flex flex-col md:flex-row h-full">
+        <div className="flex flex-col md:flex-row h-full md:min-h-[600px]">
           {/* Left Column (Hero) */}
           <div className="flex-1 p-6 md:p-10 bg-primary/5 dark:bg-primary/10 flex flex-col justify-center items-start space-y-6">
             <div className="flex items-center gap-2 text-primary">
