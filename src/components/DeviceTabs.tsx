@@ -12,14 +12,16 @@ interface IDeviceTabsProps {
 
 const DeviceTabs: React.FC<IDeviceTabsProps> = ({ browsers, selectedDevice, onSelect }) => {
   // Helper to guess icon based on name (optional polish)
-  const getIcon = (name: string) => {
+  const getIcon = (name: string, isActive: boolean) => {
+    const className = cn("mr-2 h-4 w-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground");
+
     const lower = name.toLowerCase();
-    if (lower === "all") return <AppsTwoTone className="mr-2 h-4 w-4" />;
+    if (lower === "all") return <AppsTwoTone className={className} />;
     if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
-      return <LaptopMacTwoTone className="mr-2 h-4 w-4" />;
+      return <LaptopMacTwoTone className={className} />;
     if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
-      return <PhoneIphoneTwoTone className="mr-2 h-4 w-4" />;
-    return <DevicesOtherTwoTone className="mr-2 h-4 w-4" />;
+      return <PhoneIphoneTwoTone className={className} />;
+    return <DevicesOtherTwoTone className={className} />;
   };
 
   const tabs = ["All", ...browsers];
@@ -27,32 +29,37 @@ const DeviceTabs: React.FC<IDeviceTabsProps> = ({ browsers, selectedDevice, onSe
   return (
     <div
       className={cn(
-        "sticky z-30 w-full py-2 mb-4",
-        "bg-background/60 backdrop-blur-xl border-b border-white/20 dark:border-white/10",
-        // Top value needs to account for the fixed header.
-        // headerHeight is a number (64), so we need to convert to px string or use style.
-        // Tailwind class `top-16` is 4rem = 64px, assuming headerHeight is 64.
-        "top-16"
+        "sticky z-30 w-full py-3 mb-6 -mx-6 px-6", // Use tailwind classes instead of hardcoded style
+        "backdrop-blur-xl bg-white/30 dark:bg-black/30",
+        "border-b border-white/20 dark:border-white/5",
+        "flex items-center"
       )}
-      style={{ top: headerHeight }}
+      style={{
+        top: headerHeight,
+        width: "calc(100% + 48px)", // Still need this because negative margin pulls it out, but width needs to grow.
+        // Tailwind 'w-[calc(100%+3rem)]' could work but inline is fine for calc.
+        // Actually, if we use -mx-6 (which is -1.5rem = -24px per side), total width needed is 100% + 48px.
+        // The container padding in Home.tsx is p={3} which is 24px.
+        // So this aligns perfectly.
+      }}
     >
-      <div className="flex items-center gap-2 overflow-x-auto no-scrollbar px-1 pb-1">
+      <div className="flex items-center gap-3 overflow-x-auto no-scrollbar w-full">
         {tabs.map((device) => {
           const isActive = selectedDevice === device;
           return (
             <Button
               key={device}
-              variant={isActive ? "default" : "ghost"}
+              variant="ghost" // Use ghost as base to avoid default solid styles
               size="sm"
               onClick={() => onSelect(device)}
               className={cn(
-                "rounded-full transition-all duration-300 whitespace-nowrap",
+                "rounded-full h-9 px-4 transition-all duration-300 whitespace-nowrap border",
                 isActive
-                  ? "shadow-md scale-105"
-                  : "hover:bg-accent/50 text-muted-foreground hover:text-foreground"
+                  ? "bg-white/80 dark:bg-black/60 border-white/40 dark:border-white/10 text-primary shadow-sm font-semibold scale-105"
+                  : "bg-transparent border-transparent text-muted-foreground hover:bg-white/20 hover:text-foreground hover:border-white/10"
               )}
             >
-              {getIcon(device === "All" ? "all" : device)}
+              {getIcon(device === "All" ? "all" : device, isActive)}
               {device}
             </Button>
           );

@@ -28,7 +28,6 @@ import DeviceTabs from "../components/DeviceTabs";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
-  LAST_SAVED_DISPLAYED_BROWSERS_KEY,
   LAST_SAVED_ORDER_BY_KEY,
   LAYOUT,
   LAYOUT_KEY,
@@ -197,21 +196,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       });
     });
   }, [archivedTabs]);
-
-  // Restore last selected device if possible (optional, but let's stick to simple first: default to All)
-  // Or we could use the LAST_SAVED_DISPLAYED_BROWSERS_KEY to infer?
-  // For now, let's keep it simple: reset to All on load.
-  useEffect(() => {
-    const lastSavedDisplayedBrowsers = getItem<string>(
-      LAST_SAVED_DISPLAYED_BROWSERS_KEY
-    )?.split(",");
-
-    if (lastSavedDisplayedBrowsers?.length === 1) {
-       // If only one was selected, maybe we can restore it?
-       // But user might have had multiple selected.
-       // Let's just default to 'All' to be safe and clean.
-    }
-  }, []);
 
   // Send tab if is shared
   useEffect(() => {
