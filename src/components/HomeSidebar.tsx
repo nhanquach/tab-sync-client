@@ -1,5 +1,6 @@
 import React from "react";
 import { CloudSyncTwoTone, ArchiveTwoTone } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -7,15 +8,15 @@ import QRCode from "./QRCode";
 import DownloadCard from "./CardDownload";
 import CardShare from "./CardShare";
 import { TABS_VIEWS } from "../interfaces/iView";
+import { ROUTES } from "../routes";
 
 interface IHomeSidebarProps {
   view: string;
-  setView: (view: TABS_VIEWS) => void;
 }
 
 const sidebarWidth = 240;
 
-const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, setView }) => {
+const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
   return (
     <aside
       className={cn(
@@ -27,27 +28,31 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, setView }) => {
       <div className="flex-1 overflow-y-auto pt-2 px-2 pb-4">
         <nav className="flex flex-col gap-2">
           <Button
+            asChild
             variant="ghost"
             className={cn(
               "w-full justify-start h-auto py-3 px-4",
               view === TABS_VIEWS.OPEN_TABS && "bg-accent text-accent-foreground"
             )}
-            onClick={() => setView(TABS_VIEWS.OPEN_TABS)}
           >
-            <CloudSyncTwoTone sx={{ fontSize: 30 }} className="mr-4" />
-            <span className="text-base font-normal">Open tabs</span>
+            <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`}>
+              <CloudSyncTwoTone sx={{ fontSize: 30 }} className="mr-4" />
+              <span className="text-base font-normal">Open tabs</span>
+            </Link>
           </Button>
 
           <Button
+            asChild
             variant="ghost"
             className={cn(
               "w-full justify-start h-auto py-3 px-4",
               view === TABS_VIEWS.ARCHIVED_TABS && "bg-accent text-accent-foreground"
             )}
-            onClick={() => setView(TABS_VIEWS.ARCHIVED_TABS)}
           >
-            <ArchiveTwoTone sx={{ fontSize: 30 }} className="mr-4" />
-            <span className="text-base font-normal">Archived tabs</span>
+            <Link to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`}>
+              <ArchiveTwoTone sx={{ fontSize: 30 }} className="mr-4" />
+              <span className="text-base font-normal">Archived tabs</span>
+            </Link>
           </Button>
         </nav>
 

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, Snackbar, Typography } from "@mui/material";
+import { useParams, useNavigate } from "react-router-dom";
 
 import {
   getOpenTabs,
@@ -34,6 +35,7 @@ import {
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
 import { drawerWidth } from "../utils/dimensions";
+import { ROUTES } from "../routes";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -61,9 +63,20 @@ const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
 };
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
+  const params = useParams();
+  const navigate = useNavigate();
+  // Don't default to OPEN_TABS here, let the effect handle it
+  const currentView = (params.view as TABS_VIEWS);
+
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const [view, setView] = useState<TABS_VIEWS>(TABS_VIEWS.OPEN_TABS);
+
+  // Validate view and redirect if missing or invalid
+  useEffect(() => {
+    if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
+        navigate(`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`, { replace: true });
+    }
+  }, [currentView, navigate]);
 
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
@@ -79,7 +92,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
 
-  const isOpenTabsView = useMemo(() => view === TABS_VIEWS.OPEN_TABS, [view]);
+  const isOpenTabsView = useMemo(() => currentView === TABS_VIEWS.OPEN_TABS, [currentView]);
 
   const browsers = useMemo(() => {
     const devices = Array.from(new Set(tabs.map((url) => url.deviceName)));
@@ -164,12 +177,15 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   // Get Open Tabs and Archived Tabs based on View
   useEffect(() => {
+    // Only fetch if view is valid
+    if (!currentView) return;
+
     if (
       (isOpenTabsView && tabs.length === 0) ||
       (!isOpenTabsView && archivedTabs.length === 0)
     )
       handleGetTabs();
-  }, [view, handleGetTabs, tabs.length, archivedTabs.length, isOpenTabsView]);
+  }, [currentView, handleGetTabs, tabs.length, archivedTabs.length, isOpenTabsView]);
 
   // On Open Tabs change
   useEffect(() => {
@@ -290,17 +306,28 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
+  // Adapter for BottomNav since we can't easily change it right now but want to keep it working
+  // It expects a setter, so we give it a function that navigates.
+  const setViewAdapter = (newView: TABS_VIEWS) => {
+      navigate(`${ROUTES.HOME}/${newView}`);
+  };
+
+  // If redirecting, don't render content yet (or render loading)
+  if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
+      return null;
+  }
+
   return (
     <>
       <HomeAppBar user={user} />
-      <HomeSidebar view={view} setView={setView} />
+      <HomeSidebar view={currentView} />
       <Container
         sx={{
           flexGrow: 1,
           p: 3,
           mt: 6,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
-          pl: { md: `${drawerWidth}px` },
+          ml: { md: `${drawerWidth}px` },
         }}
         component="main"
       >
@@ -334,24 +361,26 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             <NoData isEmptySearch={!!searchString} />
         )}
 
-        {!isLoading && urls.length > 0 && layout === "list" && (
-            <UrlList
-            view={view}
-            urls={urls}
-            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-            />
-        )}
+        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            {!isLoading && urls.length > 0 && layout === "list" && (
+                <UrlList
+                view={currentView}
+                urls={urls}
+                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                />
+            )}
 
-        {!isLoading && urls.length > 0 && layout === "grid" && (
-            <UrlGrid
-            view={view}
-            urls={urls}
-            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-            />
-        )}
+            {!isLoading && urls.length > 0 && layout === "grid" && (
+                <UrlGrid
+                view={currentView}
+                urls={urls}
+                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                />
+            )}
+        </div>
 
         <TipsFooter  />
-        <HomeBottomNavigationBar view={view} setView={setView} />
+        <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
         <Snackbar
             open={toast.show}
             autoHideDuration={1000}
