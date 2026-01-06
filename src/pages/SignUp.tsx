@@ -9,6 +9,9 @@ import { isMobileApp } from "../utils/isMobile";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import LogoWithTabSync from "../components/LogoWithTabSync";
+import InstallPwaDialog from "../components/InstallPwaDialog";
+import { Button } from "@/components/ui/button";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface ISignUpProps {
   signUp: ({
@@ -73,8 +76,13 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
             <div className="mt-8 flex flex-col items-center space-y-6 animate-in slide-in-from-bottom-4 duration-700 delay-200">
                 {!isMobile && (
                     <>
-                         <div className="transform scale-90 origin-bottom">
-                            <QRCode width={180} height={180} text="Scan to get the mobile app" />
+                         <div className="transform scale-90 origin-bottom flex flex-col items-center gap-2">
+                            <QRCode width={180} height={180} text="Scan to access on mobile" />
+                            <InstallPwaDialog>
+                                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-auto p-1 gap-1">
+                                    <InfoOutlined fontSize="inherit" /> How to install app?
+                                </Button>
+                            </InstallPwaDialog>
                         </div>
                         <div className="w-full max-w-xs opacity-90">
                            <DownloadCard small />
@@ -90,6 +98,11 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
              <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2 rounded-t-xl">
                  <LogoWithTabSync className="mb-0 scale-110" />
                  <p className="text-sm font-medium text-muted-foreground">Join TabSync today</p>
+                 <InstallPwaDialog>
+                    <Button variant="outline" size="sm" className="h-7 text-xs gap-1 rounded-full border-primary/20 bg-background/50">
+                         <InfoOutlined fontSize="inherit" /> Install App
+                    </Button>
+                </InstallPwaDialog>
             </div>
 
              <div className="p-8 md:p-12 pt-6 md:pt-12">
