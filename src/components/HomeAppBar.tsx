@@ -13,6 +13,8 @@ interface IHomeAppBarProps {
   user?: User;
 }
 
+export const headerHeight = 64; // Exporting for layout calculations
+
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
   const isMobile = isMobileApp();
 
@@ -20,14 +22,15 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
     <div className="flex flex-grow items-center">
       <header
         className={cn(
-          "fixed top-0 right-0 z-50 flex items-center border-b-0 backdrop-blur-sm bg-background/30",
+          "fixed top-0 left-0 z-50 flex items-center border-b bg-background", // Removed offset/width logic, added border-b, solid bg
           isMobile ? "pt-[25px]" : "pt-0",
-          "w-full md:w-[calc(100%-240px)]" // 240px is drawerWidth
+          "w-full h-16" // h-16 is 64px
         )}
       >
-        <div className="flex w-full items-center px-6 min-h-[64px]">
-          <div className="flex-grow -mb-[15px]">
-            <LogoWithTabSync fontSizeVariant="h5" />
+        <div className="flex w-full items-center px-6 h-full">
+          <div className="flex-grow flex items-center">
+            {/* Logo is now top-left, part of the full width header */}
+            <LogoWithTabSync fontSizeVariant="h5" className="mb-0" />
           </div>
           <div className="flex gap-1 items-center">
             <QRCodeDialog />
