@@ -106,7 +106,7 @@ function AppContent() {
     [prefersDarkMode]
   );
 
-  const showBackground = location.pathname !== ROUTES.HOME;
+  const showBackground = !location.pathname.startsWith(ROUTES.HOME);
 
   if (loading) {
     return null; // Or a loading spinner
@@ -121,7 +121,7 @@ function AppContent() {
           <Routes>
               <Route path={ROUTES.SIGN_IN} element={<SignIn signIn={onSignIn} onResetPassword={onResetPassword} />} />
               <Route path={ROUTES.SIGN_UP} element={<SignUp signUp={onSignUp} />} />
-              <Route path={ROUTES.HOME} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
+              <Route path={`${ROUTES.HOME}/:view?`} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
               <Route path="*" element={<Navigate to={ROUTES.SIGN_IN} />} />
           </Routes>
         </div>
