@@ -45,7 +45,7 @@ const DownloadCard: React.FC<IDownLoadCardProps> = ({ small }) => {
           fullWidth
         >
           <span style={{ textAlign: "center" }}>
-            {small ? "Firefox (WIP)" : "Firefox (comming soon...)"}
+            {small ? "Firefox (WIP)" : "Firefox (coming soon...)"}
           </span>
         </Button>
       </CardContent>

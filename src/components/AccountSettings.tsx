@@ -113,36 +113,15 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user }) => {
       >
         <MenuItem onClick={handleOpenChangePasswordDialog}>
           {!isLogingOut && <KeyTwoTone />}
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Change password
-          </Typography>
+          <Typography ml={2}>Change password</Typography>
         </MenuItem>
         <MenuItem onClick={handleLogOut}>
           <ExitToAppTwoTone />
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Sign out
-          </Typography>
+          <Typography ml={2}>Sign out</Typography>
         </MenuItem>
         <MenuItem onClick={() => setConfirmDeleteAccount(true)}>
           <DeleteForeverTwoTone />
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Delete account
-          </Typography>
+          <Typography ml={2}>Delete account</Typography>
         </MenuItem>
       </Menu>
 
