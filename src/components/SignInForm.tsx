@@ -1,25 +1,19 @@
 import React, { useState } from "react";
-
-import {
-  Card,
-  CardContent,
-  Typography,
-  TextField,
-  Alert,
-  Button,
-  CircularProgress,
-} from "@mui/material";
 import type { AlertColor } from "@mui/material";
+import { Link } from "react-router-dom";
+import { CircularProgress } from "@mui/material";
 
 import { ROUTES } from "../routes";
 
-import LogoWithTabSync from "./LogoWithTabSync";
+// Shadcn UI components
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 interface ISignInFormProps {
   isLoading: boolean;
   message: { type: AlertColor; text: string };
   onSignIn: ({ email, password }: { email: string; password: string }) => void;
-  setView: (view: ROUTES) => void;
   onResetPassword: ({ email }: { email: string }) => void;
 }
 
@@ -27,7 +21,6 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   isLoading,
   message,
   onSignIn,
-  setView,
   onResetPassword,
 }) => {
   const [email, setEmail] = useState("");
@@ -43,59 +36,80 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   };
 
   return (
-    <Card
-      sx={{ backdropFilter: "blur(8px)", background: "none" }}
-      elevation={0}
-    >
-      <CardContent>
-        <LogoWithTabSync />
-        <form onSubmit={handleSignIn} action="none">
-          <Typography variant="h5">Sign in</Typography>
-          <TextField
-            variant="outlined"
-            fullWidth
+    <div className="w-full space-y-6">
+      <div className="flex flex-col space-y-2 text-center">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Sign in</h1>
+        <p className="text-sm text-muted-foreground">
+          Enter your email below to login to your account
+        </p>
+      </div>
+
+      <form onSubmit={handleSignIn} className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email" className="text-foreground">Email</Label>
+          <Input
+            id="email"
             type="email"
-            name="email"
+            placeholder="Enter your email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            label="Email"
-            margin="normal"
+            disabled={isLoading}
+            className="text-foreground bg-background"
           />
-
-          <TextField
-            variant="outlined"
-            fullWidth
-            label="Password"
+        </div>
+        <div className="grid gap-2">
+          <div className="flex items-center justify-between">
+            <Label htmlFor="password" className="text-foreground">Password</Label>
+             <Button
+                variant="link"
+                className="px-0 font-normal h-auto text-xs text-primary"
+                type="button"
+                onClick={handleResetPassword}
+                disabled={isLoading}
+              >
+                Forgot password?
+              </Button>
+          </div>
+          <Input
+            id="password"
             type="password"
-            name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            margin="normal"
-          />
-          <Button onClick={handleResetPassword} variant="text">
-            Forgot password?
-          </Button>
-
-          {!!message.text && (
-            <Alert severity={message.type}>{message.text}</Alert>
-          )}
-          <Button
-            variant={isLoading ? "outlined" : "contained"}
-            type="submit"
-            fullWidth
             disabled={isLoading}
-            sx={{ my: 2, color: "white" }}
+            className="text-foreground bg-background"
+          />
+        </div>
+
+        {!!message.text && (
+          <div
+            className={`p-3 text-sm rounded-md ${
+              message.type === "error"
+                ? "bg-destructive/15 text-destructive"
+                : "bg-blue-100 text-blue-800"
+            }`}
           >
-            {isLoading ? <CircularProgress size={24} color="inherit" /> : "Sign in"}
-          </Button>
-          <Button fullWidth onClick={() => setView(ROUTES.SIGN_UP)}>
-            Create a new account
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+            {message.text}
+          </div>
+        )}
+
+        <Button className="w-full" type="submit" disabled={isLoading}>
+          {isLoading ? (
+            <CircularProgress size={20} color="inherit" />
+          ) : (
+            "Sign In"
+          )}
+        </Button>
+      </form>
+
+      <div className="text-center text-sm text-muted-foreground">
+          Don't have an account?{" "}
+          <Link to={ROUTES.SIGN_UP} className="underline hover:text-primary underline-offset-4">
+              Sign up
+          </Link>
+      </div>
+    </div>
   );
 };
 

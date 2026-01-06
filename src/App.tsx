@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Box, Container } from "@mui/material";
+import { Box } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 import { User } from "@supabase/supabase-js";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from "react-router-dom";
 
 import { getUser, signUp, signIn, resetPassword } from "./clients";
 
@@ -13,19 +14,32 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
-import { drawerWidth } from "./utils/dimensions";
 
-function App() {
-  const [view, setView] = useState<ROUTES>(ROUTES.SIGN_IN);
+function AppContent() {
+  const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [user, setUser] = useState<User>();
+  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
+
+  useEffect(() => {
+    if (prefersDarkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [prefersDarkMode]);
 
   useEffect(() => {
     getUser().then((userData) => {
       if (userData) {
-        setView(ROUTES.HOME);
         setUser(userData);
+        if (location.pathname === ROUTES.SIGN_IN || location.pathname === ROUTES.SIGN_UP) {
+            navigate(ROUTES.HOME);
+        }
       }
+      setLoading(false);
     });
   }, []);
 
@@ -64,7 +78,7 @@ function App() {
     }
 
     setUser(data.user);
-    setView(ROUTES.HOME);
+    navigate(ROUTES.HOME);
 
     return {
       error: "",
@@ -74,8 +88,6 @@ function App() {
   const onResetPassword = async ({ email }: { email: string }) => {
     return await resetPassword({ email });
   };
-
-  const prefersDarkMode = useMediaQuery("(prefers-color-scheme: dark)");
 
   const theme = React.useMemo(
     () =>
@@ -94,47 +106,36 @@ function App() {
     [prefersDarkMode]
   );
 
+  const showBackground = location.pathname !== ROUTES.HOME;
+
+  if (loading) {
+    return null; // Or a loading spinner
+  }
+
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", minHeight: "100vh" }}>
         <CssBaseline />
-        <div className="area">
-          {view !== ROUTES.HOME && <LiveBackground fullHeight />}
-          <Container
-            sx={{
-              flexGrow: 1,
-              p: 3,
-              mt: 6,
-              width:
-                view === ROUTES.HOME
-                  ? { sm: `calc(100% - ${drawerWidth}px)` }
-                  : "100%",
-              pl: view === ROUTES.HOME ? { md: `${drawerWidth}px` } : {},
-            }}
-            component="main"
-          >
-            {view === ROUTES.SIGN_IN && (
-              <SignIn
-                signIn={onSignIn}
-                setView={setView}
-                onResetPassword={onResetPassword}
-              />
-            )}
-
-            {view === ROUTES.SIGN_UP && (
-              <SignUp signUp={onSignUp} setView={setView} />
-            )}
-
-            {view === ROUTES.HOME && (
-              <Box pb={8}>
-                <Home user={user} />
-              </Box>
-            )}
-          </Container>
+        <div className="area w-full">
+          {showBackground && <LiveBackground fullHeight />}
+          <Routes>
+              <Route path={ROUTES.SIGN_IN} element={<SignIn signIn={onSignIn} onResetPassword={onResetPassword} />} />
+              <Route path={ROUTES.SIGN_UP} element={<SignUp signUp={onSignUp} />} />
+              <Route path={ROUTES.HOME} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
+              <Route path="*" element={<Navigate to={ROUTES.SIGN_IN} />} />
+          </Routes>
         </div>
       </Box>
     </ThemeProvider>
   );
+}
+
+function App() {
+    return (
+        <BrowserRouter>
+            <AppContent />
+        </BrowserRouter>
+    );
 }
 
 export default App;

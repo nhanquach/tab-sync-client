@@ -1,8 +1,9 @@
 import React, { memo } from "react";
 
-import { Button, Card, CardContent, Typography } from "@mui/material";
-
 import { EXTENSION_PAGE } from "../utils/constants";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 
 interface IDownLoadCardProps {
   small?: boolean;
@@ -11,42 +12,40 @@ interface IDownLoadCardProps {
 const DownloadCard: React.FC<IDownLoadCardProps> = ({ small }) => {
   return (
     <Card
-      sx={{
-        backdropFilter: "blur(8px)",
-        background: "none",
-        my: small ? 0 : 1,
-        mx: small ? -2 : 0,
-      }}
-      elevation={0}
-      variant={small ? undefined : "outlined"}
+      className={cn(
+        // Light: white/30, Dark: black/30 or zinc-900/50
+        "backdrop-blur-md bg-white/30 dark:bg-black/30 border-white/20 dark:border-white/10 shadow-none",
+        small ? "mx-0 my-0 border-0 bg-transparent dark:bg-transparent" : "my-1"
+      )}
     >
-      <CardContent>
-        <Typography variant="h5" display="flex" gap={2} mb={2}>
+      <CardContent className="p-4">
+        <h5 className={cn("flex gap-2 mb-4 font-normal text-foreground", small ? "text-lg" : "text-xl")}>
           {small ? "Get TabSync" : "Get TabSync for"}
-        </Typography>
+        </h5>
+
         <Button
-          size={small ? "small" : "medium"}
-          variant="outlined"
-          href={EXTENSION_PAGE}
-          target="_blank"
-          rel="noopener noreferrer"
-          sx={{ fontSize: small ? 12 : 14 }}
-          fullWidth
+          variant="outline"
+          className={cn(
+            "w-full bg-transparent border-primary text-primary hover:bg-primary/10",
+            "dark:border-primary dark:text-primary dark:hover:bg-primary/20", // Explicit dark mode styles just in case
+            small ? "text-xs h-8" : "text-sm h-10"
+          )}
+          asChild
         >
-          <span style={{ textAlign: "center" }}>
-            {small ? "Chromium / Chrome" : "Chromium based browsers"}
-          </span>
+          <a href={EXTENSION_PAGE} target="_blank" rel="noopener noreferrer">
+             {small ? "Chromium / Chrome" : "Chromium based browsers"}
+          </a>
         </Button>
+
         <Button
-          size={small ? "small" : "medium"}
-          variant="outlined"
+          variant="outline"
+          className={cn(
+              "w-full mt-2 bg-transparent border-muted-foreground text-muted-foreground cursor-not-allowed opacity-50",
+              small ? "text-xs h-8" : "text-sm h-10"
+          )}
           disabled
-          sx={{ mt: 2, fontSize: small ? 12 : 14 }}
-          fullWidth
         >
-          <span style={{ textAlign: "center" }}>
-            {small ? "Firefox (WIP)" : "Firefox (comming soon...)"}
-          </span>
+          {small ? "Firefox (WIP)" : "Firefox (comming soon...)"}
         </Button>
       </CardContent>
     </Card>
