@@ -14,7 +14,6 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { HandshakeOutlined } from "@mui/icons-material";
 
 interface IFeedbackProps {
   sendFeedback: (type: string, description: string) => void;
@@ -47,15 +46,6 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center gap-2">
-        <HandshakeOutlined className="text-primary text-4xl" />
-        <h4 className="text-2xl font-semibold tracking-tight">Hi there 🙌🏼</h4>
-      </div>
-      <div className="text-sm text-muted-foreground">
-        <p>Thank you for trying out! We'd love to hear from you.</p>
-        <p>All feedback are welcome!</p>
-      </div>
-
       {message && (
         <Alert>
           <AlertTitle>Success</AlertTitle>
@@ -100,18 +90,6 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
       >
         {isLoading ? "Sending..." : "Send"}
       </Button>
-
-      <div className="text-center text-secondary-foreground my-4">
-        <p>
-          Need more help?&nbsp;
-          <a
-            href="mailto:qtrongnhan+tabsync+support@gmail.com?subject=[TabSync]"
-            className="text-primary hover:underline"
-          >
-            Contact us via email
-          </a>
-        </p>
-      </div>
     </div>
   );
 };
