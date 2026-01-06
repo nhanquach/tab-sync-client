@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import {
-  Alert,
-  Box,
-  Button,
-  CircularProgress,
-  DialogActions,
-  DialogContent,
-  FormControl,
-  TextField,
-  Typography,
-} from "@mui/material";
 import { changePassword } from "../clients";
 import { isMobileApp } from "../utils/isMobile";
+import {
+  Alert,
+  AlertDescription,
+} from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface IChangePasswordFormProps {
   handleCloseChangePasswordDialog: () => void;
@@ -68,79 +65,74 @@ const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
   };
 
   return (
-    <>
-      <DialogContent
-        sx={{
-          backdropFilter: "blur(8px)",
-          backgroundColor: "transparent",
-          mt: isMobile ? 4 : 2
-        }}
-      >
-        <Typography variant="h5">Change your password</Typography>
-        <Box display="flex" alignItems="center">
-          <FormControl fullWidth sx={{ mt: 2 }}>
-            <TextField
-              sx={{ mt: 1 }}
-              id="new-password"
-              type="password"
-              label="New password"
-              autoComplete="new-password"
-              value={newPassword}
-              onChange={handleNewPasswordChange}
-            />
-            <TextField
-              sx={{ mt: 3 }}
-              id="repeated-new-password"
-              type="password"
-              label="Repeat the new password"
-              autoComplete="new-password"
-              value={repeatedNewPassword}
-              onChange={handleRepeatedNewPasswordChange}
-            />
-            {error && (
-              <Alert severity="error" sx={{ my: 2 }}>
-                <Typography>{error}</Typography>
-              </Alert>
-            )}
+    <div className={cn("flex flex-col gap-4", isMobile ? "mt-4" : "mt-2")}>
+      {!isMobile && <h5 className="text-xl font-medium">Change your password</h5>}
 
-            {message && (
-              <Alert sx={{ my: 2 }}>
-                <Typography>{message}</Typography>
-              </Alert>
-            )}
-          </FormControl>
-        </Box>
+      <div className="grid w-full items-center gap-4">
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="new-password">New password</Label>
+          <Input
+            id="new-password"
+            type="password"
+            autoComplete="new-password"
+            value={newPassword}
+            onChange={handleNewPasswordChange}
+          />
+        </div>
+        <div className="flex flex-col space-y-1.5">
+          <Label htmlFor="repeated-new-password">Repeat the new password</Label>
+          <Input
+            id="repeated-new-password"
+            type="password"
+            autoComplete="new-password"
+            value={repeatedNewPassword}
+            onChange={handleRepeatedNewPasswordChange}
+          />
+        </div>
 
-        {isMobile && (
-          <Box display="flex" flexDirection="column" sx={{ mt: 2, gap: 2 }}>
-            <Button
-              fullWidth
-              variant="contained"
-              onClick={handleChangePassword}
-              disabled={isLoading}
-            >
-              {isLoading ? <CircularProgress size={20} /> : "Change password"}
-            </Button>
-            <Button fullWidth onClick={handleCloseChangePasswordDialog}>
-              Close
-            </Button>
-          </Box>
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
         )}
-      </DialogContent>
-      {!isMobile && (
-        <DialogActions>
-          <Button onClick={handleCloseChangePasswordDialog}>Close</Button>
 
-          <Button
-            variant="contained"
-            onClick={handleChangePassword}
-            disabled={isLoading}
-          >
-            {isLoading ? <CircularProgress size={20} /> : "Change password"}
-          </Button>
-        </DialogActions>
-      )}
-    </>
+        {message && (
+          <Alert>
+             <AlertDescription>{message}</AlertDescription>
+          </Alert>
+        )}
+      </div>
+
+      <div className={cn("flex flex-col gap-2 mt-2", !isMobile && "flex-row justify-end")}>
+         {isMobile && (
+             <>
+                <Button
+                    className="w-full"
+                    onClick={handleChangePassword}
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Changing..." : "Change password"}
+                </Button>
+                <Button variant="outline" className="w-full" onClick={handleCloseChangePasswordDialog}>
+                    Close
+                </Button>
+             </>
+         )}
+         {!isMobile && (
+             <>
+                <Button variant="ghost" onClick={handleCloseChangePasswordDialog}>
+                    Close
+                </Button>
+                <Button
+                    onClick={handleChangePassword}
+                    disabled={isLoading}
+                >
+                    {isLoading ? "Changing..." : "Change password"}
+                </Button>
+             </>
+         )}
+      </div>
+    </div>
   );
 };
 

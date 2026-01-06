@@ -1,19 +1,19 @@
 import React from "react";
 import {
   Alert,
-  Box,
-  Button,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Link,
-  MenuItem,
+  AlertTitle,
+  AlertDescription,
+} from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
+import {
   Select,
-  SelectChangeEvent,
-  TextareaAutosize,
-  Typography,
-  useTheme,
-} from "@mui/material";
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
 import { HandshakeOutlined } from "@mui/icons-material";
 
 interface IFeedbackProps {
@@ -21,22 +21,11 @@ interface IFeedbackProps {
 }
 
 const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
-  const theme = useTheme();
-
   const [type, setType] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [isLoading, setIsLoading] = React.useState(false);
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setType(event.target.value as string);
-  };
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleDescriptionChange = (e: any) => {
-    setDescription(e.target.value);
-  };
 
   const handleSendFeedback = async () => {
     setIsLoading(true);
@@ -57,76 +46,73 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
   };
 
   return (
-    <>
-      <Box display="flex" alignItems="center">
-        <HandshakeOutlined
-          sx={{ color: theme.palette.primary.main, mr: 1, fontSize: 30 }}
-        />
-        <Typography variant="h4">Hi there 🙌🏼</Typography>
-      </Box>
-      <Typography>
-        Thank you for trying out! We'd love to hear from you.
-      </Typography>
-      <Typography>All feedback are welcome!</Typography>
+    <div className="space-y-4">
+      <div className="flex items-center gap-2">
+        <HandshakeOutlined className="text-primary text-4xl" />
+        <h4 className="text-2xl font-semibold tracking-tight">Hi there 🙌🏼</h4>
+      </div>
+      <div className="text-sm text-muted-foreground">
+        <p>Thank you for trying out! We'd love to hear from you.</p>
+        <p>All feedback are welcome!</p>
+      </div>
+
       {message && (
         <Alert>
-          <Typography>{message}</Typography>
+          <AlertTitle>Success</AlertTitle>
+          <AlertDescription>{message}</AlertDescription>
         </Alert>
       )}
       {error && (
-        <Alert severity="warning">
-          <Typography>Oops, are you forgetting something? 👇🏼</Typography>
+        <Alert variant="destructive">
+          <AlertTitle>Warning</AlertTitle>
+          <AlertDescription>Oops, are you forgetting something? 👇🏼</AlertDescription>
         </Alert>
       )}
-      <FormControl fullWidth sx={{ mt: 2 }}>
-        <InputLabel id="feedback-type-select">Lemme tell you about</InputLabel>
-        <Select
-          labelId="feedback-type-select"
-          id="type-of-feedback-select"
-          value={type}
-          label="Lemme tell you about"
-          onChange={handleChange}
-          required
-        >
-          <MenuItem value="bug">a bug</MenuItem>
-          <MenuItem value="suggestion">a feature suggestion</MenuItem>
-          <MenuItem value="other">something else</MenuItem>
-        </Select>
 
-        <TextareaAutosize
-          style={{
-            marginTop: 10,
-            fontFamily: "inherit",
-            fontSize: 14,
-            font: "Roboto",
-            padding: 8,
-          }}
+      <div className="grid w-full items-center gap-1.5">
+        <Label htmlFor="feedback-type">Lemme tell you about</Label>
+        <Select value={type} onValueChange={setType}>
+          <SelectTrigger id="feedback-type">
+            <SelectValue placeholder="Select type" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="bug">a bug</SelectItem>
+            <SelectItem value="suggestion">a feature suggestion</SelectItem>
+            <SelectItem value="other">something else</SelectItem>
+          </SelectContent>
+        </Select>
+      </div>
+
+      <div className="grid w-full gap-1.5">
+        <Textarea
           placeholder=" More detail"
           value={description}
-          onChange={handleDescriptionChange}
-          minRows={10}
+          onChange={(e) => setDescription(e.target.value)}
+          className="min-h-[150px] font-sans text-sm"
           required
         />
+      </div>
 
-        <Button
-          variant="contained"
-          sx={{ marginTop: "10px" }}
-          fullWidth
-          onClick={handleSendFeedback}
-          disabled={isLoading}
-        >
-          {isLoading ? <CircularProgress size={20} /> : "Send"}
-        </Button>
-      </FormControl>
-      <Box color={theme.palette.secondary.main} my={2}>
-        <Typography textAlign="center">
+      <Button
+        className="w-full mt-2"
+        onClick={handleSendFeedback}
+        disabled={isLoading}
+      >
+        {isLoading ? "Sending..." : "Send"}
+      </Button>
+
+      <div className="text-center text-secondary-foreground my-4">
+        <p>
           Need more help?&nbsp;
-          <Link href="mailto:qtrongnhan+tabsync+support@gmail.com?subject=[TabSync]">
+          <a
+            href="mailto:qtrongnhan+tabsync+support@gmail.com?subject=[TabSync]"
+            className="text-primary hover:underline"
+          >
             Contact us via email
-          </Link>
-        </Typography>
-      </Box>
-    </>
+          </a>
+        </p>
+      </div>
+    </div>
   );
 };
 

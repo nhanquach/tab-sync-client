@@ -7,53 +7,39 @@ import {
   CloseTwoTone,
   DeleteForeverTwoTone,
 } from "@mui/icons-material";
-import {
-  Tooltip,
-  IconButton,
-  Avatar,
-  CircularProgress,
-  Menu,
-  MenuItem,
-  Typography,
-  useTheme,
-  Dialog,
-  DialogTitle,
-  useMediaQuery,
-} from "@mui/material";
 
-import ChangePasswordForm from "./ChangePasswordForm";
-import TransitionComponent from "./TransitionComponent";
-import { isMobileApp } from "../utils/isMobile";
 import { signOut } from "../clients/supabaseClient";
 import { AccountDeleteConfirmDialog } from "./AccountDeleteConfirmDialog";
+import { isMobileApp } from "../utils/isMobile";
+import ChangePasswordForm from "./ChangePasswordForm";
+
+// Shadcn imports
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface IAccountSettingsProps {
   user?: User;
 }
 
 const AccountSettings: React.FC<IAccountSettingsProps> = ({ user }) => {
-  const theme = useTheme();
   const isMobile = isMobileApp();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
 
   const [open, setOpen] = React.useState(
     window.location.pathname === "/forgot-password"
   );
   const [isLogingOut, setIsLogingOut] = useState(false);
-  const [accountSettingsAchorEl, setAccountSettingsAnchorEl] =
-    useState<null | HTMLElement>(null);
   const [confirmDeleteAccount, setConfirmDeleteAccount] = useState(false);
 
-  const openProfile = Boolean(accountSettingsAchorEl);
-  const handleOpenAccountSettings = (event: React.MouseEvent<HTMLElement>) => {
-    setAccountSettingsAnchorEl(event.currentTarget);
-  };
-  const handleCloseAccountSettings = () => {
-    setAccountSettingsAnchorEl(null);
-  };
-
   const firstChar = useMemo(() => {
-    return user?.email?.charAt(0);
+    return user?.email?.charAt(0).toUpperCase();
   }, [user]);
 
   const handleOpenChangePasswordDialog = () => {
@@ -86,99 +72,61 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user }) => {
 
   return (
     <>
-      <Tooltip title="Account settings">
-        <IconButton onClick={handleOpenAccountSettings}>
-          <Avatar
-            variant={openProfile ? "square" : "circular"}
-            sx={{
-              bgcolor: theme.palette.primary.main,
-            }}
-          >
-            {isLogingOut ? (
-              <CircularProgress sx={{ color: "white" }} size={20} />
-            ) : (
-              firstChar
-            )}
-          </Avatar>
-        </IconButton>
-      </Tooltip>
+      <TooltipProvider>
+        <Tooltip>
+          <DropdownMenu>
+            <TooltipTrigger asChild>
+              <DropdownMenuTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full">
+                  <Avatar className="h-10 w-10">
+                    <AvatarFallback className="bg-primary text-primary-foreground">
+                      {isLogingOut ? (
+                        <span className="animate-spin">C</span> // Placeholder for loading
+                      ) : (
+                        firstChar
+                      )}
+                    </AvatarFallback>
+                  </Avatar>
+                </Button>
+              </DropdownMenuTrigger>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Account settings</p>
+            </TooltipContent>
 
-      <Menu
-        anchorEl={accountSettingsAchorEl}
-        id="account-menu"
-        open={openProfile}
-        onClick={handleCloseAccountSettings}
-        transformOrigin={{ horizontal: "right", vertical: "top" }}
-        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-      >
-        <MenuItem onClick={handleOpenChangePasswordDialog}>
-          {!isLogingOut && <KeyTwoTone />}
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Change password
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={handleLogOut}>
-          <ExitToAppTwoTone />
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Sign out
-          </Typography>
-        </MenuItem>
-        <MenuItem onClick={() => setConfirmDeleteAccount(true)}>
-          <DeleteForeverTwoTone />
-          <Typography
-            ml={2}
-            sx={{
-              display: { xs: "none", md: "inline" },
-            }}
-          >
-            Delete account
-          </Typography>
-        </MenuItem>
-      </Menu>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem onClick={handleOpenChangePasswordDialog}>
+                <KeyTwoTone className="mr-2 h-4 w-4" />
+                <span>Change password</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogOut}>
+                <ExitToAppTwoTone className="mr-2 h-4 w-4" />
+                <span>Sign out</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem onClick={() => setConfirmDeleteAccount(true)}>
+                <DeleteForeverTwoTone className="mr-2 h-4 w-4" />
+                <span>Delete account</span>
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </Tooltip>
+      </TooltipProvider>
 
-      <Dialog
-        fullScreen={fullScreen}
-        fullWidth
-        open={open}
-        onClose={handleCloseChangePasswordDialog}
-        TransitionComponent={TransitionComponent}
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            paddingTop: isMobile ? "40px" : "1",
-          }}
-        >
-          <KeyTwoTone sx={{ color: theme.palette.primary.main, mr: 1 }} />
-          Change password
-        </DialogTitle>
-        <IconButton
-          aria-label="close"
-          onClick={handleCloseChangePasswordDialog}
-          sx={{
-            position: "absolute",
-            right: 8,
-            top: isMobile ? "35px" : "8px",
-            color: (theme) => theme.palette.grey[500],
-          }}
-        >
-          <CloseTwoTone />
-        </IconButton>
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className={isMobile ? "h-screen w-screen max-w-none pt-10" : "sm:max-w-[425px]"}>
+          <DialogHeader className="flex flex-row items-center gap-2">
+            <KeyTwoTone className="text-primary" />
+            <DialogTitle>Change password</DialogTitle>
+          </DialogHeader>
+          <DialogClose onClick={handleCloseChangePasswordDialog} className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+              <CloseTwoTone className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+          </DialogClose>
 
-        <ChangePasswordForm
-          handleCloseChangePasswordDialog={handleCloseChangePasswordDialog}
-        />
+          <ChangePasswordForm
+            handleCloseChangePasswordDialog={handleCloseChangePasswordDialog}
+          />
+        </DialogContent>
       </Dialog>
 
       <AccountDeleteConfirmDialog

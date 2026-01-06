@@ -20,7 +20,7 @@ import UrlGrid from "../components/UrlGrid";
 import { sortByTitle } from "../utils/sortByTitle";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
-import HomeAppBar from "../components/HomeAppBar";
+import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
 import NoData from "../components/NoData";
 import TipsFooter from "../components/TipsFooter";
 import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
@@ -325,8 +325,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         sx={{
           flexGrow: 1,
           p: 3,
-          mt: 6,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
+          mt: 0, // Reset default margin
+          paddingTop: `${headerHeight + 24}px`, // headerHeight + some padding
+          width: { md: `calc(100% - ${drawerWidth}px)` },
           ml: { md: `${drawerWidth}px` },
         }}
         component="main"

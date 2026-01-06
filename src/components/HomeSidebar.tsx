@@ -9,6 +9,7 @@ import DownloadCard from "./CardDownload";
 import CardShare from "./CardShare";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
+import { headerHeight } from "./HomeAppBar";
 
 interface IHomeSidebarProps {
   view: string;
@@ -20,10 +21,14 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
   return (
     <aside
       className={cn(
-        "fixed top-0 left-0 z-40 h-screen border-r bg-background",
+        "fixed left-0 z-40 bg-background",
         "hidden md:flex flex-col"
       )}
-      style={{ width: sidebarWidth }}
+      style={{
+          width: sidebarWidth,
+          top: headerHeight, // Starts below the header
+          height: `calc(100vh - ${headerHeight}px)` // Takes remaining height
+      }}
     >
       <div className="flex-1 overflow-y-auto pt-2 px-2 pb-4">
         <nav className="flex flex-col gap-2">

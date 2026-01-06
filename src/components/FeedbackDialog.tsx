@@ -1,109 +1,71 @@
 import React from "react";
 
 import { CloseTwoTone, FeedbackTwoTone } from "@mui/icons-material";
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Button,
-  Typography,
-  useMediaQuery,
-  useTheme,
-  IconButton,
-} from "@mui/material";
 import { sendFeedback } from "../clients/supabaseClient";
 import FeedbackForm from "./FeedbackForm";
-import TransitionComponent from "./TransitionComponent";
 import { isMobileApp } from "../utils/isMobile";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogClose,
+  DialogFooter
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 const FeedbackDialog = () => {
   const isMobile = isMobileApp();
   const [open, setOpen] = React.useState(false);
-  const theme = useTheme();
-  const fullScreen = useMediaQuery(theme.breakpoints.down("md"));
-
-  const handleOpenFeedback = () => {
-    setOpen(true);
-  };
-
-  const handleCloseFeedback = () => {
-    setOpen(false);
-  };
 
   const onSendFeedback = async (title: string, description: string) => {
     await sendFeedback(title, description);
     await new Promise<void>((resolve) =>
       setTimeout(() => {
-        handleCloseFeedback();
+        setOpen(false);
         resolve();
       }, 1000)
     );
   };
 
   return (
-    <>
-      <Button
-        onClick={handleOpenFeedback}
-        size="small"
-        sx={{
-          minWidth: { xs: "50px", md: "auto" },
-        }}
-      >
-        <FeedbackTwoTone />
-        <Typography
-          sx={{
-            display: { xs: "none", md: "inline" },
-            ml: 1,
-          }}
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
+        <Button
+          size="sm"
+          variant="ghost" // Assuming the original was effectively ghost-like in the AppBar or standard button
+          className="min-w-[50px] md:min-w-0" // matching existing styling intent roughly
         >
-          Feedback & Support
-        </Typography>
-      </Button>
-      <Dialog
-        fullWidth
-        fullScreen={fullScreen}
-        open={open}
-        onClose={handleCloseFeedback}
-        TransitionComponent={TransitionComponent}
-      >
-        <DialogTitle
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            mt: isMobile ? 2 : 0,
-          }}
-        >
-          <FeedbackTwoTone sx={{ color: theme.palette.primary.main, mr: 1 }} />
-          Your feedback fuels our fire 🔥
-        </DialogTitle>
+          <FeedbackTwoTone />
+          <span className="hidden md:inline ml-2">Feedback & Support</span>
+        </Button>
+      </DialogTrigger>
+
+      <DialogContent className={isMobile ? "h-screen w-screen max-w-none pt-10" : "sm:max-w-[500px]"}>
+        <DialogHeader className="flex flex-row items-center gap-2 mt-2 md:mt-0">
+          <FeedbackTwoTone className="text-primary mr-1" />
+          <DialogTitle>Your feedback fuels our fire 🔥</DialogTitle>
+        </DialogHeader>
+
         {!isMobile && (
-          <IconButton
-            aria-label="close"
-            onClick={handleCloseFeedback}
-            sx={{
-              position: "absolute",
-              right: 8,
-              top: 8,
-              color: (theme) => theme.palette.grey[500],
-            }}
-          >
-            <CloseTwoTone />
-          </IconButton>
+          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+             <CloseTwoTone />
+             <span className="sr-only">Close</span>
+          </DialogClose>
         )}
-        <DialogContent>
-          <DialogContentText>
-            <FeedbackForm sendFeedback={onSendFeedback} />
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions sx={{ mb: isMobile ? 4 : 0 }}>
-          <Button fullWidth={isMobile} onClick={handleCloseFeedback}>
-            Close
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
+
+        <div className="py-4">
+          <FeedbackForm sendFeedback={onSendFeedback} />
+        </div>
+
+        <DialogFooter className={isMobile ? "mb-4" : ""}>
+             <Button variant="outline" onClick={() => setOpen(false)} className={isMobile ? "w-full" : ""}>
+               Close
+             </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 };
 

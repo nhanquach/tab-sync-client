@@ -1,48 +1,45 @@
 import React from "react";
-
-import { Box, AppBar, Toolbar } from "@mui/material";
 import { User } from "@supabase/supabase-js";
 
-import { drawerWidth } from "../utils/dimensions";
 import { isMobileApp } from "../utils/isMobile";
 
 import FeedbackDialog from "./FeedbackDialog";
 import AccountSettings from "./AccountSettings";
 import QRCodeDialog from "./QRCodeDialog";
 import LogoWithTabSync from "./LogoWithTabSync";
+import { cn } from "@/lib/utils";
 
 interface IHomeAppBarProps {
   user?: User;
 }
 
+export const headerHeight = 64; // Exporting for layout calculations
+
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
   const isMobile = isMobileApp();
 
   return (
-    <Box sx={{ flexGrow: 1, alignItems: "center" }}>
-      <AppBar
-        position="fixed"
-        color="transparent"
-        elevation={0}
-        sx={{
-          backdropFilter: "blur(8px)",
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-          paddingTop: isMobile ? "25px" : "0",
-        }}
+    <div className="flex flex-grow items-center">
+      <header
+        className={cn(
+          "fixed top-0 left-0 z-50 flex items-center bg-background",
+          isMobile ? "pt-[25px]" : "pt-0",
+          "w-full h-16" // h-16 is 64px
+        )}
       >
-        <Toolbar>
-          <Box sx={{ flexGrow: 1, marginBottom: "-15px" }}>
-            <LogoWithTabSync fontSizeVariant="h5" />
-          </Box>
-          <Box display="flex" gap={1}>
+        <div className="flex w-full items-center px-6 h-full">
+          <div className="flex-grow flex items-center">
+            {/* Logo is now top-left, part of the full width header */}
+            <LogoWithTabSync fontSizeVariant="h5" className="mb-0" />
+          </div>
+          <div className="flex gap-1 items-center">
             <QRCodeDialog />
             <FeedbackDialog />
             <AccountSettings user={user} />
-          </Box>
-        </Toolbar>
-      </AppBar>
-    </Box>
+          </div>
+        </div>
+      </header>
+    </div>
   );
 };
 
