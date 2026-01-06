@@ -21,7 +21,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 z-40 border-r bg-background",
+        "fixed left-0 z-40 bg-background",
         "hidden md:flex flex-col"
       )}
       style={{

@@ -22,7 +22,7 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
     <div className="flex flex-grow items-center">
       <header
         className={cn(
-          "fixed top-0 left-0 z-50 flex items-center border-b bg-background", // Removed offset/width logic, added border-b, solid bg
+          "fixed top-0 left-0 z-50 flex items-center bg-background",
           isMobile ? "pt-[25px]" : "pt-0",
           "w-full h-16" // h-16 is 64px
         )}
