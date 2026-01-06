@@ -24,6 +24,7 @@ import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
 import NoData from "../components/NoData";
 import TipsFooter from "../components/TipsFooter";
 import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
+import DeviceTabs from "../components/DeviceTabs";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
@@ -82,8 +83,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
   const [searchString, setSearchString] = useState<string>("");
-  const [displayedBrowsers, setDisplayedBrowsers] = useState<string[]>([]);
-  const [showThisWebsite, setShowThisWebsite] = useState<boolean>(false);
+  const [selectedDevice, setSelectedDevice] = useState<string>("All");
 
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
@@ -103,9 +103,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
 
     // apply filters if any
-    if (displayedBrowsers.length > 0) {
+    if (selectedDevice !== "All") {
       displayedTabs = displayedTabs.filter((tab) =>
-        displayedBrowsers.includes(tab.deviceName)
+        tab.deviceName === selectedDevice
       );
     }
 
@@ -118,12 +118,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       );
     }
 
-    if (!showThisWebsite) {
-      displayedTabs = displayedTabs.filter(
-        (tab) => tab.url !== window.location.href
-      );
-    }
-
     return displayedTabs.sort(
       orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
     );
@@ -131,10 +125,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     isOpenTabsView,
     tabs,
     archivedTabs,
-    displayedBrowsers,
+    selectedDevice,
     searchString,
     orderBy,
-    showThisWebsite,
   ]);
 
   const handleGetTabs = useCallback(async () => {
@@ -205,21 +198,20 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   }, [archivedTabs]);
 
-  // Get last saved browsers to display
-  // Default to show all
+  // Restore last selected device if possible (optional, but let's stick to simple first: default to All)
+  // Or we could use the LAST_SAVED_DISPLAYED_BROWSERS_KEY to infer?
+  // For now, let's keep it simple: reset to All on load.
   useEffect(() => {
     const lastSavedDisplayedBrowsers = getItem<string>(
       LAST_SAVED_DISPLAYED_BROWSERS_KEY
     )?.split(",");
 
-    if (lastSavedDisplayedBrowsers?.length) {
-      setDisplayedBrowsers(lastSavedDisplayedBrowsers);
-      return;
+    if (lastSavedDisplayedBrowsers?.length === 1) {
+       // If only one was selected, maybe we can restore it?
+       // But user might have had multiple selected.
+       // Let's just default to 'All' to be safe and clean.
     }
-
-    const devices = Array.from(new Set(tabs.map((url) => url.deviceName)));
-    setDisplayedBrowsers(devices);
-  }, [tabs]);
+  }, []);
 
   // Send tab if is shared
   useEffect(() => {
@@ -269,12 +261,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const clearOpenTabs = (deviceName: string) => {
     archiveOpenTabs(deviceName);
-    setDisplayedBrowsers(displayedBrowsers.filter((f) => f !== deviceName));
+    // If we clear the currently selected device, maybe switch back to All?
+    // Or just let the list become empty.
+    if (selectedDevice === deviceName) {
+        setSelectedDevice("All");
+    }
   };
 
   const clearArchivedTabs = (deviceName: string) => {
     removeArchivedTabs(deviceName);
-    setDisplayedBrowsers(displayedBrowsers.filter((f) => f !== deviceName));
+    if (selectedDevice === deviceName) {
+        setSelectedDevice("All");
+    }
   };
 
   const handleRefresh = async () => {
@@ -337,16 +335,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             handleRefresh={handleRefresh}
             searchString={searchString}
             handleSearch={handleSearch}
-            browsers={browsers}
-            displayedBrowsers={displayedBrowsers}
-            setDisplayedBrowsers={setDisplayedBrowsers}
             toggleLayout={toggleLayout}
             layout={layout}
             toggleOrderBy={toggleOrderBy}
             orderBy={orderBy}
-            showThisWebsite={showThisWebsite}
-            setShowThisWebsite={setShowThisWebsite}
         />
+
+        <DeviceTabs
+            browsers={browsers}
+            selectedDevice={selectedDevice}
+            onSelect={setSelectedDevice}
+        />
+
         {isLoading && (
             <Typography
             my={12}
@@ -362,7 +362,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             <NoData isEmptySearch={!!searchString} />
         )}
 
-        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div key={currentView + selectedDevice} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {!isLoading && urls.length > 0 && layout === "list" && (
                 <UrlList
                 view={currentView}
