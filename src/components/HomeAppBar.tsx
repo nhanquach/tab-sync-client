@@ -13,20 +13,22 @@ interface IHomeAppBarProps {
   user?: User;
 }
 
-export const headerHeight = 64; // Exporting for layout calculations
+export const headerHeight = 64; // Keeping logical height, though visual height might differ with padding
 
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
   const isMobile = isMobileApp();
 
   return (
-    <div className="flex flex-grow items-center">
+    <div className="flex flex-grow items-center justify-center">
       <header
         className={cn(
-          "fixed top-0 left-0 z-50 flex items-center shadow-sm transition-shadow",
-          // Opaque solid background using MD3 Surface Container
-          "bg-md-sys-color-surface-container text-md-sys-color-on-surface",
-           isMobile ? "pt-[25px]" : "pt-0",
-          "w-full h-16" // h-16 is 64px
+          "fixed z-50 flex items-center transition-all duration-300",
+          // Floating Island Styles
+          "top-4 left-4 right-4 h-16 rounded-2xl",
+          "bg-md-sys-color-surface-container/80 backdrop-blur-md",
+          "shadow-sm border border-white/20 dark:border-white/10",
+          // Mobile adjustments
+           isMobile ? "top-0 left-0 right-0 rounded-none border-t-0 border-x-0 pt-[25px]" : ""
         )}
       >
         <div className="flex w-full items-center px-6 h-full">

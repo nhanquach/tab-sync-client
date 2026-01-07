@@ -303,20 +303,24 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
       {/*
         Flex container for Sidebar + Main Content.
-        pt-[64px] accounts for the fixed AppBar height.
+        The AppBar is now floating, so we need extra padding top to clear it.
+        Header (64) + Margin Top (16) + Gap (16) = 96px approximate logical start.
+        But we are using flex, so the container starts at top 0.
+        The Sidebar has 'top' offset.
+        The Content needs padding top.
       */}
-      <div className="flex flex-1" style={{ paddingTop: headerHeight }}>
+      <div className="flex flex-1">
           <HomeSidebar view={currentView} />
 
           <Container
             maxWidth={false}
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0" // min-w-0 prevents flex items from overflowing
-                // Removed all manual margins and width calculations!
+                "flex-grow p-6 transition-all duration-300 min-w-0"
             )}
             sx={{
               mt: 0,
-              paddingTop: '24px', // Internal padding for content
+              // Padding Top = Header Height + Top Margin + Bottom Margin/Gap
+              paddingTop: `calc(${headerHeight}px + 32px)`,
             }}
             component="main"
           >
