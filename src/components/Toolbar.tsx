@@ -106,7 +106,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         )}
       </div>
 
-      {/* Actions Row - On mobile: Refresh + Filter + Layout + Sort. On Desktop: Filter + Layout + Sort */}
+      {/* Actions Row - On mobile: Refresh + Layout + Sort. On Desktop: Layout + Sort */}
       <div className="flex items-center justify-between md:justify-start gap-1">
         {/* Mobile Refresh Button */}
         <div className="md:hidden">

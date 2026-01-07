@@ -24,7 +24,6 @@ import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
 import NoData from "../components/NoData";
 import TipsFooter from "../components/TipsFooter";
 import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
-import DeviceTabs from "../components/DeviceTabs";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
@@ -36,6 +35,7 @@ import {
 import { Layout } from "../interfaces/Layout";
 import { drawerWidth } from "../utils/dimensions";
 import { ROUTES } from "../routes";
+import DeviceTabs from "../components/DeviceTabs";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,6 +82,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
   const [searchString, setSearchString] = useState<string>("");
+  // Replaced displayedBrowsers (multi-select) with selectedDevice (single select)
   const [selectedDevice, setSelectedDevice] = useState<string>("All");
 
   const [layout, setLayout] = useState<Layout>(
@@ -101,7 +102,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const urls = useMemo(() => {
     let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
 
-    // apply filters if any
+    // Filter by selected device (if not "All")
     if (selectedDevice !== "All") {
       displayedTabs = displayedTabs.filter((tab) =>
         tab.deviceName === selectedDevice
@@ -117,6 +118,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       );
     }
 
+    // removed filter for current website as the filter menu is gone
+
     return displayedTabs.sort(
       orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
     );
@@ -124,7 +127,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     isOpenTabsView,
     tabs,
     archivedTabs,
-    selectedDevice,
+    selectedDevice, // Updated dependency
     searchString,
     orderBy,
   ]);
@@ -245,18 +248,13 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const clearOpenTabs = (deviceName: string) => {
     archiveOpenTabs(deviceName);
-    // If we clear the currently selected device, maybe switch back to All?
-    // Or just let the list become empty.
-    if (selectedDevice === deviceName) {
-        setSelectedDevice("All");
-    }
+    // Logic for clearing tabs doesn't really need to update selectedDevice
+    // but if the device disappears, we might want to switch to 'All'
+    // For now, keep it simple.
   };
 
   const clearArchivedTabs = (deviceName: string) => {
     removeArchivedTabs(deviceName);
-    if (selectedDevice === deviceName) {
-        setSelectedDevice("All");
-    }
   };
 
   const handleRefresh = async () => {
@@ -304,6 +302,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       <HomeAppBar user={user} />
       <HomeSidebar view={currentView} />
       <Container
+        maxWidth={false} // Allow full width
         sx={{
           flexGrow: 1,
           p: 3,
@@ -326,9 +325,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         />
 
         <DeviceTabs
-            browsers={browsers}
+            devices={browsers}
             selectedDevice={selectedDevice}
-            onSelect={setSelectedDevice}
+            onSelectDevice={setSelectedDevice}
         />
 
         {isLoading && (
@@ -346,7 +345,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             <NoData isEmptySearch={!!searchString} />
         )}
 
-        <div key={currentView + selectedDevice} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             {!isLoading && urls.length > 0 && layout === "list" && (
                 <UrlList
                 view={currentView}

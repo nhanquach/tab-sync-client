@@ -5,12 +5,12 @@ import { headerHeight } from "./HomeAppBar";
 import { LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, AppsTwoTone } from "@mui/icons-material";
 
 interface IDeviceTabsProps {
-  browsers: string[];
+  devices: string[];
   selectedDevice: string;
-  onSelect: (device: string) => void;
+  onSelectDevice: (device: string) => void;
 }
 
-const DeviceTabs: React.FC<IDeviceTabsProps> = ({ browsers, selectedDevice, onSelect }) => {
+const DeviceTabs: React.FC<IDeviceTabsProps> = ({ devices, selectedDevice, onSelectDevice }) => {
   // Helper to guess icon based on name (optional polish)
   const getIcon = (name: string, isActive: boolean) => {
     const className = cn("mr-2 h-4 w-4 transition-colors", isActive ? "text-primary" : "text-muted-foreground");
@@ -24,7 +24,7 @@ const DeviceTabs: React.FC<IDeviceTabsProps> = ({ browsers, selectedDevice, onSe
     return <DevicesOtherTwoTone className={className} />;
   };
 
-  const tabs = ["All", ...browsers];
+  const tabs = ["All", ...devices];
 
   return (
     <div
@@ -51,7 +51,7 @@ const DeviceTabs: React.FC<IDeviceTabsProps> = ({ browsers, selectedDevice, onSe
               key={device}
               variant="ghost" // Use ghost as base to avoid default solid styles
               size="sm"
-              onClick={() => onSelect(device)}
+              onClick={() => onSelectDevice(device)}
               className={cn(
                 "rounded-full h-9 px-4 transition-all duration-300 whitespace-nowrap border",
                 isActive
