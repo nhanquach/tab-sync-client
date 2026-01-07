@@ -33,7 +33,6 @@ import {
   ORDER,
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
-import { drawerWidth } from "../utils/dimensions";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
@@ -299,84 +298,89 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-md-sys-color-surface">
+    <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
       <HomeAppBar user={user} />
-      <HomeSidebar view={currentView} />
-      <Container
-        maxWidth={false} // Allow full width
-        className={cn(
-            "flex-grow p-6 transition-all duration-300",
-            // Tailwind breakpoint matching Sidebar: md (768px)
-            `md:ml-[${drawerWidth}px] md:w-[calc(100%-${drawerWidth}px)]`
-        )}
-        sx={{
-          mt: 0,
-          paddingTop: `${headerHeight + 24}px`,
-          // We removed MUI specific width/margin breakpoints here to rely on Tailwind className
-          // This ensures alignment with HomeSidebar's "md:flex"
-        }}
-        component="main"
-      >
-        <Toolbar
-            isLoading={isLoading}
-            handleRefresh={handleRefresh}
-            searchString={searchString}
-            handleSearch={handleSearch}
-            toggleLayout={toggleLayout}
-            layout={layout}
-            toggleOrderBy={toggleOrderBy}
-            orderBy={orderBy}
-        />
 
-        <DeviceTabs
-            devices={browsers}
-            selectedDevice={selectedDevice}
-            onSelectDevice={setSelectedDevice}
-        />
+      {/*
+        Flex container for Sidebar + Main Content.
+        pt-[64px] accounts for the fixed AppBar height.
+      */}
+      <div className="flex flex-1" style={{ paddingTop: headerHeight }}>
+          <HomeSidebar view={currentView} />
 
-        {isLoading && (
-            <Typography
-            my={12}
-            textAlign={{ xs: "center", md: "justify" }}
-            color="#696969"
-            variant="h5"
-            >
-            Getting your tabs ...
-            </Typography>
-        )}
+          <Container
+            maxWidth={false}
+            className={cn(
+                "flex-grow p-6 transition-all duration-300 min-w-0" // min-w-0 prevents flex items from overflowing
+                // Removed all manual margins and width calculations!
+            )}
+            sx={{
+              mt: 0,
+              paddingTop: '24px', // Internal padding for content
+            }}
+            component="main"
+          >
+            <Toolbar
+                isLoading={isLoading}
+                handleRefresh={handleRefresh}
+                searchString={searchString}
+                handleSearch={handleSearch}
+                toggleLayout={toggleLayout}
+                layout={layout}
+                toggleOrderBy={toggleOrderBy}
+                orderBy={orderBy}
+            />
 
-        {!isLoading && urls.length === 0 && (
-            <NoData isEmptySearch={!!searchString} />
-        )}
+            <DeviceTabs
+                devices={browsers}
+                selectedDevice={selectedDevice}
+                onSelectDevice={setSelectedDevice}
+            />
 
-        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {!isLoading && urls.length > 0 && layout === "list" && (
-                <UrlList
-                view={currentView}
-                urls={urls}
-                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                />
+            {isLoading && (
+                <Typography
+                my={12}
+                textAlign={{ xs: "center", md: "justify" }}
+                color="#696969"
+                variant="h5"
+                >
+                Getting your tabs ...
+                </Typography>
             )}
 
-            {!isLoading && urls.length > 0 && layout === "grid" && (
-                <UrlGrid
-                view={currentView}
-                urls={urls}
-                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                />
+            {!isLoading && urls.length === 0 && (
+                <NoData isEmptySearch={!!searchString} />
             )}
-        </div>
 
-        <TipsFooter  />
-        <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
-        <Snackbar
-            open={toast.show}
-            autoHideDuration={1000}
-            onClose={closeToast}
-            message={toast.message || ""}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        />
-      </Container>
+            <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {!isLoading && urls.length > 0 && layout === "list" && (
+                    <UrlList
+                    view={currentView}
+                    urls={urls}
+                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                    />
+                )}
+
+                {!isLoading && urls.length > 0 && layout === "grid" && (
+                    <UrlGrid
+                    view={currentView}
+                    urls={urls}
+                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                    />
+                )}
+            </div>
+
+            <TipsFooter  />
+            <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
+            <Snackbar
+                open={toast.show}
+                autoHideDuration={1000}
+                onClose={closeToast}
+                message={toast.message || ""}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            />
+          </Container>
+      </div>
     </div>
   );
 };

@@ -2,90 +2,76 @@ import React from "react";
 import { CloudSyncTwoTone, ArchiveTwoTone } from "@mui/icons-material";
 import { Link } from "react-router-dom";
 
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import QRCode from "./QRCode";
-import DownloadCard from "./CardDownload";
-import CardShare from "./CardShare";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
 import { headerHeight } from "./HomeAppBar";
+import { drawerWidth } from "../utils/dimensions";
 
 interface IHomeSidebarProps {
   view: string;
 }
 
-const sidebarWidth = 240;
-
 const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
   return (
     <aside
       className={cn(
-        "fixed left-0 z-40 bg-background",
-        "hidden md:flex flex-col"
+        // Switch from fixed to sticky for flexbox layout
+        "sticky z-40 bg-md-sys-color-surface-container shadow-sm border-r border-md-sys-color-outline-variant/20",
+        "hidden md:flex flex-col items-center",
+        "flex-shrink-0" // Prevent shrinking
       )}
       style={{
-          width: sidebarWidth,
-          top: headerHeight, // Starts below the header
-          height: `calc(100vh - ${headerHeight}px)` // Takes remaining height
+          width: drawerWidth,
+          top: headerHeight,
+          height: `calc(100vh - ${headerHeight}px)`
       }}
     >
-      <div className="flex-1 overflow-y-auto pt-2 px-2 pb-4">
-        <nav className="flex flex-col gap-2">
-          <Button
-            asChild
-            variant="ghost"
-            className={cn(
-              "w-full justify-start h-auto py-3 px-4 relative transition-all duration-300 ease-in-out overflow-hidden group",
-              view === TABS_VIEWS.OPEN_TABS
-                ? "bg-gradient-to-r from-primary/15 to-transparent text-primary font-medium hover:from-primary/20 hover:text-primary"
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-            )}
-          >
-            <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`}>
-              {view === TABS_VIEWS.OPEN_TABS && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full" />
-              )}
-              <CloudSyncTwoTone sx={{ fontSize: 30 }} className={cn("mr-4 transition-transform duration-300 group-hover:scale-110", view === TABS_VIEWS.OPEN_TABS && "scale-110")} />
-              <span className="text-base">Open tabs</span>
-            </Link>
-          </Button>
+      <div className="flex-1 overflow-y-auto pt-4 px-2 pb-4 flex flex-col items-center gap-4">
+        <nav className="flex flex-col gap-4 w-full items-center">
+          {/* Open Tabs Item */}
+          <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="w-full flex flex-col items-center group">
+            <div className={cn(
+                "w-14 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
+                 view === TABS_VIEWS.OPEN_TABS
+                    ? "bg-md-sys-color-primary-container text-md-sys-color-on-primary-container"
+                    : "hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
+            )}>
+                <CloudSyncTwoTone sx={{ fontSize: 24 }} />
+            </div>
+            <span className={cn(
+                "text-xs font-medium text-center transition-colors duration-300",
+                 view === TABS_VIEWS.OPEN_TABS
+                    ? "text-md-sys-color-on-surface font-bold"
+                    : "text-md-sys-color-on-surface-variant"
+            )}>
+                Open
+            </span>
+          </Link>
 
-          <Button
-            asChild
-            variant="ghost"
-            className={cn(
-              "w-full justify-start h-auto py-3 px-4 relative transition-all duration-300 ease-in-out overflow-hidden group",
-              view === TABS_VIEWS.ARCHIVED_TABS
-                ? "bg-gradient-to-r from-primary/15 to-transparent text-primary font-medium hover:from-primary/20 hover:text-primary"
-                : "text-muted-foreground hover:bg-accent hover:text-foreground"
-            )}
-          >
-            <Link to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`}>
-              {view === TABS_VIEWS.ARCHIVED_TABS && (
-                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary rounded-r-full" />
-              )}
-              <ArchiveTwoTone sx={{ fontSize: 30 }} className={cn("mr-4 transition-transform duration-300 group-hover:scale-110", view === TABS_VIEWS.ARCHIVED_TABS && "scale-110")} />
-              <span className="text-base">Archived tabs</span>
-            </Link>
-          </Button>
+          {/* Archived Tabs Item */}
+          <Link to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`} className="w-full flex flex-col items-center group">
+             <div className={cn(
+                "w-14 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
+                 view === TABS_VIEWS.ARCHIVED_TABS
+                    ? "bg-md-sys-color-primary-container text-md-sys-color-on-primary-container"
+                    : "hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
+            )}>
+                <ArchiveTwoTone sx={{ fontSize: 24 }} />
+            </div>
+             <span className={cn(
+                "text-xs font-medium text-center transition-colors duration-300",
+                 view === TABS_VIEWS.ARCHIVED_TABS
+                    ? "text-md-sys-color-on-surface font-bold"
+                    : "text-md-sys-color-on-surface-variant"
+            )}>
+                Archived
+            </span>
+          </Link>
         </nav>
 
-        <div className="my-2 border-t" />
-
-        <div className="px-2">
-          <DownloadCard small />
-        </div>
-
-        <div className="flex justify-center my-4">
-            <div className="w-[200px]">
-                <QRCode width={200} height={200} text="TabSync on your phone" />
-            </div>
-        </div>
-
-        <div className="px-2">
-          <CardShare small />
-        </div>
+        {/* Spacer */}
+        <div className="flex-1" />
       </div>
     </aside>
   );
