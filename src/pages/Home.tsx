@@ -36,6 +36,7 @@ import { Layout } from "../interfaces/Layout";
 import { drawerWidth } from "../utils/dimensions";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
+import { cn } from "@/lib/utils";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -303,13 +304,16 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       <HomeSidebar view={currentView} />
       <Container
         maxWidth={false} // Allow full width
+        className={cn(
+            "flex-grow p-6 transition-all duration-300",
+            // Tailwind breakpoint matching Sidebar: md (768px)
+            `md:ml-[${drawerWidth}px] md:w-[calc(100%-${drawerWidth}px)]`
+        )}
         sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 0, // Reset default margin
-          paddingTop: `${headerHeight + 24}px`, // headerHeight + some padding
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
+          mt: 0,
+          paddingTop: `${headerHeight + 24}px`,
+          // We removed MUI specific width/margin breakpoints here to rely on Tailwind className
+          // This ensures alignment with HomeSidebar's "md:flex"
         }}
         component="main"
       >
