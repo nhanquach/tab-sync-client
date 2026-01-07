@@ -78,7 +78,16 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     }
   }, [currentView, navigate]);
 
-  const [tabs, setTabs] = useState<ITab[]>([]);
+  const [tabs, setTabs] = useState<ITab[]>([
+      { id: 1, title: "Google - Search Engine", url: "https://google.com", deviceName: "MacBook Pro", timeStamp: new Date().toISOString(), favIconUrl: "https://www.google.com/favicon.ico", index: 0, windowId: "1" },
+      { id: 2, title: "GitHub - Where the world builds software", url: "https://github.com", deviceName: "iPhone 15", timeStamp: new Date().toISOString(), favIconUrl: "https://github.com/favicon.ico", index: 1, windowId: "1" },
+      { id: 3, title: "Material Design 3 - Expressive", url: "https://m3.material.io", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "https://gstatic.com/favicon.ico", index: 2, windowId: "1" },
+      { id: 4, title: "Another Link", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 3, windowId: "1" },
+      { id: 5, title: "Another Link 2", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 4, windowId: "1" },
+      { id: 6, title: "Another Link 3", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 5, windowId: "1" },
+      { id: 7, title: "Another Link 4", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 6, windowId: "1" },
+      { id: 8, title: "Another Link 5", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 7, windowId: "1" },
+  ]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
   const [searchString, setSearchString] = useState<string>("");
@@ -301,16 +310,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
       <HomeAppBar user={user} />
 
-      {/*
-        Flex container for Sidebar + Main Content.
-        The AppBar is now floating, so we need extra padding top to clear it.
-        Header (64) + Margin Top (16) + Gap (16) = 96px approximate logical start.
-        But we are using flex, so the container starts at top 0.
-        The Sidebar has 'top' offset.
-        The Content needs padding top.
-      */}
       <div className="flex flex-1">
-          <HomeSidebar view={currentView} />
+          <HomeSidebar view={currentView} user={user} />
 
           <Container
             maxWidth={false}
@@ -319,11 +320,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             )}
             sx={{
               mt: 0,
-              // Padding Top = Header Height + Top Margin + Bottom Margin/Gap
-              paddingTop: `calc(${headerHeight}px + 32px)`,
+              // Desktop: Little to no top padding needed (AppBar gone)
+              // Mobile: Needs to clear fixed AppBar (64px) + Gap
+              paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
             }}
             component="main"
           >
+            {/* Desktop Page Title */}
+            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+                <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
+            </div>
+
             <Toolbar
                 isLoading={isLoading}
                 handleRefresh={handleRefresh}

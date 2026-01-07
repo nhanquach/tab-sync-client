@@ -1,45 +1,57 @@
 import React from "react";
 import { CloudSyncTwoTone, ArchiveTwoTone } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { User } from "@supabase/supabase-js";
 
 import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
 import { headerHeight } from "./HomeAppBar";
 import { drawerWidth } from "../utils/dimensions";
+import Logo from "./Logo";
+import AccountSettings from "./AccountSettings";
+import FeedbackDialog from "./FeedbackDialog";
 
 interface IHomeSidebarProps {
   view: string;
+  user?: User;
 }
 
-const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
+const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user }) => {
   return (
     <aside
       className={cn(
         // Floating Navigation Rail
-        "sticky z-40 hidden md:flex flex-col items-center",
+        "sticky z-40 hidden md:flex flex-col items-center justify-between py-6",
         "bg-md-sys-color-surface-container shadow-sm border border-white/20 dark:border-white/10",
-        "rounded-2xl ml-4 mb-4" // Detached margins and rounding
+        "rounded-2xl ml-4 mb-4"
       )}
       style={{
           width: drawerWidth,
-          // Calculate top position: Header Height (64) + Header Top Margin (16) + Gap (16) = 96px
-          top: `calc(${headerHeight}px + 32px)`,
-          // Calculate height: Viewport - Top Offset - Bottom Margin (16)
-          height: `calc(100vh - ${headerHeight}px - 48px)`
+          // Desktop: Top 0 + Margin. Since header is gone on desktop, we can just sit nicely.
+          // But we need to check Home layout. Home container has padding.
+          // Let's make it sticky relative to the viewport top with a margin.
+          top: "1.5rem",
+          height: `calc(100vh - 3rem)` // Full height minus top/bottom margins
       }}
     >
-      <div className="flex-1 overflow-y-auto pt-4 px-2 pb-4 flex flex-col items-center gap-4 w-full">
-        <nav className="flex flex-col gap-4 w-full items-center">
-          {/* Open Tabs Item */}
+      {/* Top Section: Logo + Nav */}
+      <div className="flex flex-col items-center gap-8 w-full">
+        {/* Logo */}
+        <div className="group">
+             <Logo className="w-10 h-10 transition-transform duration-500 ease-in-out group-hover:rotate-180 group-hover:scale-110 cursor-pointer" />
+        </div>
+
+        {/* Nav Items */}
+        <nav className="flex flex-col gap-6 w-full items-center">
           <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="w-full flex flex-col items-center group">
             <div className={cn(
-                "w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1", // Slightly smaller pill for rail
+                "w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
                  view === TABS_VIEWS.OPEN_TABS
                     ? "bg-md-sys-color-primary-container text-md-sys-color-on-primary-container"
-                    : "hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
+                    : "group-hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
             )}>
-                <CloudSyncTwoTone sx={{ fontSize: 20 }} />
+                <CloudSyncTwoTone sx={{ fontSize: 24 }} />
             </div>
             <span className={cn(
                 "text-[10px] font-medium text-center transition-colors duration-300",
@@ -51,15 +63,14 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
             </span>
           </Link>
 
-          {/* Archived Tabs Item */}
           <Link to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`} className="w-full flex flex-col items-center group">
              <div className={cn(
                 "w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
                  view === TABS_VIEWS.ARCHIVED_TABS
                     ? "bg-md-sys-color-primary-container text-md-sys-color-on-primary-container"
-                    : "hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
+                    : "group-hover:bg-md-sys-color-surface-container-high text-md-sys-color-on-surface-variant"
             )}>
-                <ArchiveTwoTone sx={{ fontSize: 20 }} />
+                <ArchiveTwoTone sx={{ fontSize: 24 }} />
             </div>
              <span className={cn(
                 "text-[10px] font-medium text-center transition-colors duration-300",
@@ -71,9 +82,12 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view }) => {
             </span>
           </Link>
         </nav>
+      </div>
 
-        {/* Spacer */}
-        <div className="flex-1" />
+      {/* Bottom Section: Feedback + Settings */}
+      <div className="flex flex-col items-center gap-4 mb-2">
+          <FeedbackDialog />
+          <AccountSettings user={user} />
       </div>
     </aside>
   );

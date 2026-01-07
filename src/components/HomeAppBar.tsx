@@ -13,30 +13,27 @@ interface IHomeAppBarProps {
   user?: User;
 }
 
-export const headerHeight = 64; // Keeping logical height, though visual height might differ with padding
+export const headerHeight = 64;
 
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
   const isMobile = isMobileApp();
 
   return (
-    <div className="flex flex-grow items-center justify-center">
+    <div className="flex flex-grow items-center justify-center md:hidden"> {/* Hidden on desktop */}
       <header
         className={cn(
           "fixed z-50 flex items-center transition-all duration-300",
-          // Floating Island Styles
-          "top-4 left-4 right-4 h-16 rounded-2xl",
-          "bg-md-sys-color-surface-container/80 backdrop-blur-md",
-          "shadow-sm border border-white/20 dark:border-white/10",
-          // Mobile adjustments
-           isMobile ? "top-0 left-0 right-0 rounded-none border-t-0 border-x-0 pt-[25px]" : ""
+          "top-0 left-0 right-0 h-16",
+          "bg-md-sys-color-surface-container/95 backdrop-blur-md", // Opaque for mobile
+          "shadow-sm border-b border-white/10",
+           isMobile ? "pt-[25px]" : ""
         )}
       >
-        <div className="flex w-full items-center px-6 h-full">
-          <div className="flex-grow flex items-center">
-             {/* Logo is now top-left, part of the full width header */}
-            <LogoWithTabSync fontSizeVariant="h5" className="mb-0 text-md-sys-color-primary" />
+        <div className="flex w-full items-center px-4 h-full justify-between">
+          <div className="flex items-center">
+            <LogoWithTabSync fontSizeVariant="h6" className="mb-0 text-md-sys-color-primary" />
           </div>
-          <div className="flex gap-2 items-center">
+          <div className="flex gap-1 items-center">
             <QRCodeDialog />
             <FeedbackDialog />
             <AccountSettings user={user} />

@@ -29,12 +29,16 @@ const DeviceTabs: React.FC<IDeviceTabsProps> = ({ devices, selectedDevice, onSel
     <div
       className={cn(
         "sticky z-30 w-full py-3 mb-6 -mx-6 px-6",
-        "bg-md-sys-color-surface/95 backdrop-blur-sm", // Opaque-ish background to cover content when scrolling
+        "bg-md-sys-color-surface/95 backdrop-blur-sm",
         "border-b border-md-sys-color-outline-variant/20",
-        "flex items-center"
+        "flex items-center",
+        // Desktop: Sticky to very top (0) because header is gone.
+        // Mobile: Sticky to headerHeight (64) + some gap?
+        // Actually, header is fixed at top-0. Height 64.
+        // So top-16 (64px) creates perfect alignment below header.
+        "top-16 md:top-0"
       )}
       style={{
-        top: headerHeight,
         width: "calc(100% + 48px)",
       }}
     >
@@ -48,7 +52,7 @@ const DeviceTabs: React.FC<IDeviceTabsProps> = ({ devices, selectedDevice, onSel
               className={cn(
                 "relative flex items-center justify-center rounded-lg px-4 h-8 transition-all duration-200 whitespace-nowrap select-none",
                 "text-sm font-medium",
-                "border", // All have border for layout stability
+                "border",
                 isActive
                   ? "bg-md-sys-color-secondary-container text-md-sys-color-on-secondary-container border-transparent"
                   : "bg-transparent border-md-sys-color-outline text-md-sys-color-on-surface-variant hover:bg-md-sys-color-surface-container-high"
