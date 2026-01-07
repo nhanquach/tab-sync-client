@@ -33,6 +33,26 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    /* MD3 Colors - Light (Indigo/Violet Theme) */
+    --md-sys-color-primary: 265 60% 50%;
+    --md-sys-color-on-primary: 0 0% 100%;
+    --md-sys-color-primary-container: 265 80% 94%;
+    --md-sys-color-on-primary-container: 265 60% 20%;
+
+    --md-sys-color-secondary: 260 15% 45%;
+    --md-sys-color-on-secondary: 0 0% 100%;
+    --md-sys-color-secondary-container: 260 25% 90%;
+    --md-sys-color-on-secondary-container: 260 15% 15%;
+
+    --md-sys-color-surface: 260 20% 98%;
+    --md-sys-color-on-surface: 260 10% 10%;
+    --md-sys-color-surface-container: 260 20% 94%;
+    --md-sys-color-surface-container-low: 260 30% 96%;
+    --md-sys-color-surface-container-high: 260 20% 92%;
+
+    --md-sys-color-outline: 260 10% 50%;
+    --md-sys-color-outline-variant: 260 10% 80%;
   }
 
   .dark {
@@ -63,6 +83,26 @@
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
     --ring: 212.7 26.8% 83.9%;
+
+    /* MD3 Colors - Dark (Indigo/Violet Theme) */
+    --md-sys-color-primary: 265 90% 80%;
+    --md-sys-color-on-primary: 265 60% 20%;
+    --md-sys-color-primary-container: 265 60% 35%;
+    --md-sys-color-on-primary-container: 265 90% 95%;
+
+    --md-sys-color-secondary: 260 20% 75%;
+    --md-sys-color-on-secondary: 260 20% 20%;
+    --md-sys-color-secondary-container: 260 20% 35%;
+    --md-sys-color-on-secondary-container: 260 20% 90%;
+
+    --md-sys-color-surface: 260 20% 8%;
+    --md-sys-color-on-surface: 260 10% 90%;
+    --md-sys-color-surface-container: 260 20% 12%;
+    --md-sys-color-surface-container-low: 260 20% 10%;
+    --md-sys-color-surface-container-high: 260 20% 17%;
+
+    --md-sys-color-outline: 260 10% 60%;
+    --md-sys-color-outline-variant: 260 10% 30%;
   }
 }
 
@@ -140,6 +180,7 @@
   width: 20px;
   height: 20px;
   animation-delay: 0s;
+  animation-duration: 18s;
 }
 
 .circles li:nth-child(6) {

@@ -298,7 +298,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-purple-50/50 to-pink-50/50 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950">
+    <div className="min-h-screen bg-md-sys-color-surface">
       <HomeAppBar user={user} />
       <HomeSidebar view={currentView} />
       <Container

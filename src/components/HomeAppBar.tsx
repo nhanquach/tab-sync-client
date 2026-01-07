@@ -22,17 +22,19 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
     <div className="flex flex-grow items-center">
       <header
         className={cn(
-          "fixed top-0 left-0 z-50 flex items-center bg-background",
-          isMobile ? "pt-[25px]" : "pt-0",
+          "fixed top-0 left-0 z-50 flex items-center shadow-sm transition-shadow",
+          // Opaque solid background using MD3 Surface Container
+          "bg-md-sys-color-surface-container text-md-sys-color-on-surface",
+           isMobile ? "pt-[25px]" : "pt-0",
           "w-full h-16" // h-16 is 64px
         )}
       >
         <div className="flex w-full items-center px-6 h-full">
           <div className="flex-grow flex items-center">
-            {/* Logo is now top-left, part of the full width header */}
-            <LogoWithTabSync fontSizeVariant="h5" className="mb-0" />
+             {/* Logo is now top-left, part of the full width header */}
+            <LogoWithTabSync fontSizeVariant="h5" className="mb-0 text-md-sys-color-primary" />
           </div>
-          <div className="flex gap-1 items-center">
+          <div className="flex gap-2 items-center">
             <QRCodeDialog />
             <FeedbackDialog />
             <AccountSettings user={user} />
