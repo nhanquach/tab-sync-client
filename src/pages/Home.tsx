@@ -27,7 +27,6 @@ import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
-  LAST_SAVED_DISPLAYED_BROWSERS_KEY,
   LAST_SAVED_ORDER_BY_KEY,
   LAYOUT,
   LAYOUT_KEY,
@@ -36,6 +35,7 @@ import {
 import { Layout } from "../interfaces/Layout";
 import { drawerWidth } from "../utils/dimensions";
 import { ROUTES } from "../routes";
+import DeviceTabs from "../components/DeviceTabs";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -82,8 +82,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
   const [searchString, setSearchString] = useState<string>("");
-  const [displayedBrowsers, setDisplayedBrowsers] = useState<string[]>([]);
-  const [showThisWebsite, setShowThisWebsite] = useState<boolean>(false);
+  // Replaced displayedBrowsers (multi-select) with selectedDevice (single select)
+  const [selectedDevice, setSelectedDevice] = useState<string>("All");
 
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
@@ -102,10 +102,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const urls = useMemo(() => {
     let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
 
-    // apply filters if any
-    if (displayedBrowsers.length > 0) {
+    // Filter by selected device (if not "All")
+    if (selectedDevice !== "All") {
       displayedTabs = displayedTabs.filter((tab) =>
-        displayedBrowsers.includes(tab.deviceName)
+        tab.deviceName === selectedDevice
       );
     }
 
@@ -118,11 +118,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       );
     }
 
-    if (!showThisWebsite) {
-      displayedTabs = displayedTabs.filter(
-        (tab) => tab.url !== window.location.href
-      );
-    }
+    // removed filter for current website as the filter menu is gone
 
     return displayedTabs.sort(
       orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
@@ -131,10 +127,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     isOpenTabsView,
     tabs,
     archivedTabs,
-    displayedBrowsers,
+    selectedDevice, // Updated dependency
     searchString,
     orderBy,
-    showThisWebsite,
   ]);
 
   const handleGetTabs = useCallback(async () => {
@@ -205,22 +200,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   }, [archivedTabs]);
 
-  // Get last saved browsers to display
-  // Default to show all
-  useEffect(() => {
-    const lastSavedDisplayedBrowsers = getItem<string>(
-      LAST_SAVED_DISPLAYED_BROWSERS_KEY
-    )?.split(",");
-
-    if (lastSavedDisplayedBrowsers?.length) {
-      setDisplayedBrowsers(lastSavedDisplayedBrowsers);
-      return;
-    }
-
-    const devices = Array.from(new Set(tabs.map((url) => url.deviceName)));
-    setDisplayedBrowsers(devices);
-  }, [tabs]);
-
   // Send tab if is shared
   useEffect(() => {
     if (window.location.pathname === "/share") {
@@ -269,12 +248,13 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const clearOpenTabs = (deviceName: string) => {
     archiveOpenTabs(deviceName);
-    setDisplayedBrowsers(displayedBrowsers.filter((f) => f !== deviceName));
+    // Logic for clearing tabs doesn't really need to update selectedDevice
+    // but if the device disappears, we might want to switch to 'All'
+    // For now, keep it simple.
   };
 
   const clearArchivedTabs = (deviceName: string) => {
     removeArchivedTabs(deviceName);
-    setDisplayedBrowsers(displayedBrowsers.filter((f) => f !== deviceName));
   };
 
   const handleRefresh = async () => {
@@ -322,6 +302,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       <HomeAppBar user={user} />
       <HomeSidebar view={currentView} />
       <Container
+        maxWidth={false} // Allow full width
         sx={{
           flexGrow: 1,
           p: 3,
@@ -337,16 +318,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             handleRefresh={handleRefresh}
             searchString={searchString}
             handleSearch={handleSearch}
-            browsers={browsers}
-            displayedBrowsers={displayedBrowsers}
-            setDisplayedBrowsers={setDisplayedBrowsers}
             toggleLayout={toggleLayout}
             layout={layout}
             toggleOrderBy={toggleOrderBy}
             orderBy={orderBy}
-            showThisWebsite={showThisWebsite}
-            setShowThisWebsite={setShowThisWebsite}
         />
+
+        <DeviceTabs
+            devices={browsers}
+            selectedDevice={selectedDevice}
+            onSelectDevice={setSelectedDevice}
+        />
+
         {isLoading && (
             <Typography
             my={12}

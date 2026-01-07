@@ -1,33 +1,21 @@
 import React, { useRef } from "react";
 import {
   RefreshTwoTone,
-  DevicesTwoTone,
-  CheckTwoTone,
   Grid3x3TwoTone,
   ListAltTwoTone,
   TimelineTwoTone,
   SortByAlphaTwoTone,
-  WebTwoTone,
   SearchTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { saveItem } from "../utils/LocalStorageHelper";
-import { LAST_SAVED_DISPLAYED_BROWSERS_KEY, ORDER } from "../utils/constants";
+import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { isMobileDevice } from "../utils/isMobile";
 
 // Shadcn UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-  DropdownMenuSeparator,
-  DropdownMenuLabel,
-} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -41,15 +29,10 @@ interface IToolbarProps {
   searchString: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   handleSearch: (e: any) => void;
-  browsers: string[];
-  displayedBrowsers: string[];
-  setDisplayedBrowsers: (browsers: string[]) => void;
   toggleLayout(): void;
   layout: Layout;
   toggleOrderBy(): void;
   orderBy: ORDER;
-  showThisWebsite: boolean;
-  setShowThisWebsite(shouldShow: boolean): void;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -57,15 +40,10 @@ const Toolbar: React.FC<IToolbarProps> = ({
   handleRefresh,
   searchString,
   handleSearch,
-  browsers,
-  displayedBrowsers,
-  setDisplayedBrowsers,
   toggleLayout,
   layout,
   toggleOrderBy,
   orderBy,
-  showThisWebsite,
-  setShowThisWebsite,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
   const isMobileBrowser = isMobileDevice(navigator);
@@ -77,22 +55,6 @@ const Toolbar: React.FC<IToolbarProps> = ({
     },
     isCombinedWithCtrl: true,
   });
-
-  const handleSelectDisplayBrowsers = (browser: string) => {
-    // Prevent closing the dropdown when selecting items by not handling it here
-    // The default behavior of DropdownMenuItem is to close, so we might need `onSelect={(e) => e.preventDefault()}`
-
-    const newBrowsers = displayedBrowsers.includes(browser)
-      ? displayedBrowsers.filter((f) => f !== browser)
-      : [...displayedBrowsers, browser];
-
-    setDisplayedBrowsers(newBrowsers);
-    saveItem(LAST_SAVED_DISPLAYED_BROWSERS_KEY, newBrowsers.join(","));
-  };
-
-  const handleSetShowThisWebsite = () => {
-    setShowThisWebsite(!showThisWebsite);
-  };
 
   return (
     <div className="flex flex-col md:flex-row gap-2 md:items-center w-full mt-2">
@@ -144,7 +106,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         )}
       </div>
 
-      {/* Actions Row - On mobile: Refresh + Filter + Layout + Sort. On Desktop: Filter + Layout + Sort */}
+      {/* Actions Row - On mobile: Refresh + Layout + Sort. On Desktop: Layout + Sort */}
       <div className="flex items-center justify-between md:justify-start gap-1">
         {/* Mobile Refresh Button */}
         <div className="md:hidden">
@@ -162,57 +124,6 @@ const Toolbar: React.FC<IToolbarProps> = ({
               )}
             </Button>
         </div>
-
-        {/* Device Filter */}
-        <DropdownMenu>
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="h-10 w-10">
-                    <DevicesTwoTone />
-                  </Button>
-                </DropdownMenuTrigger>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Device Filters</p>
-              </TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>Available devices</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {browsers.map((browser) => (
-              <DropdownMenuItem
-                key={browser}
-                onSelect={(e) => {
-                    e.preventDefault();
-                    handleSelectDisplayBrowsers(browser);
-                }}
-                className="flex items-center justify-between cursor-pointer"
-              >
-                <span>{browser || "Unknown"}</span>
-                {displayedBrowsers.includes(browser) && (
-                  <CheckTwoTone className="h-4 w-4 text-primary" />
-                )}
-              </DropdownMenuItem>
-            ))}
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-                onSelect={(e) => {
-                    e.preventDefault();
-                    handleSetShowThisWebsite();
-                }}
-                className="flex items-center justify-between cursor-pointer"
-            >
-              <div className="flex items-center gap-2">
-                <WebTwoTone className="h-4 w-4" />
-                <span>This website</span>
-              </div>
-              {showThisWebsite && <CheckTwoTone className="h-4 w-4 text-primary" />}
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
 
         {/* Layout Toggle */}
         <TooltipProvider>
