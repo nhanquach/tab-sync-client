@@ -4,6 +4,7 @@ import {
   AlertTitle,
   AlertDescription,
 } from "@/components/ui/alert";
+import { Loop } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -26,7 +27,8 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
   const [message, setMessage] = React.useState("");
   const [error, setError] = React.useState("");
 
-  const handleSendFeedback = async () => {
+  const handleSendFeedback = async (e: React.FormEvent) => {
+    e.preventDefault();
     setIsLoading(true);
     setError("");
 
@@ -45,7 +47,7 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
   };
 
   return (
-    <div className="space-y-4">
+    <form className="space-y-4" onSubmit={handleSendFeedback}>
       {message && (
         <Alert>
           <AlertTitle>Success</AlertTitle>
@@ -74,7 +76,9 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
       </div>
 
       <div className="grid w-full gap-1.5">
+        <Label htmlFor="feedback-description">Description</Label>
         <Textarea
+          id="feedback-description"
           placeholder=" More detail"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -85,12 +89,16 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
 
       <Button
         className="w-full mt-2"
-        onClick={handleSendFeedback}
+        type="submit"
         disabled={isLoading}
       >
-        {isLoading ? "Sending..." : "Send"}
+        {isLoading ? (
+          <Loop className="animate-spin" fontSize="small" />
+        ) : (
+          "Send"
+        )}
       </Button>
-    </div>
+    </form>
   );
 };
 
