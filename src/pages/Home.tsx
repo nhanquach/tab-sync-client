@@ -36,6 +36,7 @@ import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
+import { HomeSkeletonGrid } from "../components/HomeSkeletonGrid";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -340,15 +341,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 onSelectDevice={setSelectedDevice}
             />
 
-            {isLoading && (
-                <Typography
-                my={12}
-                textAlign={{ xs: "center", md: "justify" }}
-                color="#696969"
-                variant="h5"
-                >
-                Getting your tabs ...
-                </Typography>
+            {isLoading && urls.length === 0 && (
+               <HomeSkeletonGrid />
             )}
 
             {!isLoading && urls.length === 0 && (
@@ -356,7 +350,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             )}
 
             <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {!isLoading && urls.length > 0 && layout === "list" && (
+                {(urls.length > 0 && layout === "list") && (
                     <UrlList
                     view={currentView}
                     urls={urls}
@@ -364,7 +358,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                     />
                 )}
 
-                {!isLoading && urls.length > 0 && layout === "grid" && (
+                {(urls.length > 0 && layout === "grid") && (
                     <UrlGrid
                     view={currentView}
                     urls={urls}
