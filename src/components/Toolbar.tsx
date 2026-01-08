@@ -116,6 +116,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
               onClick={handleRefresh}
               disabled={isLoading}
               className="h-10 w-10"
+              aria-label="Refresh tabs"
             >
               {isLoading ? (
                  <RefreshTwoTone className="animate-spin" />
@@ -129,7 +130,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleLayout} className="h-10 w-10">
+              <Button variant="ghost" size="icon" onClick={toggleLayout} className="h-10 w-10" aria-label="Toggle layout">
                 {layout === "grid" ? <Grid3x3TwoTone /> : <ListAltTwoTone />}
               </Button>
             </TooltipTrigger>
@@ -143,7 +144,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         <TooltipProvider>
           <Tooltip>
             <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleOrderBy} className="h-10 w-10">
+              <Button variant="ghost" size="icon" onClick={toggleOrderBy} className="h-10 w-10" aria-label="Toggle sort order">
                 {orderBy === ORDER.TIME ? (
                   <TimelineTwoTone />
                 ) : (
