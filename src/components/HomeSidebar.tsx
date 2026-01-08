@@ -6,11 +6,11 @@ import { User } from "@supabase/supabase-js";
 import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
-import { headerHeight } from "./HomeAppBar";
 import { drawerWidth } from "../utils/dimensions";
 import Logo from "./Logo";
 import AccountSettings from "./AccountSettings";
 import FeedbackDialog from "./FeedbackDialog";
+import QRCodeDialog from "./QRCodeDialog";
 
 interface IHomeSidebarProps {
   view: string;
@@ -86,7 +86,8 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user }) => {
 
       {/* Bottom Section: Feedback + Settings */}
       <div className="flex flex-col items-center gap-4 mb-2">
-          <FeedbackDialog />
+          <QRCodeDialog />
+          <FeedbackDialog iconOnly />
           <AccountSettings user={user} />
       </div>
     </aside>
