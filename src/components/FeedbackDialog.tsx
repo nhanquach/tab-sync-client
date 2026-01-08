@@ -14,7 +14,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
-const FeedbackDialog = () => {
+interface FeedbackDialogProps {
+  iconOnly?: boolean;
+}
+
+const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
   const isMobile = isMobileApp();
   const [open, setOpen] = React.useState(false);
 
@@ -37,7 +41,7 @@ const FeedbackDialog = () => {
           className="min-w-[50px] md:min-w-0"
         >
           <FeedbackTwoTone />
-          <span className="hidden md:inline ml-2">Feedback & Support</span>
+          <span className={cn("ml-2", iconOnly ? "hidden" : "hidden md:inline")}>Feedback & Support</span>
         </Button>
       </DialogTrigger>
 

@@ -30,19 +30,13 @@ const QRCodeDialog: React.FC<Props> = () => {
         <Button
           size="sm"
           variant="ghost"
-          className="flex md:hidden min-w-[50px]"
+          className="flex min-w-[50px]"
         >
           <QrCode2TwoTone />
         </Button>
       </DialogTrigger>
 
       <DialogContent className="h-screen w-screen max-w-none pt-10 sm:max-w-none sm:h-auto sm:w-auto sm:rounded-lg">
-        {/* Note: Original had fullScreen for everyone? No, it had fullScreen prop on Dialog, which usually means full screen on mobile, but maybe always?
-           Original code: <Dialog fullScreen fullWidth ...>
-           If it was always fullScreen, I should match that. But usually QRCode dialogs are small on desktop.
-           Wait, `fullScreen` prop in MUI defaults to false, but here it was explicitly passed as true (boolean shorthand).
-           So it was always full screen.
-        */}
         <DialogHeader className={isMobile ? "mt-2" : ""}>
           <DialogTitle>QR Code</DialogTitle>
         </DialogHeader>

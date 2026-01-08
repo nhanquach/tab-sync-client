@@ -33,9 +33,9 @@ import {
   ORDER,
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
-import { drawerWidth } from "../utils/dimensions";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
+import { cn } from "@/lib/utils";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -142,6 +142,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (error) {
       console.error(error);
       showToast("An error occurred while fetching open tabs.");
+      setIsLoading(false); // Ensure loading state is turned off on error
       return;
     }
 
@@ -298,81 +299,91 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50/50 via-purple-50/50 to-pink-50/50 dark:from-slate-950 dark:via-indigo-950/20 dark:to-slate-950">
+    <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
       <HomeAppBar user={user} />
-      <HomeSidebar view={currentView} />
-      <Container
-        maxWidth={false} // Allow full width
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          mt: 0, // Reset default margin
-          paddingTop: `${headerHeight + 24}px`, // headerHeight + some padding
-          width: { md: `calc(100% - ${drawerWidth}px)` },
-          ml: { md: `${drawerWidth}px` },
-        }}
-        component="main"
-      >
-        <Toolbar
-            isLoading={isLoading}
-            handleRefresh={handleRefresh}
-            searchString={searchString}
-            handleSearch={handleSearch}
-            toggleLayout={toggleLayout}
-            layout={layout}
-            toggleOrderBy={toggleOrderBy}
-            orderBy={orderBy}
-        />
 
-        <DeviceTabs
-            devices={browsers}
-            selectedDevice={selectedDevice}
-            onSelectDevice={setSelectedDevice}
-        />
+      <div className="flex flex-1">
+          <HomeSidebar view={currentView} user={user} />
 
-        {isLoading && (
-            <Typography
-            my={12}
-            textAlign={{ xs: "center", md: "justify" }}
-            color="#696969"
-            variant="h5"
-            >
-            Getting your tabs ...
-            </Typography>
-        )}
+          <Container
+            maxWidth={false}
+            className={cn(
+                "flex-grow p-6 transition-all duration-300 min-w-0"
+            )}
+            sx={{
+              mt: 0,
+              // Desktop: Little to no top padding needed (AppBar gone)
+              // Mobile: Needs to clear fixed AppBar (64px) + Gap
+              paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
+            }}
+            component="main"
+          >
+            {/* Desktop Page Title */}
+            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+                <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
+            </div>
 
-        {!isLoading && urls.length === 0 && (
-            <NoData isEmptySearch={!!searchString} />
-        )}
+            <Toolbar
+                isLoading={isLoading}
+                handleRefresh={handleRefresh}
+                searchString={searchString}
+                handleSearch={handleSearch}
+                toggleLayout={toggleLayout}
+                layout={layout}
+                toggleOrderBy={toggleOrderBy}
+                orderBy={orderBy}
+            />
 
-        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-            {!isLoading && urls.length > 0 && layout === "list" && (
-                <UrlList
-                view={currentView}
-                urls={urls}
-                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                />
+            <DeviceTabs
+                devices={browsers}
+                selectedDevice={selectedDevice}
+                onSelectDevice={setSelectedDevice}
+            />
+
+            {isLoading && (
+                <Typography
+                my={12}
+                textAlign={{ xs: "center", md: "justify" }}
+                color="#696969"
+                variant="h5"
+                >
+                Getting your tabs ...
+                </Typography>
             )}
 
-            {!isLoading && urls.length > 0 && layout === "grid" && (
-                <UrlGrid
-                view={currentView}
-                urls={urls}
-                onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                />
+            {!isLoading && urls.length === 0 && (
+                <NoData isEmptySearch={!!searchString} />
             )}
-        </div>
 
-        <TipsFooter  />
-        <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
-        <Snackbar
-            open={toast.show}
-            autoHideDuration={1000}
-            onClose={closeToast}
-            message={toast.message || ""}
-            anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        />
-      </Container>
+            <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                {!isLoading && urls.length > 0 && layout === "list" && (
+                    <UrlList
+                    view={currentView}
+                    urls={urls}
+                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                    />
+                )}
+
+                {!isLoading && urls.length > 0 && layout === "grid" && (
+                    <UrlGrid
+                    view={currentView}
+                    urls={urls}
+                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                    />
+                )}
+            </div>
+
+            <TipsFooter  />
+            <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
+            <Snackbar
+                open={toast.show}
+                autoHideDuration={1000}
+                onClose={closeToast}
+                message={toast.message || ""}
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            />
+          </Container>
+      </div>
     </div>
   );
 };
