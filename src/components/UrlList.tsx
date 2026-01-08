@@ -1,7 +1,7 @@
 import React from "react";
 // @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
-import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, AppsTwoTone } from "@mui/icons-material";
+import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone } from "@mui/icons-material";
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";

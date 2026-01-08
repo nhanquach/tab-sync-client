@@ -78,16 +78,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     }
   }, [currentView, navigate]);
 
-  const [tabs, setTabs] = useState<ITab[]>([
-      { id: 1, title: "Google - Search Engine", url: "https://google.com", deviceName: "MacBook Pro", timeStamp: new Date().toISOString(), favIconUrl: "https://www.google.com/favicon.ico", index: 0, windowId: "1" },
-      { id: 2, title: "GitHub - Where the world builds software", url: "https://github.com", deviceName: "iPhone 15", timeStamp: new Date().toISOString(), favIconUrl: "https://github.com/favicon.ico", index: 1, windowId: "1" },
-      { id: 3, title: "Material Design 3 - Expressive", url: "https://m3.material.io", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "https://gstatic.com/favicon.ico", index: 2, windowId: "1" },
-      { id: 4, title: "Another Link", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 3, windowId: "1" },
-      { id: 5, title: "Another Link 2", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 4, windowId: "1" },
-      { id: 6, title: "Another Link 3", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 5, windowId: "1" },
-      { id: 7, title: "Another Link 4", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 6, windowId: "1" },
-      { id: 8, title: "Another Link 5", url: "https://example.com", deviceName: "Windows PC", timeStamp: new Date().toISOString(), favIconUrl: "", index: 7, windowId: "1" },
-  ]);
+  const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
   const [searchString, setSearchString] = useState<string>("");
@@ -151,6 +142,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (error) {
       console.error(error);
       showToast("An error occurred while fetching open tabs.");
+      setIsLoading(false); // Ensure loading state is turned off on error
       return;
     }
 

@@ -1,6 +1,5 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { headerHeight } from "./HomeAppBar";
 import { LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, AppsTwoTone, Check } from "@mui/icons-material";
 
 interface IDeviceTabsProps {
