@@ -36,7 +36,7 @@ import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
-import { HomeSkeletonGrid } from "../components/HomeSkeletonGrid";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -342,7 +342,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             />
 
             {isLoading && urls.length === 0 && (
-               <HomeSkeletonGrid />
+               <LoadingSpinner />
             )}
 
             {!isLoading && urls.length === 0 && (

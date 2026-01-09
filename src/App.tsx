@@ -14,7 +14,7 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
-import LoadingHomeShell from "./components/LoadingHomeShell";
+import LoadingSpinner from "./components/LoadingSpinner";
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -114,7 +114,7 @@ function AppContent() {
       <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex", minHeight: "100vh" }}>
           <CssBaseline />
-          <LoadingHomeShell />
+          <LoadingSpinner fullScreen />
         </Box>
       </ThemeProvider>
     );
