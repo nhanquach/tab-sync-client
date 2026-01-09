@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CloseTwoTone, QrCode2TwoTone } from "@mui/icons-material";
+import { QrCode2TwoTone } from "@mui/icons-material";
 
 import DownloadCard from "./CardDownload";
 import QRCode from "./QRCode";
@@ -9,13 +9,13 @@ import { isMobileApp } from "../utils/isMobile";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
-  DialogTitle,
   DialogTrigger,
-  DialogClose,
-  DialogFooter
+  DialogFooter,
+  DialogTitle,
+  DialogDescription
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-empty-object-type
 type Props = {};
@@ -36,31 +36,65 @@ const QRCodeDialog: React.FC<Props> = () => {
         </Button>
       </DialogTrigger>
 
-      <DialogContent className="h-screen w-screen max-w-none pt-10 sm:max-w-none sm:h-auto sm:w-auto sm:rounded-lg">
-        <DialogHeader className={isMobile ? "mt-2" : ""}>
-          <DialogTitle>QR Code</DialogTitle>
-        </DialogHeader>
-
-        {!isMobile && (
-           <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-            <CloseTwoTone />
-            <span className="sr-only">Close</span>
-          </DialogClose>
+      <DialogContent
+        className={cn(
+          "shadow-xl",
+          // MD3 Styling Replacement with Asymmetric Quacky Shape
+          "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
+          isMobile
+            ? "h-screen w-screen max-w-none pt-10 rounded-none overflow-y-auto"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
         )}
+      >
+        <div className={cn(
+          "flex flex-col md:flex-row md:min-h-[600px]",
+          // Remove h-full on mobile to allow growing
+          "h-auto md:h-full"
+        )}>
+          {/* Left Column (Hero) - Quacky Expressive Style */}
+          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-center space-y-8 relative overflow-hidden shrink-0">
 
-        <div className="flex flex-col gap-4 py-4">
-          <div className={`flex justify-center ${isMobile ? "mb-4 -mt-4" : "mb-8"}`}>
-            <QRCode text={window.location.href} />
+            {/* Decorative background blob */}
+            <div className="absolute -left-20 -bottom-20 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl" />
+
+            <div className="flex items-center gap-2 transform rotate-12 transition-transform hover:rotate-0 duration-500">
+               <QrCode2TwoTone className="!text-6xl md:!text-8xl opacity-80" />
+            </div>
+
+            <div className="space-y-2 md:space-y-4 z-10 text-center">
+              <DialogTitle className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
+                Scan me <span className="inline-block hover:animate-bounce">🤳</span>
+              </DialogTitle>
+              <DialogDescription className="text-lg md:text-xl font-medium opacity-90 text-md-sys-color-on-tertiary-container">
+                To open on mobile
+              </DialogDescription>
+            </div>
+
+            <div className="relative z-10 flex justify-center transform hover:scale-105 transition-transform duration-300">
+              <div className="bg-white p-4 rounded-[24px] shadow-lg">
+                 <QRCode text={window.location.href} />
+              </div>
+            </div>
           </div>
-          <DownloadCard />
-          <CardShare />
-        </div>
 
-        <DialogFooter className={isMobile ? "mb-4" : ""}>
-          <Button variant="ghost" onClick={() => setShowModal(false)} className="w-full">
-            Close
-          </Button>
-        </DialogFooter>
+          {/* Right Column (Actions) */}
+          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-transparent shrink-0">
+            {/* Custom Close button removed to avoid duplicates */}
+
+            <div className="flex flex-col gap-6">
+              <DownloadCard />
+              <CardShare />
+            </div>
+
+            {isMobile && (
+              <DialogFooter className="mt-6">
+                <Button variant="outline" onClick={() => setShowModal(false)} className="w-full">
+                  Close
+                </Button>
+              </DialogFooter>
+            )}
+          </div>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -2,7 +2,6 @@ import React from "react";
 import { Container } from "@mui/material";
 
 import { cn } from "@/lib/utils";
-import { drawerWidth } from "../utils/dimensions";
 import { headerHeight } from "./HomeAppBar";
 import HomeSidebar from "./HomeSidebar";
 import HomeAppBar from "./HomeAppBar";
