@@ -15,9 +15,10 @@ import QRCodeDialog from "./QRCodeDialog";
 interface IHomeSidebarProps {
   view: string;
   user?: User;
+  isLoading?: boolean;
 }
 
-const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user }) => {
+const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = false }) => {
   return (
     <aside
       className={cn(
@@ -88,7 +89,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user }) => {
       <div className="flex flex-col items-center gap-4 mb-2">
           <QRCodeDialog />
           <FeedbackDialog iconOnly />
-          <AccountSettings user={user} />
+          <AccountSettings user={user} isLoading={isLoading} />
       </div>
     </aside>
   );

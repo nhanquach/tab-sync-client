@@ -14,6 +14,7 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
+import LoadingHomeShell from "./components/LoadingHomeShell";
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -109,7 +110,14 @@ function AppContent() {
   const showBackground = !location.pathname.startsWith(ROUTES.HOME);
 
   if (loading) {
-    return null; // Or a loading spinner
+    return (
+      <ThemeProvider theme={theme}>
+        <Box sx={{ display: "flex", minHeight: "100vh" }}>
+          <CssBaseline />
+          <LoadingHomeShell />
+        </Box>
+      </ThemeProvider>
+    );
   }
 
   return (

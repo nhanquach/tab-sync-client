@@ -36,6 +36,7 @@ import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -308,7 +309,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           <Container
             maxWidth={false}
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative"
             )}
             sx={{
               mt: 0,
@@ -340,15 +341,11 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 onSelectDevice={setSelectedDevice}
             />
 
+            {/* Loader Overlay */}
             {isLoading && (
-                <Typography
-                my={12}
-                textAlign={{ xs: "center", md: "justify" }}
-                color="#696969"
-                variant="h5"
-                >
-                Getting your tabs ...
-                </Typography>
+              <div className="absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface/50 backdrop-blur-sm pt-32">
+                 <LoadingSpinner />
+              </div>
             )}
 
             {!isLoading && urls.length === 0 && (
@@ -356,7 +353,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             )}
 
             <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {!isLoading && urls.length > 0 && layout === "list" && (
+                {(urls.length > 0 && layout === "list") && (
                     <UrlList
                     view={currentView}
                     urls={urls}
@@ -364,7 +361,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                     />
                 )}
 
-                {!isLoading && urls.length > 0 && layout === "grid" && (
+                {(urls.length > 0 && layout === "grid") && (
                     <UrlGrid
                     view={currentView}
                     urls={urls}
