@@ -39,6 +39,7 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
           size="sm"
           variant="ghost"
           className="min-w-[50px] md:min-w-0"
+          aria-label="Feedback & Support"
         >
           <FeedbackTwoTone />
           <span className={cn("ml-2", iconOnly ? "hidden" : "hidden md:inline")}>Feedback & Support</span>
