@@ -50,37 +50,41 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
           // MD3 Styling Replacement with Asymmetric Quacky Shape
           "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
           isMobile
-            ? "h-screen w-screen max-w-none pt-10 rounded-none"
-            : "sm:max-w-5xl p-0 overflow-hidden rounded-tl-[64px] rounded-br-[64px] rounded-tr-[24px] rounded-bl-[24px]"
+            ? "h-screen w-screen max-w-none pt-10 rounded-none overflow-y-auto"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
         )}
       >
-        <div className="flex flex-col md:flex-row h-full md:min-h-[600px]">
+        <div className={cn(
+          "flex flex-col md:flex-row md:min-h-[600px]",
+          // Remove h-full on mobile to allow growing
+          "h-auto md:h-full"
+        )}>
           {/* Left Column (Hero) - Quacky Expressive Style */}
-          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-start space-y-8 relative overflow-hidden">
+          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-start space-y-6 md:space-y-8 relative overflow-hidden shrink-0">
 
             {/* Decorative background blob */}
-            <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -right-20 -top-20 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl" />
 
             <div className="flex items-center gap-2 transform -rotate-12 transition-transform hover:rotate-0 duration-500 origin-bottom-left">
-              {/* Force large font size for the icon using style or tailwind !important */}
-              <HandshakeOutlined className="!text-8xl opacity-80" style={{ fontSize: '6rem' }} />
+              {/* Force large font size using Tailwind !text classes which override MUI styles */}
+              <HandshakeOutlined className="!text-6xl md:!text-8xl opacity-80" />
             </div>
 
-            <div className="space-y-4 z-10">
-              <h2 className="text-6xl font-black tracking-tighter leading-none">
+            <div className="space-y-2 md:space-y-4 z-10">
+              <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
                 Hi there <span className="inline-block hover:animate-bounce">🦆</span>
               </h2>
-              <p className="text-xl font-medium opacity-90 max-w-sm">
-                Your feedback fuels our fire <span className="text-2xl">🔥</span>
+              <p className="text-lg md:text-xl font-medium opacity-90 max-w-sm">
+                Your feedback fuels our fire <span className="text-xl md:text-2xl">🔥</span>
               </p>
             </div>
 
-            <div className="opacity-80 text-lg font-medium">
+            <div className="opacity-80 text-base md:text-lg font-medium">
               <p>Thank you for trying out!</p>
               <p>We'd love to hear from you.</p>
             </div>
 
-            <div className="pt-8">
+            <div className="pt-4 md:pt-8">
               <p className="text-sm opacity-80">
                 Need more help?&nbsp;
                 <a
@@ -94,7 +98,7 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
           </div>
 
           {/* Right Column (Form) */}
-          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-transparent">
+          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-transparent shrink-0">
             {/* Custom Close button removed to avoid duplicates with the default DialogContent close button */}
 
             <FeedbackForm sendFeedback={onSendFeedback} />
