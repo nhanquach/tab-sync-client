@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Container, Snackbar } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 import {
   getOpenTabs,
@@ -10,6 +11,8 @@ import {
   archiveOpenTabs,
   removeArchivedTabs,
   sendTab,
+  removeTab,
+  archiveTab
 } from "../clients";
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
@@ -37,6 +40,8 @@ import { ROUTES } from "../routes";
 import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
+import TabDetailView from "../components/TabDetailView";
+import { isMobileApp } from "../utils/isMobile";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -66,11 +71,16 @@ const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
 const Home: React.FC<IHomeProps> = ({ user }) => {
   const params = useParams();
   const navigate = useNavigate();
+  const isMobile = isMobileApp();
+
   // Don't default to OPEN_TABS here, let the effect handle it
   const currentView = (params.view as TABS_VIEWS);
 
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
+
+  // Selection State
+  const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
 
   // Validate view and redirect if missing or invalid
   useEffect(() => {
@@ -250,13 +260,26 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const clearOpenTabs = (deviceName: string) => {
     archiveOpenTabs(deviceName);
-    // Logic for clearing tabs doesn't really need to update selectedDevice
-    // but if the device disappears, we might want to switch to 'All'
-    // For now, keep it simple.
   };
 
   const clearArchivedTabs = (deviceName: string) => {
     removeArchivedTabs(deviceName);
+  };
+
+  // Single Tab Actions
+  const handleArchiveTab = async (tab: ITab) => {
+     // archiveTab expects an array of tabs
+     await archiveTab([tab]);
+     showToast("Tab archived.");
+     if (selectedTab?.id === tab.id) setSelectedTab(null);
+  };
+
+  const handleDeleteTab = async (tab: ITab) => {
+     // removeTab is the likely candidate for "Delete" if it removes from DB
+     // Assuming removeTab(ids) handles deletion
+     await removeTab([tab.id]);
+     showToast("Tab deleted.");
+     if (selectedTab?.id === tab.id) setSelectedTab(null);
   };
 
   const handleRefresh = async () => {
@@ -303,43 +326,48 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
       <HomeAppBar user={user} />
 
-      <div className="flex flex-1">
+      <div className="flex flex-1 overflow-hidden">
           <HomeSidebar view={currentView} user={user} />
 
           <Container
             maxWidth={false}
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative flex flex-col",
+                // Ensure the container itself can scroll if needed, or its children do
+                "h-screen overflow-hidden"
             )}
             sx={{
               mt: 0,
               // Desktop: Little to no top padding needed (AppBar gone)
               // Mobile: Needs to clear fixed AppBar (64px) + Gap
               paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
+              paddingBottom: { xs: "100px", md: "24px" } // Bottom nav space
             }}
             component="main"
           >
             {/* Desktop Page Title */}
-            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+            <div className="hidden md:flex items-center gap-3 mb-8 shrink-0 animate-in fade-in slide-in-from-left-4 duration-500">
                 <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
             </div>
 
-            <Toolbar
-                isLoading={isLoading}
-                handleRefresh={handleRefresh}
-                searchString={searchString}
-                handleSearch={handleSearch}
-                toggleLayout={toggleLayout}
-                layout={layout}
-                toggleOrderBy={toggleOrderBy}
-                orderBy={orderBy}
-            />
+            <div className="shrink-0">
+                <Toolbar
+                    isLoading={isLoading}
+                    handleRefresh={handleRefresh}
+                    searchString={searchString}
+                    handleSearch={handleSearch}
+                    toggleLayout={toggleLayout}
+                    layout={layout}
+                    toggleOrderBy={toggleOrderBy}
+                    orderBy={orderBy}
+                />
 
-            <DeviceTabs
-                devices={browsers}
-                selectedDevice={selectedDevice}
-                onSelectDevice={setSelectedDevice}
-            />
+                <DeviceTabs
+                    devices={browsers}
+                    selectedDevice={selectedDevice}
+                    onSelectDevice={setSelectedDevice}
+                />
+            </div>
 
             {/* Loader Overlay */}
             {isLoading && (
@@ -352,22 +380,44 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 <NoData isEmptySearch={!!searchString} />
             )}
 
-            <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {(urls.length > 0 && layout === "list") && (
-                    <UrlList
-                    view={currentView}
-                    urls={urls}
-                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                    />
-                )}
+            {/* Split View Container */}
+            <div className="flex flex-1 gap-6 min-h-0 relative">
 
-                {(urls.length > 0 && layout === "grid") && (
-                    <UrlGrid
-                    view={currentView}
-                    urls={urls}
-                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                    />
-                )}
+                {/* Left Panel: List/Grid */}
+                <div className={cn(
+                    "flex-1 overflow-y-auto pr-2 pb-20 md:pb-0 scrollbar-hide",
+                    "animate-in fade-in slide-in-from-bottom-4 duration-500"
+                )}>
+                    {(urls.length > 0 && layout === "list") && (
+                        <UrlList
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={setSelectedTab}
+                            selectedTabId={selectedTab?.id}
+                        />
+                    )}
+
+                    {(urls.length > 0 && layout === "grid") && (
+                        <UrlGrid
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={setSelectedTab}
+                            selectedTabId={selectedTab?.id}
+                        />
+                    )}
+                </div>
+
+                {/* Right Panel: Detail View (Desktop Only) */}
+                <div className="hidden md:block w-2/5 xl:w-[45%] h-full sticky top-0 animate-in fade-in slide-in-from-right-8 duration-500">
+                     <TabDetailView
+                        tab={selectedTab}
+                        view={currentView}
+                        onArchive={handleArchiveTab}
+                        onDelete={handleDeleteTab}
+                     />
+                </div>
             </div>
 
             <TipsFooter  />
@@ -381,6 +431,19 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             />
           </Container>
       </div>
+
+      {/* Mobile Detail Dialog */}
+      <Dialog open={!!selectedTab && (isMobile || window.innerWidth < 768)} onOpenChange={(open) => !open && setSelectedTab(null)}>
+        <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-none w-screen h-screen sm:max-w-md">
+            <TabDetailView
+                tab={selectedTab}
+                onClose={() => setSelectedTab(null)}
+                view={currentView}
+                onArchive={handleArchiveTab}
+                onDelete={handleDeleteTab}
+            />
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };

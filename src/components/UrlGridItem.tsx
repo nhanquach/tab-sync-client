@@ -4,45 +4,63 @@ import dayjs from "dayjs";
 
 import { ITab } from "../interfaces/iTab";
 import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
+import { cn } from "@/lib/utils";
 
 interface IUrlGridItemProps {
   tab: ITab;
+  isSelected?: boolean;
+  onSelect?: (tab: ITab) => void;
 }
 
-const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab }) => {
+const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, isSelected, onSelect }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
+  const handleClick = (e: React.MouseEvent) => {
+    if (onSelect) {
+        e.preventDefault();
+        onSelect(tab);
+    }
+  };
+
   return (
-    <div className="flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-colors shadow-sm">
+    <div
+        onClick={handleClick}
+        className={cn(
+            "flex flex-col h-full p-3 rounded-xl border transition-all cursor-pointer shadow-sm relative",
+            isSelected
+                ? "bg-md-sys-color-secondary-container/20 border-md-sys-color-primary ring-2 ring-md-sys-color-primary/20"
+                : "bg-md-sys-color-surface-container-low hover:bg-md-sys-color-surface-container hover:shadow-md border-transparent"
+        )}
+    >
       <div className="flex items-center gap-2 mb-2">
         {!showFallback ? (
           <img
             src={tab.favIconUrl}
             height={24}
             width={24}
-            className="min-w-[24px] rounded-sm"
+            className="min-w-[24px] rounded-sm bg-white p-0.5"
             alt="favicon"
             onError={handleOnErrorImage}
           />
         ) : (
-          <WebStoriesTwoTone className="text-muted-foreground" style={{ fontSize: 24 }} />
+          <WebStoriesTwoTone className="text-md-sys-color-on-surface-variant" style={{ fontSize: 24 }} />
         )}
-        <div className="text-xs text-muted-foreground/80 italic ml-auto">
+        <div className="text-xs text-md-sys-color-outline italic ml-auto">
           {dayjs(tab.timeStamp).format("DD MMM")}
         </div>
       </div>
 
-      <a
-        href={tab.url}
-        target="_blank"
-        rel="noreferrer"
-        className="font-semibold text-sm text-foreground hover:underline line-clamp-2 mb-1"
+      <span
+        className={cn(
+            "font-semibold text-sm line-clamp-2 mb-1",
+            isSelected ? "text-md-sys-color-primary" : "text-md-sys-color-on-surface"
+        )}
         title={tab.title}
       >
         {tab.title}
-      </a>
+      </span>
 
-      <div className="text-xs text-muted-foreground truncate mt-auto" title={tab.url}>
+      <div className="text-xs text-md-sys-color-on-surface-variant truncate mt-auto opacity-70" title={tab.url}>
         {tab.url}
       </div>
     </div>
