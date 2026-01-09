@@ -21,7 +21,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ fullScreen, className }
   }
 
   return (
-    <div className={cn("flex items-center justify-center w-full py-24 animate-in fade-in zoom-in-95 duration-500", className)}>
+    <div className={cn("flex items-center justify-center w-full h-full animate-in fade-in zoom-in-95 duration-500", className)}>
        <TypewriterLoader phrases={["Getting tabs...", "Syncing...", "Just a moment..."]} />
     </div>
   );
