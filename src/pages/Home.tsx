@@ -79,20 +79,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     }
   }, [currentView, navigate]);
 
-  // Handle overlay state for smoother transition
-  const [showLoader, setShowLoader] = useState(true);
-
-  useEffect(() => {
-    if (isLoading) {
-      setShowLoader(true);
-    } else {
-      // Delay hiding the loader slightly to allow content to render underneath
-      // Then fade out (handled by CSS transition on opacity)
-      const timer = setTimeout(() => setShowLoader(false), 500);
-      return () => clearTimeout(timer);
-    }
-  }, [isLoading]);
-
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
 
@@ -356,20 +342,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             />
 
             {/* Loader Overlay */}
-            <div
-              className={cn(
-                "absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface transition-opacity duration-700 ease-in-out pt-32",
-                showLoader ? "opacity-100" : "opacity-0 pointer-events-none"
-              )}
-            >
-               <LoadingSpinner />
-            </div>
+            {isLoading && (
+              <div className="absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface/50 backdrop-blur-sm pt-32">
+                 <LoadingSpinner />
+              </div>
+            )}
 
             {!isLoading && urls.length === 0 && (
                 <NoData isEmptySearch={!!searchString} />
             )}
 
-            <div key={currentView} className={cn("animate-in fade-in slide-in-from-bottom-4 duration-500 transition-opacity delay-300", showLoader ? "opacity-0" : "opacity-100")}>
+            <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
                 {(urls.length > 0 && layout === "list") && (
                     <UrlList
                     view={currentView}
