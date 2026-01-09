@@ -47,38 +47,45 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
       <DialogContent
         className={cn(
           "shadow-xl",
-          // MD3 Styling Replacement
+          // MD3 Styling Replacement with Asymmetric Quacky Shape
           "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
           isMobile
             ? "h-screen w-screen max-w-none pt-10 rounded-none"
-            : "sm:max-w-5xl p-0 overflow-hidden rounded-[28px]"
+            : "sm:max-w-5xl p-0 overflow-hidden rounded-tl-[64px] rounded-br-[64px] rounded-tr-[24px] rounded-bl-[24px]"
         )}
       >
         <div className="flex flex-col md:flex-row h-full md:min-h-[600px]">
-          {/* Left Column (Hero) */}
-          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-secondary-container text-md-sys-color-on-secondary-container flex flex-col justify-center items-start space-y-6">
-            <div className="flex items-center gap-2">
-              <HandshakeOutlined className="text-5xl" />
+          {/* Left Column (Hero) - Quacky Expressive Style */}
+          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-start space-y-8 relative overflow-hidden">
+
+            {/* Decorative background blob */}
+            <div className="absolute -right-20 -top-20 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
+
+            <div className="flex items-center gap-2 transform -rotate-12 transition-transform hover:rotate-0 duration-500 origin-bottom-left">
+              {/* Force large font size for the icon using style or tailwind !important */}
+              <HandshakeOutlined className="!text-8xl opacity-80" style={{ fontSize: '6rem' }} />
             </div>
 
-            <div className="space-y-2">
-              <h2 className="text-3xl font-bold tracking-tight">Hi there 🙌🏼</h2>
-              <p className="text-lg opacity-80">
-                Your feedback fuels our fire 🔥
+            <div className="space-y-4 z-10">
+              <h2 className="text-6xl font-black tracking-tighter leading-none">
+                Hi there <span className="inline-block hover:animate-bounce">🦆</span>
+              </h2>
+              <p className="text-xl font-medium opacity-90 max-w-sm">
+                Your feedback fuels our fire <span className="text-2xl">🔥</span>
               </p>
             </div>
 
-            <div className="opacity-80">
+            <div className="opacity-80 text-lg font-medium">
               <p>Thank you for trying out!</p>
-              <p>We'd love to hear from you. All feedback is welcome!</p>
+              <p>We'd love to hear from you.</p>
             </div>
 
-            <div className="pt-4">
+            <div className="pt-8">
               <p className="text-sm opacity-80">
                 Need more help?&nbsp;
                 <a
                   href="mailto:qtrongnhan+tabsync+support@gmail.com?subject=[TabSync]"
-                  className="hover:underline font-medium font-bold"
+                  className="hover:underline font-bold"
                 >
                   Contact us via email
                 </a>
