@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 
 interface IFeedbackProps {
   sendFeedback: (type: string, description: string) => void;
@@ -46,10 +47,13 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
     setIsLoading(false);
   };
 
+  const inputClasses = "bg-transparent border-md-sys-color-outline focus:ring-md-sys-color-primary focus:border-md-sys-color-primary placeholder:text-md-sys-color-on-surface-variant/50 text-md-sys-color-on-surface";
+  const labelClasses = "text-md-sys-color-on-surface font-medium";
+
   return (
     <form className="space-y-4" onSubmit={handleSendFeedback}>
       {message && (
-        <Alert>
+        <Alert className="bg-green-100 border-green-200 text-green-800 dark:bg-green-900/20 dark:border-green-900/50 dark:text-green-300">
           <AlertTitle>Success</AlertTitle>
           <AlertDescription>{message}</AlertDescription>
         </Alert>
@@ -62,12 +66,12 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
       )}
 
       <div className="grid w-full items-center gap-1.5">
-        <Label htmlFor="feedback-type">Lemme tell you about</Label>
+        <Label htmlFor="feedback-type" className={labelClasses}>Lemme tell you about</Label>
         <Select value={type} onValueChange={setType}>
-          <SelectTrigger id="feedback-type">
+          <SelectTrigger id="feedback-type" className={cn(inputClasses)}>
             <SelectValue placeholder="Select type" />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent className="bg-md-sys-color-surface-container text-md-sys-color-on-surface border-md-sys-color-outline/50">
             <SelectItem value="bug">a bug</SelectItem>
             <SelectItem value="suggestion">a feature suggestion</SelectItem>
             <SelectItem value="other">something else</SelectItem>
@@ -76,19 +80,19 @@ const FeedbackForm: React.FC<IFeedbackProps> = ({ sendFeedback }) => {
       </div>
 
       <div className="grid w-full gap-1.5">
-        <Label htmlFor="feedback-description">Description</Label>
+        <Label htmlFor="feedback-description" className={labelClasses}>Description</Label>
         <Textarea
           id="feedback-description"
           placeholder=" More detail"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="min-h-[150px] font-sans text-sm"
+          className={cn("min-h-[150px] font-sans text-sm", inputClasses)}
           required
         />
       </div>
 
       <Button
-        className="w-full mt-2"
+        className="w-full mt-2 bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90 rounded-full"
         type="submit"
         disabled={isLoading}
       >

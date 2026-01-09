@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CloseTwoTone, QrCode2TwoTone } from "@mui/icons-material";
+import { QrCode2TwoTone } from "@mui/icons-material";
 
 import DownloadCard from "./CardDownload";
 import QRCode from "./QRCode";
@@ -10,7 +10,6 @@ import {
   Dialog,
   DialogContent,
   DialogTrigger,
-  DialogClose,
   DialogFooter,
   DialogTitle,
   DialogDescription
@@ -39,55 +38,57 @@ const QRCodeDialog: React.FC<Props> = () => {
 
       <DialogContent
         className={cn(
-          "bg-white/90 dark:bg-black/90 backdrop-blur-3xl border border-white/20 shadow-2xl",
+          "shadow-xl",
+          // MD3 Styling Replacement with Asymmetric Quacky Shape
+          "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
           isMobile
-            ? "h-screen w-screen max-w-none pt-10 rounded-none"
-            : "sm:max-w-5xl p-0 overflow-hidden sm:rounded-[32px]"
+            ? "h-screen w-screen max-w-none pt-10 rounded-none overflow-y-auto"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
         )}
       >
-        <div className="flex flex-col md:flex-row h-full md:min-h-[600px]">
-          {/* Left Column (Hero) */}
-          <div className="relative flex-1 p-6 md:p-10 flex flex-col justify-center items-center space-y-8 overflow-hidden">
-             {/* Vibrant Gradient Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-indigo-600 to-violet-900 dark:from-indigo-900 dark:to-black z-0" />
+        <div className={cn(
+          "flex flex-col md:flex-row md:min-h-[600px]",
+          // Remove h-full on mobile to allow growing
+          "h-auto md:h-full"
+        )}>
+          {/* Left Column (Hero) - Quacky Expressive Style */}
+          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-center space-y-8 relative overflow-hidden shrink-0">
 
-            {/* Decorative background circle/glow */}
-            <div className="absolute -top-24 -left-24 w-64 h-64 bg-white/10 rounded-full blur-3xl z-0" />
-            <div className="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/20 rounded-full blur-3xl z-0" />
+            {/* Decorative background blob */}
+            <div className="absolute -left-20 -bottom-20 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl" />
 
-            <div className="relative z-10 space-y-2 text-center animate-in fade-in slide-in-from-left-8 duration-700">
-              <DialogTitle className="text-4xl md:text-5xl font-black tracking-tighter text-white drop-shadow-md">
-                QR Code
+            <div className="flex items-center gap-2 transform rotate-12 transition-transform hover:rotate-0 duration-500">
+               <QrCode2TwoTone className="!text-6xl md:!text-8xl opacity-80" />
+            </div>
+
+            <div className="space-y-2 md:space-y-4 z-10 text-center">
+              <DialogTitle className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
+                Scan me <span className="inline-block hover:animate-bounce">🤳</span>
               </DialogTitle>
-              <DialogDescription className="text-lg md:text-xl text-indigo-100 font-medium">
-                Scan to open on mobile
+              <DialogDescription className="text-lg md:text-xl font-medium opacity-90 text-md-sys-color-on-tertiary-container">
+                To open on mobile
               </DialogDescription>
             </div>
 
-            <div className="relative z-10 flex justify-center animate-in zoom-in-90 slide-in-from-bottom-8 duration-700 delay-100">
-              <div className="bg-white p-6 rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] dark:shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+            <div className="relative z-10 flex justify-center transform hover:scale-105 transition-transform duration-300">
+              <div className="bg-white p-4 rounded-[24px] shadow-lg">
                  <QRCode text={window.location.href} />
               </div>
             </div>
           </div>
 
           {/* Right Column (Actions) */}
-          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-background/50 backdrop-blur-sm">
-            {!isMobile && (
-              <DialogClose className="absolute right-6 top-6 rounded-full p-2 opacity-70 ring-offset-background transition-all hover:opacity-100 hover:bg-black/5 dark:hover:bg-white/10 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
-                <CloseTwoTone fontSize="large" />
-                <span className="sr-only">Close</span>
-              </DialogClose>
-            )}
+          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-transparent shrink-0">
+            {/* Custom Close button removed to avoid duplicates */}
 
-            <div className="flex flex-col gap-6 animate-in fade-in slide-in-from-right-4 duration-700 delay-200">
+            <div className="flex flex-col gap-6">
               <DownloadCard />
               <CardShare />
             </div>
 
             {isMobile && (
               <DialogFooter className="mt-6">
-                <Button variant="outline" onClick={() => setShowModal(false)} className="w-full rounded-xl h-12 text-lg">
+                <Button variant="outline" onClick={() => setShowModal(false)} className="w-full">
                   Close
                 </Button>
               </DialogFooter>
