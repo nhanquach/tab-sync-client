@@ -45,6 +45,12 @@
     --md-sys-color-secondary-container: 260 25% 90%;
     --md-sys-color-on-secondary-container: 260 15% 15%;
 
+    /* Tertiary - Pink/Raspberry for "Quacky" contrast */
+    --md-sys-color-tertiary: 330 60% 50%;
+    --md-sys-color-on-tertiary: 0 0% 100%;
+    --md-sys-color-tertiary-container: 330 80% 94%;
+    --md-sys-color-on-tertiary-container: 330 60% 20%;
+
     --md-sys-color-surface: 260 20% 98%;
     --md-sys-color-on-surface: 260 10% 10%;
     --md-sys-color-surface-container: 260 20% 94%;
@@ -94,6 +100,12 @@
     --md-sys-color-on-secondary: 260 20% 20%;
     --md-sys-color-secondary-container: 260 20% 35%;
     --md-sys-color-on-secondary-container: 260 20% 90%;
+
+    /* Tertiary - Pink/Raspberry Dark */
+    --md-sys-color-tertiary: 330 90% 80%;
+    --md-sys-color-on-tertiary: 330 60% 20%;
+    --md-sys-color-tertiary-container: 330 60% 35%;
+    --md-sys-color-on-tertiary-container: 330 90% 95%;
 
     --md-sys-color-surface: 260 20% 8%;
     --md-sys-color-on-surface: 260 10% 90%;

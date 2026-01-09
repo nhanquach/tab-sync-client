@@ -62,6 +62,11 @@ module.exports = {
         "md-sys-color-secondary-container": "hsl(var(--md-sys-color-secondary-container))",
         "md-sys-color-on-secondary-container": "hsl(var(--md-sys-color-on-secondary-container))",
 
+        "md-sys-color-tertiary": "hsl(var(--md-sys-color-tertiary))",
+        "md-sys-color-on-tertiary": "hsl(var(--md-sys-color-on-tertiary))",
+        "md-sys-color-tertiary-container": "hsl(var(--md-sys-color-tertiary-container))",
+        "md-sys-color-on-tertiary-container": "hsl(var(--md-sys-color-on-tertiary-container))",
+
         "md-sys-color-surface": "hsl(var(--md-sys-color-surface))",
         "md-sys-color-on-surface": "hsl(var(--md-sys-color-on-surface))",
         "md-sys-color-surface-container": "hsl(var(--md-sys-color-surface-container))",
