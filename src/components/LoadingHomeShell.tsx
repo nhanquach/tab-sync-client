@@ -1,7 +1,7 @@
 import React from "react";
 import { Container } from "@mui/material";
 
-import { Skeleton } from "@/components/ui/skeleton";
+import { ShimmerCard } from "@/components/ui/shimmer-card";
 import { cn } from "@/lib/utils";
 import { drawerWidth } from "../utils/dimensions";
 import { headerHeight } from "./HomeAppBar";
@@ -22,11 +22,11 @@ const LoadingHomeShell: React.FC = () => {
           )}
         >
           <div className="flex w-full items-center px-4 h-full justify-between">
-            <Skeleton className="h-6 w-32 rounded bg-muted" />
+            <ShimmerCard className="h-6 w-32" />
             <div className="flex gap-2">
-              <Skeleton className="h-8 w-8 rounded-full bg-muted" />
-              <Skeleton className="h-8 w-8 rounded-full bg-muted" />
-              <Skeleton className="h-8 w-8 rounded-full bg-muted" />
+              <ShimmerCard className="h-8 w-8 rounded-full" />
+              <ShimmerCard className="h-8 w-8 rounded-full" />
+              <ShimmerCard className="h-8 w-8 rounded-full" />
             </div>
           </div>
         </header>
@@ -47,22 +47,22 @@ const LoadingHomeShell: React.FC = () => {
           }}
         >
           <div className="flex flex-col items-center gap-8 w-full">
-            <Skeleton className="h-10 w-10 rounded-xl bg-muted" />
+            <ShimmerCard className="h-10 w-10 rounded-xl" />
             <div className="flex flex-col gap-6 w-full items-center mt-4">
               <div className="flex flex-col items-center gap-2">
-                <Skeleton className="h-8 w-12 rounded-full bg-muted" />
-                <Skeleton className="h-2 w-8 rounded bg-muted" />
+                <ShimmerCard className="h-8 w-12 rounded-full" />
+                <ShimmerCard className="h-2 w-8" />
               </div>
               <div className="flex flex-col items-center gap-2">
-                <Skeleton className="h-8 w-12 rounded-full bg-muted" />
-                <Skeleton className="h-2 w-10 rounded bg-muted" />
+                <ShimmerCard className="h-8 w-12 rounded-full" />
+                <ShimmerCard className="h-2 w-10" />
               </div>
             </div>
           </div>
           <div className="flex flex-col items-center gap-4 mb-2">
-            <Skeleton className="h-8 w-8 rounded-full bg-muted" />
-            <Skeleton className="h-8 w-8 rounded-full bg-muted" />
-            <Skeleton className="h-10 w-10 rounded-full bg-muted" />
+            <ShimmerCard className="h-8 w-8 rounded-full" />
+            <ShimmerCard className="h-8 w-8 rounded-full" />
+            <ShimmerCard className="h-10 w-10 rounded-full" />
           </div>
         </aside>
 
@@ -78,17 +78,17 @@ const LoadingHomeShell: React.FC = () => {
         >
           {/* Header */}
           <div className="hidden md:flex items-center gap-3 mb-8">
-            <Skeleton className="h-10 w-48 rounded bg-muted" />
+            <ShimmerCard className="h-10 w-48" />
           </div>
 
           {/* Toolbar Skeleton */}
           <div className="flex flex-col md:flex-row gap-2 md:items-center w-full mt-2 mb-4">
-            <Skeleton className="hidden md:block h-10 w-10 rounded bg-muted" />
-            <Skeleton className="h-10 flex-1 rounded bg-muted" />
+            <ShimmerCard className="hidden md:block h-10 w-10" />
+            <ShimmerCard className="h-10 flex-1" />
             <div className="flex gap-1 justify-between md:justify-start">
-               <Skeleton className="md:hidden h-10 w-10 rounded bg-muted" />
-               <Skeleton className="h-10 w-10 rounded bg-muted" />
-               <Skeleton className="h-10 w-10 rounded bg-muted" />
+               <ShimmerCard className="md:hidden h-10 w-10" />
+               <ShimmerCard className="h-10 w-10" />
+               <ShimmerCard className="h-10 w-10" />
             </div>
           </div>
 
@@ -103,9 +103,9 @@ const LoadingHomeShell: React.FC = () => {
             )}
              style={{ width: "calc(100% + 48px)" }}
             >
-              <Skeleton className="h-8 w-16 rounded-lg bg-muted" />
-              <Skeleton className="h-8 w-24 rounded-lg bg-muted" />
-              <Skeleton className="h-8 w-20 rounded-lg bg-muted" />
+              <ShimmerCard className="h-8 w-16 rounded-lg" />
+              <ShimmerCard className="h-8 w-24 rounded-lg" />
+              <ShimmerCard className="h-8 w-20 rounded-lg" />
            </div>
 
 
