@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Container, Snackbar } from "@mui/material";
+import { Container, Snackbar, useMediaQuery } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 
@@ -25,7 +25,6 @@ import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
 import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
 import NoData from "../components/NoData";
-import TipsFooter from "../components/TipsFooter";
 import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
@@ -72,6 +71,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const params = useParams();
   const navigate = useNavigate();
   const isMobile = isMobileApp();
+  const isSmallScreen = useMediaQuery("(max-width:768px)");
 
   // Don't default to OPEN_TABS here, let the effect handle it
   const currentView = (params.view as TABS_VIEWS);
@@ -334,7 +334,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             className={cn(
                 "flex-grow p-6 transition-all duration-300 min-w-0 relative flex flex-col",
                 // Ensure the container itself can scroll if needed, or its children do
-                "h-screen overflow-hidden"
+                "h-full overflow-hidden"
             )}
             sx={{
               mt: 0,
@@ -420,7 +420,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 </div>
             </div>
 
-            <TipsFooter  />
             <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
             <Snackbar
                 open={toast.show}
@@ -433,7 +432,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       </div>
 
       {/* Mobile Detail Dialog */}
-      <Dialog open={!!selectedTab && (isMobile || window.innerWidth < 768)} onOpenChange={(open) => !open && setSelectedTab(null)}>
+      <Dialog open={!!selectedTab && (isMobile || isSmallScreen)} onOpenChange={(open) => !open && setSelectedTab(null)}>
         <DialogContent className="p-0 border-none bg-transparent shadow-none max-w-none w-screen h-screen sm:max-w-md">
             <TabDetailView
                 tab={selectedTab}
