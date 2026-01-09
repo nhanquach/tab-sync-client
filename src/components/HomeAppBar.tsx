@@ -11,11 +11,12 @@ import { cn } from "@/lib/utils";
 
 interface IHomeAppBarProps {
   user?: User;
+  isLoading?: boolean;
 }
 
 export const headerHeight = 64;
 
-const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
+const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => {
   const isMobile = isMobileApp();
 
   return (
@@ -36,7 +37,7 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user }) => {
           <div className="flex gap-1 items-center">
             <QRCodeDialog />
             <FeedbackDialog />
-            <AccountSettings user={user} />
+            <AccountSettings user={user} isLoading={isLoading} />
           </div>
         </div>
       </header>

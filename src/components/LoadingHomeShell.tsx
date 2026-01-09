@@ -12,11 +12,11 @@ import { TABS_VIEWS } from "../interfaces/iView";
 const LoadingHomeShell: React.FC = () => {
   return (
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar />
+      <HomeAppBar isLoading={true} />
 
       <div className="flex flex-1">
           {/* Default to OPEN_TABS view for the sidebar highlighting during load */}
-          <HomeSidebar view={TABS_VIEWS.OPEN_TABS} />
+          <HomeSidebar view={TABS_VIEWS.OPEN_TABS} isLoading={true} />
 
           <Container
             maxWidth={false}

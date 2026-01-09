@@ -309,7 +309,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           <Container
             maxWidth={false}
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative"
             )}
             sx={{
               mt: 0,

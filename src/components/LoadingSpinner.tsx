@@ -1,5 +1,5 @@
 import React from "react";
-import { LoopTwoTone } from "@mui/icons-material";
+import { CircularProgress } from "@mui/material";
 import { cn } from "@/lib/utils";
 
 interface LoadingSpinnerProps {
@@ -9,7 +9,13 @@ interface LoadingSpinnerProps {
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ className }) => {
   return (
     <div className={cn("flex items-center justify-center w-full h-full animate-in fade-in zoom-in-95 duration-300", className)}>
-       <LoopTwoTone className="animate-spin text-md-sys-color-primary" sx={{ fontSize: 40 }} />
+       <CircularProgress
+         size={40}
+         thickness={5}
+         className="text-md-sys-color-primary"
+         // Override MUI default color to use Tailwind class if needed, or just use 'inherit'
+         sx={{ color: "var(--md-sys-color-primary)" }}
+       />
     </div>
   );
 };

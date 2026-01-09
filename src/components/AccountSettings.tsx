@@ -24,12 +24,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Skeleton } from "@/components/ui/skeleton";
 
 interface IAccountSettingsProps {
   user?: User;
+  isLoading?: boolean;
 }
 
-const AccountSettings: React.FC<IAccountSettingsProps> = ({ user }) => {
+const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false }) => {
   const isMobile = isMobileApp();
 
   const [open, setOpen] = React.useState(
@@ -78,15 +80,19 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user }) => {
             <TooltipTrigger asChild>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
-                  <Avatar className="h-10 w-10">
-                    <AvatarFallback className="bg-primary text-primary-foreground">
-                      {isLogingOut ? (
-                        <span className="animate-spin">C</span> // Placeholder for loading
-                      ) : (
-                        firstChar
-                      )}
-                    </AvatarFallback>
-                  </Avatar>
+                  {isLoading ? (
+                    <Skeleton className="h-10 w-10 rounded-full" />
+                  ) : (
+                    <Avatar className="h-10 w-10">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {isLogingOut ? (
+                          <span className="animate-spin">C</span> // Placeholder for loading
+                        ) : (
+                          firstChar
+                        )}
+                      </AvatarFallback>
+                    </Avatar>
+                  )}
                 </Button>
               </DropdownMenuTrigger>
             </TooltipTrigger>
