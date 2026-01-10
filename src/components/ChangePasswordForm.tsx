@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { changePassword } from "../clients";
-import { isMobileApp } from "../utils/isMobile";
 import {
   Alert,
   AlertDescription,
@@ -8,7 +7,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { cn } from "@/lib/utils";
 
 interface IChangePasswordFormProps {
   handleCloseChangePasswordDialog: () => void;
@@ -17,7 +15,6 @@ interface IChangePasswordFormProps {
 const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
   handleCloseChangePasswordDialog,
 }) => {
-  const isMobile = isMobileApp();
   const [newPassword, setNewPassword] = useState("");
   const [repeatedNewPassword, setRepeatedNewPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -65,9 +62,7 @@ const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
   };
 
   return (
-    <div className={cn("flex flex-col gap-4", isMobile ? "mt-4" : "mt-2")}>
-      {!isMobile && <h5 className="text-xl font-medium">Change your password</h5>}
-
+    <div className="flex flex-col gap-4">
       <div className="grid w-full items-center gap-4">
         <div className="flex flex-col space-y-1.5">
           <Label htmlFor="new-password">New password</Label>
@@ -103,34 +98,14 @@ const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
         )}
       </div>
 
-      <div className={cn("flex flex-col gap-2 mt-2", !isMobile && "flex-row justify-end")}>
-         {isMobile && (
-             <>
-                <Button
-                    className="w-full"
-                    onClick={handleChangePassword}
-                    disabled={isLoading}
-                >
-                    {isLoading ? "Changing..." : "Change password"}
-                </Button>
-                <Button variant="outline" className="w-full" onClick={handleCloseChangePasswordDialog}>
-                    Close
-                </Button>
-             </>
-         )}
-         {!isMobile && (
-             <>
-                <Button variant="ghost" onClick={handleCloseChangePasswordDialog}>
-                    Close
-                </Button>
-                <Button
-                    onClick={handleChangePassword}
-                    disabled={isLoading}
-                >
-                    {isLoading ? "Changing..." : "Change password"}
-                </Button>
-             </>
-         )}
+      <div className="flex flex-col gap-2 mt-2 md:flex-row md:justify-end">
+        <Button
+            className="w-full md:w-auto rounded-full"
+            onClick={handleChangePassword}
+            disabled={isLoading}
+        >
+            {isLoading ? "Changing..." : "Change password"}
+        </Button>
       </div>
     </div>
   );
