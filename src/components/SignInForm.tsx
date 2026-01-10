@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import type { AlertColor } from "@mui/material";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import { ROUTES } from "../routes";
 
@@ -25,6 +26,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
 }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignIn = (e: React.FormEvent) => {
     e.preventDefault();
@@ -71,15 +73,32 @@ const SignInForm: React.FC<ISignInFormProps> = ({
                 Forgot password?
               </Button>
           </div>
-          <Input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-            disabled={isLoading}
-            className="text-foreground bg-background"
-          />
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Enter your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              disabled={isLoading}
+              className="text-foreground bg-background pr-10"
+            />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground"
+              onClick={() => setShowPassword(!showPassword)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+            >
+              {showPassword ? (
+                <VisibilityOff className="h-4 w-4" />
+              ) : (
+                <Visibility className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
         </div>
 
         {!!message.text && (

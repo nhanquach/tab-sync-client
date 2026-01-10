@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { CircularProgress } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 import { ROUTES } from "../routes";
 
@@ -24,6 +25,8 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   const [password, setPassword] = useState("");
   const [repeatPassword, setRepeatPassword] = useState("");
   const [passwordsMatch, setPasswordsMatch] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRepeatPassword, setShowRepeatPassword] = useState(false);
 
   const handleSignUp = (e: React.FormEvent) => {
     e.preventDefault();
@@ -64,30 +67,64 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
           </div>
           <div className="grid gap-2">
             <Label htmlFor="password" className="text-foreground">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-              className="text-foreground bg-background"
-            />
+            <div className="relative">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="Create a password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                disabled={isLoading}
+                className="text-foreground bg-background pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? (
+                  <VisibilityOff className="h-4 w-4" />
+                ) : (
+                  <Visibility className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
           <div className="grid gap-2">
             <Label htmlFor="repeatPassword" className="text-foreground">Confirm Password</Label>
-            <Input
-              id="repeatPassword"
-              type="password"
-              value={repeatPassword}
-              onChange={(e) => {
-                if (passwordsMatch) setPasswordsMatch(false);
-                setRepeatPassword(e.target.value);
-              }}
-              required
-              disabled={isLoading}
-              className="text-foreground bg-background"
-            />
+            <div className="relative">
+              <Input
+                id="repeatPassword"
+                type={showRepeatPassword ? "text" : "password"}
+                placeholder="Confirm your password"
+                value={repeatPassword}
+                onChange={(e) => {
+                  if (passwordsMatch) setPasswordsMatch(false);
+                  setRepeatPassword(e.target.value);
+                }}
+                required
+                disabled={isLoading}
+                className="text-foreground bg-background pr-10"
+              />
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground"
+                onClick={() => setShowRepeatPassword(!showRepeatPassword)}
+                aria-label={showRepeatPassword ? "Hide password" : "Show password"}
+              >
+                {showRepeatPassword ? (
+                  <VisibilityOff className="h-4 w-4" />
+                ) : (
+                  <Visibility className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
           </div>
 
           {passwordsMatch && (
