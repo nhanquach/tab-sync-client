@@ -34,6 +34,12 @@
 
     --radius: 0.5rem;
 
+    /* Branding Colors (Injected by src/theme/injectTheme.ts from palette.ts) */
+    /* Defaults are provided here as fallback */
+    --branding-primary: #8f94fb;
+    --branding-primary-dark: #4e54c8;
+    --branding-secondary: #696969;
+
     /* MD3 Colors - Light (Indigo/Violet Theme) */
     --md-sys-color-primary: 265 60% 50%;
     --md-sys-color-on-primary: 0 0% 100%;
@@ -148,11 +154,11 @@
   list-style: none;
   width: 20px;
   height: 20px;
-  background: #4e54c8;
-  background: -webkit-linear-gradient(to left, #8f94fb, #4e54c8);
-  background-image: url("./logo.svg");
-  background-repeat: no-repeat;
+  /* Use both the transparent logo AND the gradient. The logo sits on top. */
+  background-image: url("./logo-nobg.svg"), linear-gradient(to left, var(--branding-primary), var(--branding-primary-dark));
   background-size: cover;
+  background-repeat: no-repeat;
+  border-radius: 20%;
   animation: animate 15s linear infinite;
   bottom: -150px;
 }
@@ -250,7 +256,7 @@
 .MuiDrawer-paper .Mui-selected,
 .MuiDrawer-paper .Mui-selected .MuiListItemIcon-root {
   background-color: transparent !important;
-  color: #8f94fb !important;
+  color: var(--branding-primary) !important;
   font-weight: 700;
 }
 

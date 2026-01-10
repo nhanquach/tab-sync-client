@@ -15,6 +15,11 @@ import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
 import LoadingHomeShell from "./components/LoadingHomeShell";
+import { PALETTE } from "./theme/palette";
+import { injectTheme } from "./theme/injectTheme";
+
+// Inject theme variables immediately
+injectTheme();
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
@@ -96,11 +101,11 @@ function AppContent() {
         palette: {
           mode: prefersDarkMode ? "dark" : "light",
           primary: {
-            main: "#8f94fb",
-            dark: "#4e54c8",
+            main: PALETTE.primary.main,
+            dark: PALETTE.primary.dark,
           },
           secondary: {
-            main: "#696969",
+            main: PALETTE.secondary.main,
           },
         },
       }),

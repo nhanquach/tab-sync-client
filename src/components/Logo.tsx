@@ -7,10 +7,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => {
       width="1.5em"
       height="1.5em"
       viewBox="0 0 132.813 120"
-      style={{
-        backgroundColor: "#8f94fb", // Using the primary color from App.tsx theme
-        borderRadius: "20%",
-      }}
+      className={`bg-branding-primary rounded-[20%] ${props.className || ""}`}
       {...props}
     >
       <path
