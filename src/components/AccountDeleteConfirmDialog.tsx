@@ -104,7 +104,7 @@ export const AccountDeleteConfirmDialog: React.FC<
                 variant="ghost"
                 onClick={onClose}
                 disabled={loading}
-                className="w-full md:w-auto"
+                className="w-full md:w-auto rounded-full"
               >
                 Cancel
               </Button>
@@ -112,7 +112,7 @@ export const AccountDeleteConfirmDialog: React.FC<
                 onClick={handleDeleteAccount}
                 variant="destructive"
                 disabled={loading}
-                className="w-full md:w-auto gap-2"
+                className="w-full md:w-auto gap-2 rounded-full"
               >
                 {loading && <Loop className="animate-spin h-4 w-4" />}
                 {loading ? "Deleting..." : "Delete Account"}
