@@ -40,7 +40,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
       <div className="flex flex-col items-center gap-8 w-full">
         {/* Logo */}
         <div className="group">
-             <Logo className="w-10 h-10 transition-transform duration-500 ease-in-out group-hover:rotate-180 group-hover:scale-110 cursor-pointer" />
+             <Logo className="w-10 h-10 transition-all duration-300 ease-in-out group-hover:-translate-y-1 group-hover:scale-110 group-hover:brightness-110 group-hover:drop-shadow-md cursor-pointer" />
         </div>
 
         {/* Nav Items */}
