@@ -44,13 +44,13 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected }) => {
           )}
       </div>
 
-      <div className="flex flex-col gap-0.5 flex-1 min-w-0 overflow-hidden">
-        <div className="flex items-baseline justify-between gap-2">
+      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
+        <div className="flex items-baseline justify-between gap-2 min-w-0">
             <a
             href={tab.url}
             target="_blank"
             rel="noreferrer"
-            className="font-medium text-base text-md-sys-color-on-surface hover:text-md-sys-color-primary truncate transition-colors"
+            className="font-medium text-base text-md-sys-color-on-surface hover:text-md-sys-color-primary truncate transition-colors flex-1 min-w-0"
             >
             {tab.title}
             </a>

@@ -36,7 +36,6 @@ import {
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
-import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
@@ -73,6 +72,15 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
@@ -329,9 +337,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           <HomeSidebar view={currentView} user={user} />
 
           <Container
-            maxWidth={false}
+            maxWidth="xl"
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
             )}
             sx={{
               mt: 0,
@@ -352,12 +360,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 layout={layout}
                 toggleOrderBy={toggleOrderBy}
                 orderBy={orderBy}
-            />
-
-            <DeviceTabs
                 devices={browsers}
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
+                isScrolled={isScrolled}
             />
 
             {isLoading && (

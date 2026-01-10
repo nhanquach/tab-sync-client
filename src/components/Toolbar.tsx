@@ -6,16 +6,29 @@ import {
   TimelineTwoTone,
   SortByAlphaTwoTone,
   SearchTwoTone,
+  LaptopMacTwoTone,
+  PhoneIphoneTwoTone,
+  DevicesOtherTwoTone,
+  AppsTwoTone,
+  Check,
+  KeyboardArrowDownTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
 import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
-import { isMobileDevice } from "../utils/isMobile";
+import { cn } from "@/lib/utils";
 
-// Shadcn UI
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+} from "@/components/ui/dropdown-menu";
 import {
   Tooltip,
   TooltipContent,
@@ -33,6 +46,11 @@ interface IToolbarProps {
   layout: Layout;
   toggleOrderBy(): void;
   orderBy: ORDER;
+
+  devices: string[];
+  selectedDevice: string;
+  onSelectDevice: (device: string) => void;
+  isScrolled?: boolean;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -44,119 +62,220 @@ const Toolbar: React.FC<IToolbarProps> = ({
   layout,
   toggleOrderBy,
   orderBy,
+  devices,
+  selectedDevice,
+  onSelectDevice,
+  isScrolled = false,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
-  const isMobileBrowser = isMobileDevice(navigator);
+  const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
+
+  React.useEffect(() => {
+    if (!isScrolled) setIsSearchExpanded(false);
+  }, [isScrolled]);
 
   useKeyPress({
     keys: ["k"],
     callback: () => {
+      if (isScrolled) setIsSearchExpanded(true);
       searchBoxRef.current?.focus();
     },
     isCombinedWithCtrl: true,
   });
 
+  const getDeviceIcon = (name: string, isActive: boolean, isCondensed: boolean) => {
+    const iconSize = isCondensed ? "text-base mr-1" : "text-lg mr-2";
+    const className = cn(
+      iconSize,
+      "transition-colors duration-300",
+      isActive
+        ? "text-md-sys-color-on-secondary-container"
+        : "text-md-sys-color-on-surface-variant"
+    );
+
+    const lower = name.toLowerCase();
+    if (lower === "all") return <AppsTwoTone className={className} />;
+    if (
+      lower.includes("mac") ||
+      lower.includes("windows") ||
+      lower.includes("laptop")
+    )
+      return <LaptopMacTwoTone className={className} />;
+    if (
+      lower.includes("iphone") ||
+      lower.includes("android") ||
+      lower.includes("mobile")
+    )
+      return <PhoneIphoneTwoTone className={className} />;
+    return <DevicesOtherTwoTone className={className} />;
+  };
+
+  const tabs = ["All", ...devices];
+
   return (
-    <div className="flex flex-col md:flex-row gap-2 md:items-center w-full mt-2">
-      {/* Mobile: Search first, then actions row */}
-      {/* Desktop: Refresh -> Search -> Actions */}
+    <div
+      className={cn(
+        "sticky z-40 -mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
+        "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
+        "top-16 md:top-0",
+        isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40"
+      )}
+      style={{ width: "calc(100% + 48px)" }}
+    >
+      <div className={cn(
+        "flex items-center w-full transition-all duration-300 gap-3",
+        isScrolled ? "h-full justify-between" : "flex-wrap md:flex-nowrap"
+      )}>
+        <div className="flex-none">
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={handleRefresh}
+                  disabled={isLoading}
+                  className={cn(
+                    "rounded-full hover:bg-md-sys-color-surface-container-high transition-all active:scale-90 duration-200",
+                    isScrolled ? "h-10 w-10" : "h-12 w-12 bg-md-sys-color-surface-container-low"
+                  )}
+                >
+                  <RefreshTwoTone className={cn(isScrolled ? "text-[20px]" : "text-[24px]", isLoading && "animate-spin")} />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Refresh</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </div>
 
-      {/* Refresh Button - Hidden on mobile, shown on desktop as first item */}
-      <div className="hidden md:block">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleRefresh}
-                disabled={isLoading}
-                className="h-10 w-10 shrink-0"
-              >
-                {isLoading ? (
-                   <RefreshTwoTone className="animate-spin" />
-                ) : (
-                  <RefreshTwoTone />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Refresh</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
-
-      {/* Search Input */}
-      <div className="relative flex-1">
-        <SearchTwoTone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-        <Input
-          ref={searchBoxRef}
-          value={searchString}
-          onChange={handleSearch}
-          placeholder="Find your tabs..."
-          className="pl-9 pr-12 bg-background/50 backdrop-blur-sm"
-        />
-        {!isMobileBrowser && (
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
-            <kbd className="pointer-events-none inline-flex h-5 select-none items-center gap-1 rounded border bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-              <span className="text-xs">⌘</span>K
-            </kbd>
-          </div>
-        )}
-      </div>
-
-      {/* Actions Row - On mobile: Refresh + Layout + Sort. On Desktop: Layout + Sort */}
-      <div className="flex items-center justify-between md:justify-start gap-1">
-        {/* Mobile Refresh Button */}
-        <div className="md:hidden">
+        <div className={cn(
+          "transition-all duration-300 min-w-0 flex items-center gap-2",
+          isScrolled ? "flex-1 justify-end" : "flex-1 order-2 md:order-none w-full md:w-auto"
+        )}>
+          {isScrolled && !isSearchExpanded ? (
             <Button
               variant="ghost"
               size="icon"
-              onClick={handleRefresh}
-              disabled={isLoading}
-              className="h-10 w-10"
-              aria-label="Refresh tabs"
+              onClick={() => setIsSearchExpanded(true)}
+              className="h-10 w-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all duration-200"
             >
-              {isLoading ? (
-                 <RefreshTwoTone className="animate-spin" />
-              ) : (
-                <RefreshTwoTone />
-              )}
+              <SearchTwoTone className="text-md-sys-color-on-surface-variant" />
             </Button>
+          ) : (
+            <div className={cn(
+              "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
+              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
+            )}>
+              <SearchTwoTone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-md-sys-color-on-surface-variant pointer-events-none opacity-50" />
+              <Input
+                ref={searchBoxRef}
+                autoFocus={isScrolled && isSearchExpanded}
+                onBlur={() => isScrolled && !searchString && setIsSearchExpanded(false)}
+                value={searchString}
+                onChange={handleSearch}
+                placeholder={isScrolled ? "Search..." : "Search your synced tabs..."}
+                className={cn(
+                  "pl-12 pr-4 transition-all duration-200 border-none",
+                  isScrolled 
+                    ? "h-10 rounded-full bg-md-sys-color-surface-container-high/40 placeholder:text-md-sys-color-on-surface-variant/40" 
+                    : "h-12 rounded-[20px] bg-md-sys-color-surface-container-high/60 text-base shadow-inner focus:shadow-lg focus:bg-md-sys-color-surface-container-high"
+                )}
+              />
+            </div>
+          )}
+
+          {isScrolled && (
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200"
+                >
+                  {getDeviceIcon(selectedDevice === "All" ? "all" : selectedDevice, true, true)}
+                  <span className="text-[12px] font-semibold max-w-[80px] truncate">{selectedDevice}</span>
+                  <KeyboardArrowDownTwoTone className="text-base opacity-40" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 rounded-[24px] p-2 bg-md-sys-color-surface-container-high backdrop-blur-xl border-md-sys-color-outline-variant/20 shadow-2xl transition-all duration-200">
+                <DropdownMenuLabel className="px-3 py-2 text-[10px] font-bold text-md-sys-color-on-surface-variant/50 uppercase tracking-widest">Devices</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-md-sys-color-outline-variant/10" />
+                <div className="max-h-[300px] overflow-y-auto no-scrollbar">
+                  {tabs.map((device) => (
+                    <DropdownMenuItem
+                      key={device}
+                      onClick={() => onSelectDevice(device)}
+                      className={cn(
+                        "rounded-[16px] px-3 py-2.5 mb-1 focus:bg-md-sys-color-primary/10 transition-colors duration-150",
+                        selectedDevice === device && "bg-md-sys-color-secondary-container text-md-sys-color-on-secondary-container"
+                      )}
+                    >
+                      <div className="flex items-center gap-3 w-full">
+                        {getDeviceIcon(device === "All" ? "all" : device, selectedDevice === device, false)}
+                        <span className="flex-1 font-medium">{device}</span>
+                        {selectedDevice === device && <Check className="text-base" />}
+                      </div>
+                    </DropdownMenuItem>
+                  ))}
+                </div>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          )}
         </div>
 
-        {/* Layout Toggle */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleLayout} className="h-10 w-10" aria-label="Toggle layout">
-                {layout === "grid" ? <Grid3x3TwoTone /> : <ListAltTwoTone />}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Change layout</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+        <div className={cn(
+          "flex items-center gap-1 transition-all duration-300",
+          isScrolled ? "flex-none" : "flex-none order-1 md:order-none ml-auto"
+        )}>
+          <div className={cn(
+            "flex items-center gap-1 bg-md-sys-color-surface-container-low/50 rounded-full p-1 border border-md-sys-color-outline-variant/10 shrink-0 transition-all duration-200",
+            !isScrolled && "p-1.5 bg-md-sys-color-surface-container-low"
+          )}>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleLayout}
+              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+            >
+              {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleOrderBy}
+              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+            >
+              {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+            </Button>
+          </div>
+        </div>
+      </div>
 
-        {/* Sort Order Toggle */}
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button variant="ghost" size="icon" onClick={toggleOrderBy} className="h-10 w-10" aria-label="Toggle sort order">
-                {orderBy === ORDER.TIME ? (
-                  <TimelineTwoTone />
-                ) : (
-                  <SortByAlphaTwoTone />
-                )}
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Order by Time / Alphabet</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
+      <div className={cn(
+        "flex items-center gap-2 overflow-x-auto no-scrollbar w-full transition-all duration-300",
+        isScrolled 
+          ? "h-0 opacity-0 pointer-events-none translate-y-[-10px] invisible absolute" 
+          : "h-auto opacity-100 visible relative mt-6 px-1"
+      )}>
+        {tabs.map((device) => {
+          const isActive = selectedDevice === device;
+          return (
+            <button
+              key={device}
+              onClick={() => onSelectDevice(device)}
+              className={cn(
+                "relative flex items-center justify-center rounded-[16px] px-5 h-10 transition-all duration-200 whitespace-nowrap select-none border",
+                "text-sm font-medium active:scale-95",
+                isActive
+                  ? "bg-md-sys-color-primary text-md-sys-color-on-primary border-transparent shadow-lg scale-105 z-10"
+                  : "bg-md-sys-color-surface-container text-md-sys-color-on-surface-variant border-md-sys-color-outline-variant/30 hover:bg-md-sys-color-surface-container-high"
+              )}
+            >
+              {isActive && <Check className="mr-2 h-4 w-4 animate-in zoom-in duration-200" />}
+              {!isActive && getDeviceIcon(device === "All" ? "all" : device, false, false)}
+              {device}
+            </button>
+          );
+        })}
       </div>
     </div>
   );

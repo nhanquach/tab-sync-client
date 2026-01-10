@@ -28,7 +28,7 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected })
           <CheckCircleTwoTone className="text-primary" style={{ fontSize: 16 }} />
         </div>
       )}
-      <div className="flex items-center gap-2 mb-2">
+      <div className="flex items-center gap-2 mb-2 min-w-0">
         {!showFallback ? (
           <img
             src={tab.favIconUrl}
@@ -41,7 +41,7 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected })
         ) : (
           <WebStoriesTwoTone className="text-muted-foreground" style={{ fontSize: 24 }} />
         )}
-        <div className="text-xs text-muted-foreground/80 italic ml-auto">
+        <div className="text-xs text-muted-foreground/80 italic ml-auto flex-shrink-0">
           {dayjs(tab.timeStamp).format("DD MMM")}
         </div>
       </div>
@@ -50,7 +50,7 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected })
         href={tab.url}
         target="_blank"
         rel="noreferrer"
-        className="font-semibold text-sm text-foreground hover:underline line-clamp-2 mb-1"
+        className="font-semibold text-sm text-foreground hover:underline line-clamp-2 mb-1 min-w-0"
         title={tab.title}
       >
         {tab.title}
