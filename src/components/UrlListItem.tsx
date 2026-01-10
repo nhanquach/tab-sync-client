@@ -8,17 +8,25 @@ import { cn } from "@/lib/utils";
 
 interface IUrlListItem {
   tab: ITab;
+  onSelect?: (tab: ITab) => void;
+  isSelected?: boolean;
 }
 
-const UrlListItem: React.FC<IUrlListItem> = ({ tab }) => {
+const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
-    <div className={cn(
-      "flex items-center gap-4 p-4 transition-colors group",
-      "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer"
-      // Removed individual card styling (shadow, rounded corners, margins)
-    )}>
+    <div 
+      className={cn(
+        "flex items-center gap-4 p-4 transition-all group relative",
+        "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer",
+        isSelected && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15"
+      )}
+      onClick={() => onSelect?.(tab)}
+    >
+      {isSelected && (
+        <div className="absolute left-0 top-0 bottom-0 w-1 bg-md-sys-color-primary rounded-r-full" />
+      )}
       <div className="flex-shrink-0">
          {!showFallback ? (
             <img

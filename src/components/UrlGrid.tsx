@@ -20,9 +20,11 @@ interface IUrlGridProps {
   view: TABS_VIEWS;
   onClear: (deviceName: string) => void;
   urls: ITab[];
+  onSelect?: (tab: ITab) => void;
+  selectedId?: number;
 }
 
-const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
+const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view, onSelect, selectedId }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
 
@@ -78,7 +80,14 @@ const UrlGrid: React.FC<IUrlGridProps> = ({ onClear, urls, view }) => {
             {/* Grid Container */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                 {tabs.map((tab: ITab) => {
-                  return <UrlGridItem key={tab.id} tab={tab} />;
+                  return (
+                    <UrlGridItem 
+                      key={tab.id} 
+                      tab={tab} 
+                      onSelect={onSelect}
+                      isSelected={tab.id === selectedId}
+                    />
+                  );
                 })}
             </div>
           </div>

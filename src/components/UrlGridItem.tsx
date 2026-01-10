@@ -1,19 +1,33 @@
 import React from "react";
-import { WebStoriesTwoTone } from "@mui/icons-material";
+import { WebStoriesTwoTone, CheckCircleTwoTone } from "@mui/icons-material";
 import dayjs from "dayjs";
 
 import { ITab } from "../interfaces/iTab";
 import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
+import { cn } from "@/lib/utils";
 
 interface IUrlGridItemProps {
   tab: ITab;
+  onSelect?: (tab: ITab) => void;
+  isSelected?: boolean;
 }
 
-const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab }) => {
+const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
-    <div className="flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-colors shadow-sm">
+    <div 
+      className={cn(
+        "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden",
+        isSelected && "ring-2 ring-primary bg-primary/5"
+      )}
+      onClick={() => onSelect?.(tab)}
+    >
+      {isSelected && (
+        <div className="absolute top-0 right-0 p-1">
+          <CheckCircleTwoTone className="text-primary" style={{ fontSize: 16 }} />
+        </div>
+      )}
       <div className="flex items-center gap-2 mb-2">
         {!showFallback ? (
           <img
