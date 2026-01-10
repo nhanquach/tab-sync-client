@@ -129,7 +129,7 @@ function AppContent() {
           <Routes>
               <Route path={ROUTES.SIGN_IN} element={<SignIn signIn={onSignIn} onResetPassword={onResetPassword} />} />
               <Route path={ROUTES.SIGN_UP} element={<SignUp signUp={onSignUp} />} />
-              <Route path={`${ROUTES.HOME}/:view?`} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
+              <Route path={`${ROUTES.HOME}/:view?/:tabId?`} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
               <Route path="*" element={<Navigate to={ROUTES.SIGN_IN} />} />
           </Routes>
         </div>
