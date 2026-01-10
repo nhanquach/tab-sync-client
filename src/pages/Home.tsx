@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { Container, Snackbar } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -10,6 +10,8 @@ import {
   archiveOpenTabs,
   removeArchivedTabs,
   sendTab,
+  archiveTab,
+  removeTab,
 } from "../clients";
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
@@ -34,9 +36,9 @@ import {
 } from "../utils/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
-import DeviceTabs from "../components/DeviceTabs";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
+import TabDetails from "../components/TabDetails";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,15 +66,22 @@ const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
 };
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
-  const params = useParams();
+  const { view, tabId } = useParams();
   const navigate = useNavigate();
-  // Don't default to OPEN_TABS here, let the effect handle it
-  const currentView = (params.view as TABS_VIEWS);
+  const currentView = (view as TABS_VIEWS);
 
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
 
-  // Validate view and redirect if missing or invalid
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
         navigate(`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`, { replace: true });
@@ -81,9 +90,29 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
+  const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
+
+  useEffect(() => {
+    const allTabs = [...tabs, ...archivedTabs];
+    if (tabId) {
+      const tab = allTabs.find((t) => t.id.toString() === tabId);
+      if (tab) {
+        setSelectedTab(tab);
+      }
+    } else {
+      setSelectedTab(null);
+    }
+  }, [tabId, tabs, archivedTabs]);
+
+  const handleSelectTab = (tab: ITab | null) => {
+    if (tab) {
+      navigate(`${ROUTES.HOME}/${currentView}/${tab.id}`);
+    } else {
+      navigate(`${ROUTES.HOME}/${currentView}`);
+    }
+  };
 
   const [searchString, setSearchString] = useState<string>("");
-  // Replaced displayedBrowsers (multi-select) with selectedDevice (single select)
   const [selectedDevice, setSelectedDevice] = useState<string>("All");
 
   const [layout, setLayout] = useState<Layout>(
@@ -103,14 +132,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const urls = useMemo(() => {
     let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
 
-    // Filter by selected device (if not "All")
     if (selectedDevice !== "All") {
       displayedTabs = displayedTabs.filter((tab) =>
         tab.deviceName === selectedDevice
       );
     }
 
-    // apply search string if any
     if (searchString) {
       displayedTabs = displayedTabs.filter(
         (tab) =>
@@ -119,8 +146,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       );
     }
 
-    // removed filter for current website as the filter menu is gone
-
     return displayedTabs.sort(
       orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
     );
@@ -128,7 +153,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     isOpenTabsView,
     tabs,
     archivedTabs,
-    selectedDevice, // Updated dependency
+    selectedDevice,
     searchString,
     orderBy,
   ]);
@@ -143,7 +168,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (error) {
       console.error(error);
       showToast("An error occurred while fetching open tabs.");
-      setIsLoading(false); // Ensure loading state is turned off on error
+      setIsLoading(false);
       return;
     }
 
@@ -172,9 +197,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
-  // Get Open Tabs and Archived Tabs based on View
   useEffect(() => {
-    // Only fetch if view is valid
     if (!currentView) return;
 
     if (
@@ -184,7 +207,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       handleGetTabs();
   }, [currentView, handleGetTabs, tabs.length, archivedTabs.length, isOpenTabsView]);
 
-  // On Open Tabs change
   useEffect(() => {
     onOpenTabChange((payload: IDatabaseUpdatePayload) => {
       setTabs((currentTabs) => {
@@ -193,7 +215,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   }, [tabs]);
 
-  // On Archived Tabs change
   useEffect(() => {
     onArchivedTabChange((payload: IDatabaseUpdatePayload) => {
       setArchivedTabs((currentTabs) => {
@@ -202,7 +223,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   }, [archivedTabs]);
 
-  // Send tab if is shared
   useEffect(() => {
     if (window.location.pathname === "/share") {
       try {
@@ -213,10 +233,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         const randomId = parseInt((Math.random() * 1000000).toString());
 
         if (title && text) {
-          // Checking if text is valid URL
           new URL(text);
 
-          // Sending tab info to server
           sendTab({
             id: randomId,
             url: text,
@@ -227,7 +245,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             deviceName: "TabSync Web Client",
             windowId: "TabSync Web Client",
           }).then(() => {
-            // redirect to home in order to prevent duplicate tabs when refreshing
             if (isHistoryApiSupported()) {
               window.history.pushState({}, "", "/");
             } else {
@@ -250,9 +267,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const clearOpenTabs = (deviceName: string) => {
     archiveOpenTabs(deviceName);
-    // Logic for clearing tabs doesn't really need to update selectedDevice
-    // but if the device disappears, we might want to switch to 'All'
-    // For now, keep it simple.
   };
 
   const clearArchivedTabs = (deviceName: string) => {
@@ -281,6 +295,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
+  const handleArchiveTab = async (tab: ITab) => {
+    await archiveTab([tab]);
+    handleSelectTab(null);
+    showToast("Tab archived.");
+  };
+
+  const handleDeleteTab = async (tab: ITab) => {
+    await removeTab([tab.id], "archived_tabs");
+    handleSelectTab(null);
+    showToast("Tab deleted permanently.");
+  };
+
   const closeToast = () => {
     setToast({
       show: false,
@@ -288,13 +314,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
-  // Adapter for BottomNav since we can't easily change it right now but want to keep it working
-  // It expects a setter, so we give it a function that navigates.
+
+  const prevSelectedTab = useRef<ITab | null>(null);
+  if (selectedTab) {
+    prevSelectedTab.current = selectedTab;
+  }
+  const desktopTab = selectedTab || prevSelectedTab.current;
+
   const setViewAdapter = (newView: TABS_VIEWS) => {
       navigate(`${ROUTES.HOME}/${newView}`);
   };
 
-  // If redirecting, don't render content yet (or render loading)
   if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
       return null;
   }
@@ -307,19 +337,16 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           <HomeSidebar view={currentView} user={user} />
 
           <Container
-            maxWidth={false}
+            maxWidth="xl"
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
             )}
             sx={{
               mt: 0,
-              // Desktop: Little to no top padding needed (AppBar gone)
-              // Mobile: Needs to clear fixed AppBar (64px) + Gap
               paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
             }}
             component="main"
           >
-            {/* Desktop Page Title */}
             <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
                 <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
             </div>
@@ -333,41 +360,103 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 layout={layout}
                 toggleOrderBy={toggleOrderBy}
                 orderBy={orderBy}
-            />
-
-            <DeviceTabs
                 devices={browsers}
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
+                isScrolled={isScrolled}
             />
 
-            {/* Loader Overlay */}
             {isLoading && (
               <div className="absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface/50 backdrop-blur-sm pt-32">
                  <LoadingSpinner />
               </div>
             )}
 
-            {!isLoading && urls.length === 0 && (
-                <NoData isEmptySearch={!!searchString} />
-            )}
+            <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">
+              <div className="flex-1 min-w-0">
+                  {!isLoading && urls.length === 0 && (
+                      <NoData isEmptySearch={!!searchString} />
+                  )}
 
-            <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                {(urls.length > 0 && layout === "list") && (
-                    <UrlList
-                    view={currentView}
-                    urls={urls}
-                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                    />
-                )}
+                  <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                      {(urls.length > 0 && layout === "list") && (
+                          <UrlList
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={handleSelectTab}
+                            selectedId={selectedTab?.id}
+                          />
+                      )}
 
-                {(urls.length > 0 && layout === "grid") && (
-                    <UrlGrid
-                    view={currentView}
-                    urls={urls}
-                    onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                    />
+                      {(urls.length > 0 && layout === "grid") && (
+                          <UrlGrid
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={handleSelectTab}
+                            selectedId={selectedTab?.id}
+                          />
+                      )}
+                  </div>
+              </div>
+
+              <div
+                className={cn(
+                  "hidden md:block sticky top-24 self-start overflow-hidden z-40",
+                  "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
+                  selectedTab ? "w-[400px] ml-6 opacity-100" : "w-0 ml-0 opacity-0"
                 )}
+                style={{ height: "calc(100vh - 8rem)" }}
+              >
+                <div className="w-[400px] h-full bg-md-sys-color-surface-container-low rounded-[24px] shadow-xl overflow-hidden border border-md-sys-color-outline-variant/20">
+                   {desktopTab && (
+                      <TabDetails
+                        tab={desktopTab}
+                        view={currentView}
+                        onClose={() => handleSelectTab(null)}
+                        onArchive={handleArchiveTab}
+                        onDelete={handleDeleteTab}
+                      />
+                   )}
+                </div>
+              </div>
+
+              {selectedTab && (
+                  <div 
+                    className={cn(
+                        "fixed inset-0 z-[100] flex items-end justify-center md:hidden",
+                        "bg-black/60 backdrop-blur-sm",
+                        "transition-all duration-300 ease-out animate-in fade-in"
+                    )}
+                    onClick={() => handleSelectTab(null)}
+                  >
+                      <div 
+                        className={cn(
+                            "w-full max-w-md shadow-2xl",
+                            "h-[85vh]",
+                            "bg-md-sys-color-surface-container-low",
+                            "rounded-t-[32px]",
+                            "overflow-hidden",
+                            "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+                        )}
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                          <div className="flex justify-center pt-3 pb-1">
+                              <div className="w-12 h-1.5 rounded-full bg-md-sys-color-outline-variant/40" />
+                          </div>
+
+                          <TabDetails 
+                            tab={selectedTab} 
+                            view={currentView} 
+                            onClose={() => handleSelectTab(null)}
+                            onArchive={handleArchiveTab}
+                            onDelete={handleDeleteTab}
+                          />
+                      </div>
+                  </div>
+              )}
+
             </div>
 
             <TipsFooter  />
