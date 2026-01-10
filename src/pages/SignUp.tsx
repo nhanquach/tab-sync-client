@@ -54,13 +54,16 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] w-full p-4 md:p-10 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700">
       <Card className={cn(
-          "w-full max-w-5xl overflow-hidden rounded-xl shadow-2xl transition-all duration-300",
+          "w-full max-w-5xl overflow-hidden transition-all duration-300",
+          "rounded-none md:rounded-xl",
+          "shadow-none md:shadow-2xl",
+          "min-h-screen md:min-h-0",
            // Light mode: White glass
-           "backdrop-blur-xl bg-white/40 border border-white/40",
+           "backdrop-blur-xl bg-white/40 border-0 md:border md:border-white/40",
            // Dark mode: Dark glass
-           "dark:bg-black/40 dark:border-white/10",
+           "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
@@ -95,7 +98,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
         {/* Right Panel: Form */}
         <div className="flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
              {/* Mobile Header */}
-             <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2 rounded-t-xl">
+             <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2">
                  <LogoWithTabSync className="mb-0 scale-110" />
                  <p className="text-sm font-medium text-muted-foreground">Join TabSync today</p>
                  <InstallPwaDialog>
