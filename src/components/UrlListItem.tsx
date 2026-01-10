@@ -8,17 +8,35 @@ import { cn } from "@/lib/utils";
 
 interface IUrlListItem {
   tab: ITab;
+  isSelected?: boolean;
+  onSelect?: (tab: ITab) => void;
 }
 
-const UrlListItem: React.FC<IUrlListItem> = ({ tab }) => {
+const UrlListItem: React.FC<IUrlListItem> = ({ tab, isSelected, onSelect }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
+  const handleClick = (e: React.MouseEvent) => {
+    // If onSelect is provided, prevent default navigation (if any) and select
+    if (onSelect) {
+        e.preventDefault();
+        onSelect(tab);
+    }
+  };
+
   return (
-    <div className={cn(
-      "flex items-center gap-4 p-4 transition-colors group",
-      "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer"
-      // Removed individual card styling (shadow, rounded corners, margins)
+    <div
+      onClick={handleClick}
+      className={cn(
+      "flex items-center gap-4 p-4 transition-all group relative",
+      "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer",
+      isSelected && "bg-md-sys-color-secondary-container/30 hover:bg-md-sys-color-secondary-container/40"
     )}>
+
+      {/* Selection Indicator */}
+      {isSelected && (
+          <div className="absolute left-0 top-0 bottom-0 w-1 bg-md-sys-color-primary" />
+      )}
+
       <div className="flex-shrink-0">
          {!showFallback ? (
             <img
@@ -38,14 +56,14 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab }) => {
 
       <div className="flex flex-col gap-0.5 flex-1 min-w-0 overflow-hidden">
         <div className="flex items-baseline justify-between gap-2">
-            <a
-            href={tab.url}
-            target="_blank"
-            rel="noreferrer"
-            className="font-medium text-base text-md-sys-color-on-surface hover:text-md-sys-color-primary truncate transition-colors"
+            <span
+            className={cn(
+                "font-medium text-base truncate transition-colors",
+                isSelected ? "text-md-sys-color-primary" : "text-md-sys-color-on-surface group-hover:text-md-sys-color-primary"
+            )}
             >
             {tab.title}
-            </a>
+            </span>
             <span className="text-xs text-md-sys-color-outline flex-shrink-0 hidden sm:inline-block">
                 {dayjs(tab.timeStamp).format("MMM D, HH:mm")}
             </span>

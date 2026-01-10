@@ -22,9 +22,11 @@ interface IUrlListProps {
   view: TABS_VIEWS;
   onClear: (deviceName: string) => void;
   urls: ITab[];
+  onSelect: (tab: ITab) => void;
+  selectedTabId?: number;
 }
 
-const UrlList: React.FC<IUrlListProps> = ({ onClear, urls, view }) => {
+const UrlList: React.FC<IUrlListProps> = ({ onClear, urls, view, onSelect, selectedTabId }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
 
@@ -84,7 +86,14 @@ const UrlList: React.FC<IUrlListProps> = ({ onClear, urls, view }) => {
             )}>
               <div className="divide-y divide-md-sys-color-outline-variant/20">
                 {tabs.map((tab: ITab) => {
-                  return <UrlListItem tab={tab} key={tab.id} />;
+                  return (
+                    <UrlListItem
+                        tab={tab}
+                        key={tab.id}
+                        onSelect={onSelect}
+                        isSelected={selectedTabId === tab.id}
+                    />
+                  );
                 })}
               </div>
             </Card>
