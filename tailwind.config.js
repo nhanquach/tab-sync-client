@@ -75,6 +75,11 @@ module.exports = {
 
         "md-sys-color-outline": "hsl(var(--md-sys-color-outline))",
         "md-sys-color-outline-variant": "hsl(var(--md-sys-color-outline-variant))",
+
+        // Branding Colors
+        "branding-primary": "var(--branding-primary)",
+        "branding-primary-dark": "var(--branding-primary-dark)",
+        "branding-secondary": "var(--branding-secondary)",
       },
       borderRadius: {
         lg: "var(--radius)",
