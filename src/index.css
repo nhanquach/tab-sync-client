@@ -34,7 +34,8 @@
 
     --radius: 0.5rem;
 
-    /* Branding Colors (Single Source of Truth) */
+    /* Branding Colors (Injected by src/theme/injectTheme.ts from palette.ts) */
+    /* Defaults are provided here as fallback */
     --branding-primary: #8f94fb;
     --branding-primary-dark: #4e54c8;
     --branding-secondary: #696969;

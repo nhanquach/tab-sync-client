@@ -16,6 +16,10 @@ import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
 import LoadingHomeShell from "./components/LoadingHomeShell";
 import { PALETTE } from "./theme/palette";
+import { injectTheme } from "./theme/injectTheme";
+
+// Inject theme variables immediately
+injectTheme();
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);
