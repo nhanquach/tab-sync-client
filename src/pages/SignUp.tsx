@@ -6,7 +6,7 @@ import DownloadCard from "../components/CardDownload";
 import QRCode from "../components/QRCode";
 import SignUpForm from "../components/SignUpForm";
 import { isMobileApp } from "../utils/isMobile";
-import { Card } from "@/components/ui/card";
+import { GlassCard } from "@/components/ui/glass-card";
 import { cn } from "@/lib/utils";
 import LogoWithTabSync from "../components/LogoWithTabSync";
 import InstallPwaDialog from "../components/InstallPwaDialog";
@@ -55,16 +55,9 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700">
-      <Card className={cn(
-          "w-full max-w-5xl overflow-hidden transition-all duration-300",
-          "shadow-none md:shadow-2xl",
+      <GlassCard className={cn(
+          "w-full max-w-5xl overflow-hidden",
           "min-h-screen md:min-h-0",
-          // Professional Expressive Shape: One elegant curve
-          "rounded-none rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]",
-           // Light mode: White glass
-           "backdrop-blur-xl bg-white/40 border-0 md:border md:border-white/40",
-           // Dark mode: Dark glass
-           "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
@@ -123,7 +116,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
                 />
              </div>
         </div>
-      </Card>
+      </GlassCard>
     </div>
   );
 };
