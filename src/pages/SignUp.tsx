@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 import LogoWithTabSync from "../components/LogoWithTabSync";
 import InstallPwaDialog from "../components/InstallPwaDialog";
 import { Button } from "@/components/ui/button";
-import { InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined, PersonAddOutlined } from "@mui/icons-material";
 
 interface ISignUpProps {
   signUp: ({
@@ -57,9 +57,10 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700">
       <Card className={cn(
           "w-full max-w-5xl overflow-hidden transition-all duration-300",
-          "rounded-none md:rounded-xl",
           "shadow-none md:shadow-2xl",
           "min-h-screen md:min-h-0",
+          // Shape: Asymmetric Quacky Style
+          "rounded-none rounded-tl-[32px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]",
            // Light mode: White glass
            "backdrop-blur-xl bg-white/40 border-0 md:border md:border-white/40",
            // Dark mode: Dark glass
@@ -67,8 +68,17 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20 dark:border-white/10">
-            <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100">
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-md-sys-color-tertiary-container/40 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
+
+            {/* Decorative background blob */}
+            <div className="absolute -right-20 -top-20 w-64 h-64 bg-md-sys-color-tertiary-container/30 rounded-full blur-3xl pointer-events-none" />
+
+             {/* Decorative Rotated Icon */}
+             <div className="absolute -left-10 bottom-40 transform -rotate-12 opacity-10 pointer-events-none">
+                 <PersonAddOutlined style={{ fontSize: '180px' }} />
+            </div>
+
+            <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100 z-10">
                  <LogoWithTabSync />
                  <div className="space-y-2">
                      <h2 className="text-2xl font-bold tracking-tight text-foreground">Join TabSync today</h2>
@@ -76,13 +86,13 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
                  </div>
             </div>
 
-            <div className="mt-8 flex flex-col items-center space-y-6 animate-in slide-in-from-bottom-4 duration-700 delay-200">
+            <div className="mt-8 flex flex-col items-center space-y-6 animate-in slide-in-from-bottom-4 duration-700 delay-200 z-10">
                 {!isMobile && (
                     <>
                          <div className="transform scale-90 origin-bottom flex flex-col items-center gap-2">
                             <QRCode width={180} height={180} text="Scan to access on mobile" />
                             <InstallPwaDialog>
-                                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-auto p-1 gap-1">
+                                <Button variant="ghost" size="sm" className="text-xs text-muted-foreground hover:text-foreground h-auto p-1 gap-1 rounded-full">
                                     <InfoOutlined fontSize="inherit" /> How to install app?
                                 </Button>
                             </InstallPwaDialog>
@@ -98,7 +108,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
         {/* Right Panel: Form */}
         <div className="flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
              {/* Mobile Header */}
-             <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2">
+             <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-md-sys-color-tertiary-container/30 to-transparent flex flex-col items-center text-center space-y-2">
                  <LogoWithTabSync className="mb-0 scale-110" />
                  <p className="text-sm font-medium text-muted-foreground">Join TabSync today</p>
                  <InstallPwaDialog>
