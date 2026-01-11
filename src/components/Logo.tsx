@@ -7,7 +7,7 @@ const Logo = (props: SVGProps<SVGSVGElement>) => {
       width="1.5em"
       height="1.5em"
       viewBox="0 0 132.813 120"
-      className={`bg-branding-primary rounded-[20%] ${props.className || ""}`}
+      className={`bg-branding-primary rounded-xl ${props.className || ""}`}
       style={{ backgroundColor: "var(--branding-primary)", ...props.style }}
       {...props}
     >
