@@ -43,7 +43,8 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-         <h1 className="text-2xl font-semibold tracking-tight text-foreground">Create an account</h1>
+         {/* Professional: Bold typography */}
+         <h1 className="text-3xl font-bold tracking-tight text-foreground">Create an account</h1>
          <p className="text-sm text-muted-foreground">
             <b>Hi, thank you for joining us.</b>
             <br />
@@ -62,7 +63,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              className="text-foreground bg-background"
+              className="text-foreground bg-background/50 backdrop-blur-sm"
             />
           </div>
           <div className="grid gap-2">
@@ -76,13 +77,13 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="text-foreground bg-background pr-10"
+                className="text-foreground bg-background/50 backdrop-blur-sm pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground"
+                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground rounded-r-md rounded-l-none"
                 onClick={() => setShowPassword(!showPassword)}
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
@@ -108,13 +109,13 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 }}
                 required
                 disabled={isLoading}
-                className="text-foreground bg-background pr-10"
+                className="text-foreground bg-background/50 backdrop-blur-sm pr-10"
               />
               <Button
                 type="button"
                 variant="ghost"
                 size="icon"
-                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground"
+                className="absolute right-0 top-0 h-full w-10 hover:bg-transparent text-muted-foreground hover:text-foreground rounded-r-md rounded-l-none"
                 onClick={() => setShowRepeatPassword(!showRepeatPassword)}
                 aria-label={showRepeatPassword ? "Hide password" : "Show password"}
               >
@@ -138,7 +139,8 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
              </div>
           )}
 
-          <Button className="w-full" type="submit" disabled={isLoading}>
+          {/* MD3 Expressive: Pill shaped button */}
+          <Button className="w-full rounded-full" type="submit" disabled={isLoading}>
             {isLoading ? (
               <CircularProgress size={20} color="inherit" />
             ) : (
@@ -149,7 +151,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
 
       <div className="text-center text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to={ROUTES.SIGN_IN} className="underline hover:text-primary underline-offset-4">
+            <Link to={ROUTES.SIGN_IN} className="underline hover:text-primary underline-offset-4 font-semibold">
                 Sign in
             </Link>
       </div>
