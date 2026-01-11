@@ -12,9 +12,10 @@ interface IUrlGridItemProps {
   isSelected?: boolean;
   isSelectionMode?: boolean;
   isChecked?: boolean;
+  isExiting?: boolean;
 }
 
-const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked }) => {
+const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked, isExiting }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
@@ -22,9 +23,10 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, i
       className={cn(
         "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden",
         isSelected && !isSelectionMode && "ring-2 ring-primary bg-primary/5",
-        isChecked && isSelectionMode && "ring-2 ring-primary bg-primary/5"
+        isChecked && isSelectionMode && "ring-2 ring-primary bg-primary/5",
+        isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
       )}
-      onClick={() => onSelect?.(tab)}
+      onClick={() => !isExiting && onSelect?.(tab)}
     >
       {isSelected && !isSelectionMode && (
         <div className="absolute top-0 right-0 p-1">

@@ -28,6 +28,7 @@ interface IUrlListProps {
   selectedTabIds?: Set<number>;
   onToggleTabSelection?: (id: number) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
+  exitingTabIds?: Set<number>;
 }
 
 const UrlList: React.FC<IUrlListProps> = ({
@@ -39,7 +40,8 @@ const UrlList: React.FC<IUrlListProps> = ({
   isSelectionMode,
   selectedTabIds,
   onToggleTabSelection,
-  onToggleDeviceSelection
+  onToggleDeviceSelection,
+  exitingTabIds
 }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
@@ -135,6 +137,7 @@ const UrlList: React.FC<IUrlListProps> = ({
                       isSelected={tab.id === selectedId}
                       isSelectionMode={isSelectionMode}
                       isChecked={selectedTabIds?.has(tab.id)}
+                      isExiting={exitingTabIds?.has(tab.id)}
                     />
                   );
                 })}
