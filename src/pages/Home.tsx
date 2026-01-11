@@ -20,6 +20,7 @@ import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
 import { sortByTitle } from "../utils/sortByTitle";
+import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
 import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
@@ -377,8 +378,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleArchiveTab = async (tab: ITab) => {
     // Optimistic update
+    const nextTab = getNextTab(tab, urls);
     setTabs((prev) => prev.filter((t) => t.id !== tab.id));
-    handleSelectTab(null);
+    handleSelectTab(nextTab);
     showToast("Tab archived.");
 
     try {
@@ -393,8 +395,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleDeleteTab = async (tab: ITab) => {
     // Optimistic update
+    const nextTab = getNextTab(tab, urls);
     setArchivedTabs((prev) => prev.filter((t) => t.id !== tab.id));
-    handleSelectTab(null);
+    handleSelectTab(nextTab);
     showToast("Tab deleted permanently.");
 
     try {
