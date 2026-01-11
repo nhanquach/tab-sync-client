@@ -10,24 +10,34 @@ interface IUrlGridItemProps {
   tab: ITab;
   onSelect?: (tab: ITab) => void;
   isSelected?: boolean;
+  isSelectionMode?: boolean;
+  isChecked?: boolean;
 }
 
-const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected }) => {
+const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
     <div 
       className={cn(
         "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden",
-        isSelected && "ring-2 ring-primary bg-primary/5"
+        isSelected && !isSelectionMode && "ring-2 ring-primary bg-primary/5",
+        isChecked && isSelectionMode && "ring-2 ring-primary bg-primary/5"
       )}
       onClick={() => onSelect?.(tab)}
     >
-      {isSelected && (
+      {isSelected && !isSelectionMode && (
         <div className="absolute top-0 right-0 p-1">
           <CheckCircleTwoTone className="text-primary" style={{ fontSize: 16 }} />
         </div>
       )}
+
+      {isSelectionMode && isChecked && (
+        <div className="absolute top-0 right-0 p-1">
+          <CheckCircleTwoTone className="text-primary" style={{ fontSize: 20 }} />
+        </div>
+      )}
+
       <div className="flex items-center gap-2 mb-2 min-w-0">
         {!showFallback ? (
           <img

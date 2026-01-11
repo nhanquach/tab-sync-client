@@ -1,5 +1,5 @@
 import React from "react";
-import { WebStoriesTwoTone } from "@mui/icons-material";
+import { WebStoriesTwoTone, CheckCircle } from "@mui/icons-material";
 import dayjs from "dayjs";
 
 import { ITab } from "../interfaces/iTab";
@@ -10,9 +10,11 @@ interface IUrlListItem {
   tab: ITab;
   onSelect?: (tab: ITab) => void;
   isSelected?: boolean;
+  isSelectionMode?: boolean;
+  isChecked?: boolean;
 }
 
-const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected }) => {
+const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
@@ -20,13 +22,28 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected }) => {
       className={cn(
         "flex items-center gap-4 p-4 transition-all group relative",
         "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer",
-        isSelected && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15"
+        isSelected && !isSelectionMode && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15",
+        isChecked && isSelectionMode && "bg-md-sys-color-surface-container-highest"
       )}
       onClick={() => onSelect?.(tab)}
     >
-      {isSelected && (
+      {isSelected && !isSelectionMode && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-md-sys-color-primary rounded-r-full" />
       )}
+
+      {isSelectionMode && (
+         <div className="flex-shrink-0">
+            <div className={cn(
+                "w-5 h-5 rounded-full border-2 transition-colors flex items-center justify-center",
+                isChecked
+                  ? "bg-md-sys-color-primary border-md-sys-color-primary"
+                  : "border-md-sys-color-outline"
+            )}>
+               {isChecked && <CheckCircle className="text-white text-[20px]" />}
+            </div>
+         </div>
+      )}
+
       <div className="flex-shrink-0">
          {!showFallback ? (
             <img

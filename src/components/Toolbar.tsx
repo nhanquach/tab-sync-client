@@ -51,6 +51,8 @@ interface IToolbarProps {
   selectedDevice: string;
   onSelectDevice: (device: string) => void;
   isScrolled?: boolean;
+  isSelectionMode?: boolean;
+  toggleSelectionMode?: () => void;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -66,6 +68,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   selectedDevice,
   onSelectDevice,
   isScrolled = false,
+  isSelectionMode,
+  toggleSelectionMode,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
@@ -246,6 +250,20 @@ const Toolbar: React.FC<IToolbarProps> = ({
             >
               {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
             </Button>
+            {toggleSelectionMode && (
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={toggleSelectionMode}
+                className={cn(
+                  "rounded-full transition-all active:scale-90 duration-200",
+                  isScrolled ? "h-8 w-8" : "h-9 w-9",
+                  isSelectionMode && "bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90"
+                )}
+              >
+                <Check className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+              </Button>
+            )}
           </div>
         </div>
       </div>
