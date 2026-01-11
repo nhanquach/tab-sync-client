@@ -11,7 +11,7 @@ import { AuthError } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { InfoOutlined, LoginOutlined } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface ISignInProps {
   signIn: ({
@@ -90,8 +90,8 @@ const SignIn: React.FC<ISignInProps> = ({
           "w-full max-w-5xl overflow-hidden transition-all duration-300",
           "shadow-none md:shadow-2xl",
           "min-h-screen md:min-h-0",
-          // Shape: Asymmetric Quacky Style
-          "rounded-none rounded-tl-[32px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]",
+          // Professional Shape: Standard rounded corners
+          "rounded-none md:rounded-2xl",
           // Light mode: White glass
           "backdrop-blur-xl bg-white/40 border-0 md:border md:border-white/40",
           // Dark mode: Dark glass
@@ -99,15 +99,7 @@ const SignIn: React.FC<ISignInProps> = ({
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-md-sys-color-tertiary-container/40 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
-
-            {/* Decorative background blob */}
-            <div className="absolute -right-20 -top-20 w-64 h-64 bg-md-sys-color-tertiary-container/30 rounded-full blur-3xl pointer-events-none" />
-
-            {/* Decorative Rotated Icon */}
-            <div className="absolute -left-10 bottom-40 transform -rotate-12 opacity-10 pointer-events-none">
-                 <LoginOutlined style={{ fontSize: '180px' }} />
-            </div>
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
 
             <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100 z-10">
                  <LogoWithTabSync />
@@ -139,7 +131,7 @@ const SignIn: React.FC<ISignInProps> = ({
         {/* Right Panel: Form */}
         <div className="flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
             {/* Mobile Header */}
-            <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-md-sys-color-tertiary-container/30 to-transparent flex flex-col items-center text-center space-y-2">
+            <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2">
                  <LogoWithTabSync className="mb-0 scale-110" />
                  <p className="text-sm font-medium text-muted-foreground">Sync your tabs across devices</p>
                  <InstallPwaDialog>

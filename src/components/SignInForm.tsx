@@ -40,9 +40,9 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-        {/* MD3 Expressive: Bolder typography */}
-        <h1 className="text-3xl font-black tracking-tighter text-foreground">Sign in</h1>
-        <p className="text-sm text-muted-foreground font-medium">
+        {/* Professional: Bold typography, but not 'Black' */}
+        <h1 className="text-3xl font-bold tracking-tight text-foreground">Sign in</h1>
+        <p className="text-sm text-muted-foreground">
           Enter your email below to login to your account
         </p>
       </div>

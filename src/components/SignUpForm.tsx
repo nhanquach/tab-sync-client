@@ -43,9 +43,9 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   return (
     <div className="w-full space-y-6">
       <div className="flex flex-col space-y-2 text-center">
-         {/* MD3 Expressive: Bolder typography */}
-         <h1 className="text-3xl font-black tracking-tighter text-foreground">Create an account</h1>
-         <p className="text-sm text-muted-foreground font-medium">
+         {/* Professional: Bold typography */}
+         <h1 className="text-3xl font-bold tracking-tight text-foreground">Create an account</h1>
+         <p className="text-sm text-muted-foreground">
             <b>Hi, thank you for joining us.</b>
             <br />
             We only use your account in order to save your tabs.
