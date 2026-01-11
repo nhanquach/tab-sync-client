@@ -137,28 +137,38 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (selectedTabIds.size === 0) return;
     const tabsToArchive = tabs.filter(t => selectedTabIds.has(t.id));
 
-    setIsLoading(true);
-    await archiveTab(tabsToArchive);
-    await removeTab(Array.from(selectedTabIds));
-
+    // Optimistic update
     setTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
     setSelectedTabIds(new Set());
     setIsSelectionMode(false);
-    setIsLoading(false);
     showToast(`${tabsToArchive.length} tabs archived.`);
+
+    try {
+      await archiveTab(tabsToArchive);
+      await removeTab(Array.from(selectedTabIds.keys() as unknown as number[]));
+    } catch (error) {
+      console.error(error);
+      showToast("Error archiving tabs. Refreshing...");
+      handleRefresh();
+    }
   };
 
   const handleBulkDelete = async () => {
     if (selectedTabIds.size === 0) return;
 
-    setIsLoading(true);
-    await removeTab(Array.from(selectedTabIds), TABLES.ARCHIVED_TABS);
-
+    // Optimistic update
     setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
     setSelectedTabIds(new Set());
     setIsSelectionMode(false);
-    setIsLoading(false);
     showToast(`${selectedTabIds.size} tabs deleted permanently.`);
+
+    try {
+      await removeTab(Array.from(selectedTabIds), TABLES.ARCHIVED_TABS);
+    } catch (error) {
+      console.error(error);
+      showToast("Error deleting tabs. Refreshing...");
+      handleRefresh();
+    }
   };
 
 
@@ -366,16 +376,34 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const handleArchiveTab = async (tab: ITab) => {
-    await archiveTab([tab]);
-    await removeTab([tab.id]);
+    // Optimistic update
+    setTabs((prev) => prev.filter((t) => t.id !== tab.id));
     handleSelectTab(null);
     showToast("Tab archived.");
+
+    try {
+      await archiveTab([tab]);
+      await removeTab([tab.id]);
+    } catch (error) {
+      console.error(error);
+      showToast("Error archiving tab. Restoring...");
+      setTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
+    }
   };
 
   const handleDeleteTab = async (tab: ITab) => {
-    await removeTab([tab.id], TABLES.ARCHIVED_TABS);
+    // Optimistic update
+    setArchivedTabs((prev) => prev.filter((t) => t.id !== tab.id));
     handleSelectTab(null);
     showToast("Tab deleted permanently.");
+
+    try {
+      await removeTab([tab.id], TABLES.ARCHIVED_TABS);
+    } catch (error) {
+      console.error(error);
+      showToast("Error deleting tab. Restoring...");
+      setArchivedTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
+    }
   };
 
   const closeToast = () => {
