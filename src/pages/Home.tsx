@@ -39,6 +39,7 @@ import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
+import BulkActionsBar from "../components/BulkActionsBar";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -91,6 +92,74 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
   const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
+
+  // Bulk Actions State
+  const [isSelectionMode, setIsSelectionMode] = useState(false);
+  const [selectedTabIds, setSelectedTabIds] = useState<Set<number>>(new Set());
+
+  const toggleSelectionMode = () => {
+    setIsSelectionMode((prev) => {
+        if (prev) {
+            setSelectedTabIds(new Set()); // Clear selection when exiting mode
+        }
+        return !prev;
+    });
+  };
+
+  const handleToggleTabSelection = (id: number) => {
+    setSelectedTabIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  const handleToggleDeviceSelection = (deviceName: string, select: boolean) => {
+    const tabsToProcess = isOpenTabsView ? tabs : archivedTabs;
+    const deviceTabs = tabsToProcess.filter(t => t.deviceName === deviceName);
+
+    setSelectedTabIds((prev) => {
+        const newSet = new Set(prev);
+        deviceTabs.forEach(t => {
+            if (select) newSet.add(t.id);
+            else newSet.delete(t.id);
+        });
+        return newSet;
+    });
+  };
+
+  const handleBulkArchive = async () => {
+    if (selectedTabIds.size === 0) return;
+    const tabsToArchive = tabs.filter(t => selectedTabIds.has(t.id));
+
+    setIsLoading(true);
+    await archiveTab(tabsToArchive);
+    await removeTab(Array.from(selectedTabIds));
+
+    setTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+    setSelectedTabIds(new Set());
+    setIsSelectionMode(false);
+    setIsLoading(false);
+    showToast(`${tabsToArchive.length} tabs archived.`);
+  };
+
+  const handleBulkDelete = async () => {
+    if (selectedTabIds.size === 0) return;
+
+    setIsLoading(true);
+    await removeTab(Array.from(selectedTabIds), "archived_tabs");
+
+    setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+    setSelectedTabIds(new Set());
+    setIsSelectionMode(false);
+    setIsLoading(false);
+    showToast(`${selectedTabIds.size} tabs deleted permanently.`);
+  };
+
 
   useEffect(() => {
     const allTabs = [...tabs, ...archivedTabs];
@@ -364,6 +433,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
                 isScrolled={isScrolled}
+                isSelectionMode={isSelectionMode}
+                toggleSelectionMode={toggleSelectionMode}
             />
 
             {isLoading && (
@@ -386,6 +457,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
+                            isSelectionMode={isSelectionMode}
+                            selectedTabIds={selectedTabIds}
+                            onToggleTabSelection={handleToggleTabSelection}
+                            onToggleDeviceSelection={handleToggleDeviceSelection}
                           />
                       )}
 
@@ -396,6 +471,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
+                            isSelectionMode={isSelectionMode}
+                            selectedTabIds={selectedTabIds}
+                            onToggleTabSelection={handleToggleTabSelection}
+                            onToggleDeviceSelection={handleToggleDeviceSelection}
                           />
                       )}
                   </div>
@@ -461,6 +540,15 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
             <TipsFooter  />
             <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
+
+            <BulkActionsBar
+              selectedCount={selectedTabIds.size}
+              view={currentView}
+              onClearSelection={() => setSelectedTabIds(new Set())}
+              onArchiveSelected={handleBulkArchive}
+              onDeleteSelected={handleBulkDelete}
+            />
+
             <Snackbar
                 open={toast.show}
                 autoHideDuration={1000}
