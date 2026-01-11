@@ -34,6 +34,7 @@ import {
   LAYOUT_KEY,
   ORDER,
 } from "../utils/constants";
+import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
@@ -151,7 +152,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (selectedTabIds.size === 0) return;
 
     setIsLoading(true);
-    await removeTab(Array.from(selectedTabIds), "archived_tabs");
+    await removeTab(Array.from(selectedTabIds), TABLES.ARCHIVED_TABS);
 
     setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
     setSelectedTabIds(new Set());
@@ -366,12 +367,13 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleArchiveTab = async (tab: ITab) => {
     await archiveTab([tab]);
+    await removeTab([tab.id]);
     handleSelectTab(null);
     showToast("Tab archived.");
   };
 
   const handleDeleteTab = async (tab: ITab) => {
-    await removeTab([tab.id], "archived_tabs");
+    await removeTab([tab.id], TABLES.ARCHIVED_TABS);
     handleSelectTab(null);
     showToast("Tab deleted permanently.");
   };
