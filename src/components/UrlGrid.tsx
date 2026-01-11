@@ -26,6 +26,7 @@ interface IUrlGridProps {
   selectedTabIds?: Set<number>;
   onToggleTabSelection?: (id: number) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
+  exitingTabIds?: Set<number>;
 }
 
 const UrlGrid: React.FC<IUrlGridProps> = ({
@@ -37,7 +38,8 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   isSelectionMode,
   selectedTabIds,
   onToggleTabSelection,
-  onToggleDeviceSelection
+  onToggleDeviceSelection,
+  exitingTabIds
 }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
@@ -129,6 +131,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                       isSelected={tab.id === selectedId}
                       isSelectionMode={isSelectionMode}
                       isChecked={selectedTabIds?.has(tab.id)}
+                      isExiting={exitingTabIds?.has(tab.id)}
                     />
                   );
                 })}

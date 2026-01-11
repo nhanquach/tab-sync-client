@@ -12,9 +12,10 @@ interface IUrlListItem {
   isSelected?: boolean;
   isSelectionMode?: boolean;
   isChecked?: boolean;
+  isExiting?: boolean;
 }
 
-const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked }) => {
+const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked, isExiting }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
   return (
@@ -23,9 +24,10 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
         "flex items-center gap-4 p-4 transition-all group relative",
         "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer",
         isSelected && !isSelectionMode && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15",
-        isChecked && isSelectionMode && "bg-md-sys-color-surface-container-highest"
+        isChecked && isSelectionMode && "bg-md-sys-color-surface-container-highest",
+        isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
       )}
-      onClick={() => onSelect?.(tab)}
+      onClick={() => !isExiting && onSelect?.(tab)}
     >
       {isSelected && !isSelectionMode && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-md-sys-color-primary rounded-r-full" />

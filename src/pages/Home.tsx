@@ -98,6 +98,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   // Bulk Actions State
   const [isSelectionMode, setIsSelectionMode] = useState(false);
   const [selectedTabIds, setSelectedTabIds] = useState<Set<number>>(new Set());
+  const [exitingTabIds, setExitingTabIds] = useState<Set<number>>(new Set());
 
   const toggleSelectionMode = () => {
     setIsSelectionMode((prev) => {
@@ -138,38 +139,50 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (selectedTabIds.size === 0) return;
     const tabsToArchive = tabs.filter(t => selectedTabIds.has(t.id));
 
-    // Optimistic update
-    setTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
-    setSelectedTabIds(new Set());
+    // Optimistic animation start
+    setExitingTabIds(new Set(selectedTabIds));
     setIsSelectionMode(false);
-    showToast(`${tabsToArchive.length} tabs archived.`);
+    setSelectedTabIds(new Set());
 
-    try {
-      await archiveTab(tabsToArchive);
-      await removeTab(Array.from(selectedTabIds.keys() as unknown as number[]));
-    } catch (error) {
-      console.error(error);
-      showToast("Error archiving tabs. Refreshing...");
-      handleRefresh();
-    }
+    setTimeout(async () => {
+        // Optimistic update after animation
+        setTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+        setExitingTabIds(new Set());
+        showToast(`${tabsToArchive.length} tabs archived.`);
+
+        try {
+          await archiveTab(tabsToArchive);
+          await removeTab(Array.from(selectedTabIds.keys() as unknown as number[]));
+        } catch (error) {
+          console.error(error);
+          showToast("Error archiving tabs. Refreshing...");
+          handleRefresh();
+        }
+    }, 300);
   };
 
   const handleBulkDelete = async () => {
     if (selectedTabIds.size === 0) return;
 
-    // Optimistic update
-    setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
-    setSelectedTabIds(new Set());
+    // Optimistic animation start
+    setExitingTabIds(new Set(selectedTabIds));
     setIsSelectionMode(false);
-    showToast(`${selectedTabIds.size} tabs deleted permanently.`);
+    setSelectedTabIds(new Set());
 
-    try {
-      await removeTab(Array.from(selectedTabIds), TABLES.ARCHIVED_TABS);
-    } catch (error) {
-      console.error(error);
-      showToast("Error deleting tabs. Refreshing...");
-      handleRefresh();
-    }
+    setTimeout(async () => {
+        // Optimistic update after animation
+        setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+        setExitingTabIds(new Set());
+        showToast(`${selectedTabIds.size} tabs deleted permanently.`);
+
+        try {
+          await removeTab(Array.from(selectedTabIds), TABLES.ARCHIVED_TABS);
+        } catch (error) {
+          console.error(error);
+          showToast("Error deleting tabs. Refreshing...");
+          handleRefresh();
+        }
+    }, 300);
   };
 
 
@@ -377,36 +390,50 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const handleArchiveTab = async (tab: ITab) => {
-    // Optimistic update
     const nextTab = getNextTab(tab, urls);
-    setTabs((prev) => prev.filter((t) => t.id !== tab.id));
     handleSelectTab(nextTab);
-    showToast("Tab archived.");
 
-    try {
-      await archiveTab([tab]);
-      await removeTab([tab.id]);
-    } catch (error) {
-      console.error(error);
-      showToast("Error archiving tab. Restoring...");
-      setTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
-    }
+    // Optimistic animation start
+    setExitingTabIds(new Set([tab.id]));
+
+    setTimeout(async () => {
+        // Optimistic update after animation
+        setTabs((prev) => prev.filter((t) => t.id !== tab.id));
+        setExitingTabIds(new Set());
+        showToast("Tab archived.");
+
+        try {
+          await archiveTab([tab]);
+          await removeTab([tab.id]);
+        } catch (error) {
+          console.error(error);
+          showToast("Error archiving tab. Restoring...");
+          setTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
+        }
+    }, 300);
   };
 
   const handleDeleteTab = async (tab: ITab) => {
-    // Optimistic update
     const nextTab = getNextTab(tab, urls);
-    setArchivedTabs((prev) => prev.filter((t) => t.id !== tab.id));
     handleSelectTab(nextTab);
-    showToast("Tab deleted permanently.");
 
-    try {
-      await removeTab([tab.id], TABLES.ARCHIVED_TABS);
-    } catch (error) {
-      console.error(error);
-      showToast("Error deleting tab. Restoring...");
-      setArchivedTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
-    }
+    // Optimistic animation start
+    setExitingTabIds(new Set([tab.id]));
+
+    setTimeout(async () => {
+        // Optimistic update after animation
+        setArchivedTabs((prev) => prev.filter((t) => t.id !== tab.id));
+        setExitingTabIds(new Set());
+        showToast("Tab deleted permanently.");
+
+        try {
+          await removeTab([tab.id], TABLES.ARCHIVED_TABS);
+        } catch (error) {
+          console.error(error);
+          showToast("Error deleting tab. Restoring...");
+          setArchivedTabs((prev) => [...prev, tab].sort(sortByTimeStamp));
+        }
+    }, 300);
   };
 
   const closeToast = () => {
@@ -494,6 +521,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
+                            exitingTabIds={exitingTabIds}
                           />
                       )}
 
@@ -508,6 +536,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
+                            exitingTabIds={exitingTabIds}
                           />
                       )}
                   </div>
