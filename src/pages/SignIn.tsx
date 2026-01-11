@@ -11,7 +11,7 @@ import { AuthError } from "@supabase/supabase-js";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { InfoOutlined } from "@mui/icons-material";
+import { InfoOutlined, LoginOutlined } from "@mui/icons-material";
 
 interface ISignInProps {
   signIn: ({
@@ -90,8 +90,8 @@ const SignIn: React.FC<ISignInProps> = ({
           "w-full max-w-5xl overflow-hidden transition-all duration-300",
           "shadow-none md:shadow-2xl",
           "min-h-screen md:min-h-0",
-          // Professional Shape: Standard rounded corners
-          "rounded-none md:rounded-2xl",
+          // Professional Expressive Shape: One elegant curve
+          "rounded-none rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]",
           // Light mode: White glass
           "backdrop-blur-xl bg-white/40 border-0 md:border md:border-white/40",
           // Dark mode: Dark glass
@@ -99,7 +99,12 @@ const SignIn: React.FC<ISignInProps> = ({
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/10 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
+
+            {/* Watermark Texture: Large, subtle, professional */}
+            <div className="absolute -left-12 -bottom-12 opacity-[0.03] dark:opacity-[0.05] pointer-events-none transform rotate-12">
+                 <LoginOutlined style={{ fontSize: '400px' }} />
+            </div>
 
             <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100 z-10">
                  <LogoWithTabSync />
