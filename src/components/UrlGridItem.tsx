@@ -18,10 +18,21 @@ interface IUrlGridItemProps {
 const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked, isExiting }) => {
   const [showFallback, handleOnErrorImage] = useLoadFavIcon();
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      if (!isExiting) onSelect?.(tab);
+    }
+  };
+
   return (
-    <div 
+    <div
+      role={isSelectionMode ? "checkbox" : "button"}
+      aria-checked={isSelectionMode ? isChecked : undefined}
+      tabIndex={isExiting ? -1 : 0}
+      onKeyDown={handleKeyDown}
       className={cn(
-        "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden",
+        "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
         isSelected && !isSelectionMode && "ring-2 ring-primary bg-primary/5",
         isChecked && isSelectionMode && "ring-2 ring-primary bg-primary/5",
         isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
@@ -29,25 +40,25 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, i
       onClick={() => !isExiting && onSelect?.(tab)}
     >
       {isSelected && !isSelectionMode && (
-        <div className="absolute top-0 right-0 p-1">
+        <div className="absolute top-0 right-0 p-1" aria-hidden="true">
           <CheckCircleTwoTone className="text-primary" style={{ fontSize: 16 }} />
         </div>
       )}
 
       {isSelectionMode && isChecked && (
-        <div className="absolute top-0 right-0 p-1">
+        <div className="absolute top-0 right-0 p-1" aria-hidden="true">
           <CheckCircleTwoTone className="text-primary" style={{ fontSize: 20 }} />
         </div>
       )}
 
-      <div className="flex items-center gap-2 mb-2 min-w-0">
+      <div className="flex items-center gap-2 mb-2 min-w-0" aria-hidden="true">
         {!showFallback ? (
           <img
             src={tab.favIconUrl}
             height={24}
             width={24}
             className="min-w-[24px] rounded-sm"
-            alt="favicon"
+            alt=""
             onError={handleOnErrorImage}
           />
         ) : (
