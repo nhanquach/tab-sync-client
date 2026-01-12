@@ -28,8 +28,8 @@ export const ExpressiveCard = React.forwardRef<HTMLDivElement, ExpressiveCardPro
           // Shape: Uniform "Geometric"
           "rounded-3xl",
 
-          // Material: Solid
-          "bg-card border border-border",
+          // Material: Solid with Blur
+          "bg-card/85 backdrop-blur-md border border-border/50",
 
           // Shadow
           "shadow-xl",

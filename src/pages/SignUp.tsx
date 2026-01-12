@@ -54,7 +54,7 @@ const SignUp: React.FC<ISignUpProps> = ({ signUp }) => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700">
+    <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700 relative z-10">
       <ExpressiveCard className={cn(
           "w-full max-w-5xl overflow-hidden",
           "min-h-screen md:min-h-0",
