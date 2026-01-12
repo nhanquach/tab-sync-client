@@ -8,10 +8,10 @@ import SignInForm from "../components/SignInForm";
 import LogoWithTabSync from "../components/LogoWithTabSync";
 import InstallPwaDialog from "../components/InstallPwaDialog";
 import { AuthError } from "@supabase/supabase-js";
-import { GlassCard } from "@/components/ui/glass-card";
+import { ExpressiveCard } from "@/components/ui/expressive-card";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { InfoOutlined, LoginOutlined } from "@mui/icons-material";
+import { InfoOutlined } from "@mui/icons-material";
 
 interface ISignInProps {
   signIn: ({
@@ -86,18 +86,13 @@ const SignIn: React.FC<ISignInProps> = ({
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen w-full p-0 md:p-10 animate-in fade-in duration-700">
-      <GlassCard className={cn(
+      <ExpressiveCard className={cn(
           "w-full max-w-5xl overflow-hidden",
           "min-h-screen md:min-h-0",
           "grid grid-cols-1 md:grid-cols-2"
       )}>
         {/* Left Panel: Visuals & Download */}
-        <div className="relative hidden md:flex flex-col justify-between p-10 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border-r border-white/20 dark:border-white/10 overflow-hidden">
-
-            {/* Watermark Texture: Large, subtle, professional */}
-            <div className="absolute -left-12 -bottom-12 opacity-[0.03] dark:opacity-[0.05] pointer-events-none transform rotate-12">
-                 <LoginOutlined style={{ fontSize: '400px' }} />
-            </div>
+        <div className="relative hidden md:flex flex-col justify-between p-10 bg-primary/5 border-r border-border overflow-hidden">
 
             <div className="space-y-6 animate-in slide-in-from-left-4 duration-700 delay-100 z-10">
                  <LogoWithTabSync />
@@ -127,9 +122,9 @@ const SignIn: React.FC<ISignInProps> = ({
         </div>
 
         {/* Right Panel: Form */}
-        <div className="flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm">
+        <div className="flex flex-col justify-center bg-card">
             {/* Mobile Header */}
-            <div className="md:hidden w-full p-8 pb-0 bg-gradient-to-b from-primary/10 to-transparent flex flex-col items-center text-center space-y-2">
+            <div className="md:hidden w-full p-8 pb-0 bg-primary/5 flex flex-col items-center text-center space-y-2">
                  <LogoWithTabSync className="mb-0 scale-110" />
                  <p className="text-sm font-medium text-muted-foreground">Sync your tabs across devices</p>
                  <InstallPwaDialog>
@@ -148,7 +143,7 @@ const SignIn: React.FC<ISignInProps> = ({
                 />
             </div>
         </div>
-      </GlassCard>
+      </ExpressiveCard>
     </div>
   );
 };
