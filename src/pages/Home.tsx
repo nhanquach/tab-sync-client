@@ -7,8 +7,6 @@ import {
   getArchivedTabs,
   onOpenTabChange,
   onArchivedTabChange,
-  archiveOpenTabs,
-  removeArchivedTabs,
   sendTab,
   archiveTab,
   removeTab,
@@ -360,11 +358,52 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const clearOpenTabs = (deviceName: string) => {
-    archiveOpenTabs(deviceName);
+    const tabsToArchive = tabs.filter((t) => t.deviceName === deviceName);
+    if (tabsToArchive.length === 0) return;
+
+    // Optimistic animation start
+    const ids = tabsToArchive.map((t) => t.id);
+    setExitingTabIds(new Set(ids));
+
+    setTimeout(async () => {
+      // Optimistic update after animation
+      setTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setExitingTabIds(new Set());
+      showToast(`${tabsToArchive.length} tabs archived.`);
+
+      try {
+        await archiveTab(tabsToArchive);
+        await removeTab(ids);
+      } catch (error) {
+        console.error(error);
+        showToast("Error archiving tabs. Refreshing...");
+        handleRefresh();
+      }
+    }, 300);
   };
 
   const clearArchivedTabs = (deviceName: string) => {
-    removeArchivedTabs(deviceName);
+    const tabsToDelete = archivedTabs.filter((t) => t.deviceName === deviceName);
+    if (tabsToDelete.length === 0) return;
+
+    // Optimistic animation start
+    const ids = tabsToDelete.map((t) => t.id);
+    setExitingTabIds(new Set(ids));
+
+    setTimeout(async () => {
+      // Optimistic update after animation
+      setArchivedTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setExitingTabIds(new Set());
+      showToast(`${tabsToDelete.length} tabs deleted permanently.`);
+
+      try {
+        await removeTab(ids, TABLES.ARCHIVED_TABS);
+      } catch (error) {
+        console.error(error);
+        showToast("Error deleting tabs. Refreshing...");
+        handleRefresh();
+      }
+    }, 300);
   };
 
   const handleRefresh = async () => {
