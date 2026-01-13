@@ -230,6 +230,10 @@ export const sendTab = async (
 export const removeTab = async (tabIds: number[], table = TABLES.OPEN_TABS) => {
   checkTokenExpired();
 
+  if (!tabIds || tabIds.length === 0) {
+    return;
+  }
+
   const { client } = await getClient();
 
   if (client) {
@@ -271,8 +275,8 @@ export const onOpenTabChange = async (
 ) => {
   const { client, userId } = await getClient();
   if (client) {
-    client
-      .channel("custom-all-channel")
+    return client
+      .channel("open-tabs-channel")
       .on(
         "postgres_changes",
         {
@@ -294,8 +298,8 @@ export const onArchivedTabChange = async (
 ) => {
   const { client, userId } = await getClient();
   if (client) {
-    client
-      .channel("custom-all-channel")
+    return client
+      .channel("archived-tabs-channel")
       .on(
         "postgres_changes",
         {

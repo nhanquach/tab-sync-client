@@ -302,20 +302,44 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }, [currentView, handleGetTabs, tabs.length, archivedTabs.length, isOpenTabsView]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let channel: any = null;
+    let isMounted = true;
+
     onOpenTabChange((payload: IDatabaseUpdatePayload) => {
       setTabs((currentTabs) => {
         return updateTabs(currentTabs, payload);
       });
+    }).then((c) => {
+      if (isMounted) channel = c;
+      else c?.unsubscribe();
     });
-  }, [tabs]);
+
+    return () => {
+      isMounted = false;
+      channel?.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let channel: any = null;
+    let isMounted = true;
+
     onArchivedTabChange((payload: IDatabaseUpdatePayload) => {
       setArchivedTabs((currentTabs) => {
         return updateTabs(currentTabs, payload);
       });
+    }).then((c) => {
+      if (isMounted) channel = c;
+      else c?.unsubscribe();
     });
-  }, [archivedTabs]);
+
+    return () => {
+      isMounted = false;
+      channel?.unsubscribe();
+    };
+  }, []);
 
   useEffect(() => {
     if (window.location.pathname === "/share") {
@@ -360,10 +384,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const clearOpenTabs = (deviceName: string) => {
+    // Optimistic update
+    setTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
     archiveOpenTabs(deviceName);
   };
 
   const clearArchivedTabs = (deviceName: string) => {
+    // Optimistic update
+    setArchivedTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
     removeArchivedTabs(deviceName);
   };
 
