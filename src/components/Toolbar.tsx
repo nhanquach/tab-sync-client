@@ -12,10 +12,12 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  PublicTwoTone,
+  DevicesTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { ORDER } from "../utils/constants";
+import { ORDER, GROUP_BY } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +48,8 @@ interface IToolbarProps {
   layout: Layout;
   toggleOrderBy(): void;
   orderBy: ORDER;
+  toggleGroupBy(): void;
+  groupBy: GROUP_BY;
 
   devices: string[];
   selectedDevice: string;
@@ -64,6 +68,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   layout,
   toggleOrderBy,
   orderBy,
+  toggleGroupBy,
+  groupBy,
   devices,
   selectedDevice,
   onSelectDevice,
@@ -249,6 +255,18 @@ const Toolbar: React.FC<IToolbarProps> = ({
               className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
             >
               {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={toggleGroupBy}
+              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+            >
+              {groupBy === GROUP_BY.DEVICE ? (
+                <DevicesTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+              ) : (
+                <PublicTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+              )}
             </Button>
             {toggleSelectionMode && (
               <Button

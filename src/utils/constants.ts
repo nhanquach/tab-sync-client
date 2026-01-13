@@ -5,6 +5,7 @@ export const EXTENSION_PAGE =
 export const LAYOUT_KEY = "displayMode";
 export const LAST_SAVED_DISPLAYED_BROWSERS_KEY = "lastSavedDisplayedBrowsers";
 export const LAST_SAVED_ORDER_BY_KEY = "lastSavedOrderBy";
+export const LAST_SAVED_GROUP_BY_KEY = "lastSavedGroupBy";
 
 export const LAYOUT = {
   LIST: "list",
@@ -14,4 +15,9 @@ export const LAYOUT = {
 export enum ORDER {
   TIME,
   TITLE,
+}
+
+export enum GROUP_BY {
+  DEVICE = "device",
+  DOMAIN = "domain",
 }

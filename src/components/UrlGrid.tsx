@@ -1,10 +1,12 @@
 import React from "react";
 // @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
-import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone } from "@mui/icons-material";
+import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone, PublicTwoTone } from "@mui/icons-material";
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
+import { GROUP_BY } from "../utils/constants";
+import { getDomain } from "../utils/getDomain";
 import UrlGridItem from "./UrlGridItem";
 
 // Shadcn UI
@@ -18,14 +20,15 @@ import {
 
 interface IUrlGridProps {
   view: TABS_VIEWS;
-  onClear: (deviceName: string) => void;
+  onClear: (groupName: string) => void;
   urls: ITab[];
+  groupBy?: GROUP_BY;
   onSelect?: (tab: ITab) => void;
   selectedId?: number;
   isSelectionMode?: boolean;
   selectedTabIds?: Set<number>;
   onToggleTabSelection?: (id: number) => void;
-  onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
+  onToggleDeviceSelection?: (groupName: string, select: boolean) => void;
   exitingTabIds?: Set<number>;
 }
 
@@ -33,6 +36,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   onClear,
   urls,
   view,
+  groupBy: groupByType = GROUP_BY.DEVICE,
   onSelect,
   selectedId,
   isSelectionMode,
@@ -41,13 +45,16 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   onToggleDeviceSelection,
   exitingTabIds
 }) => {
-  const groupByBrowser = groupBy(urls, "deviceName");
-  const browsers = Object.keys(groupByBrowser);
+  const groups = groupBy(urls, (tab: ITab) =>
+    groupByType === GROUP_BY.DOMAIN ? getDomain(tab.url) : tab.deviceName
+  );
+  const groupNames = Object.keys(groups).sort();
 
    // Helper to get icon for header (Duplicated from UrlList, could be extracted to util but fine here for now)
   const getIcon = (name: string) => {
-    const lower = name.toLowerCase();
     const className = "text-md-sys-color-primary mr-2";
+    const lower = name.toLowerCase();
+
     if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
       return <LaptopMacTwoTone className={className} />;
     if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
@@ -57,8 +64,8 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
 
   return (
     <div className="space-y-8 my-4">
-      {browsers.map((name) => {
-        const tabs: ITab[] = groupByBrowser[name];
+      {groupNames.map((name) => {
+        const tabs: ITab[] = groups[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.id));
 
         return (
@@ -66,9 +73,21 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
              {/* Section Header */}
             <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center">
-                    {getIcon(name)}
+                    {groupByType === GROUP_BY.DOMAIN ? (
+                       <>
+                         <img
+                            src={`https://www.google.com/s2/favicons?domain=${name}&sz=32`}
+                            alt=""
+                            className="w-5 h-5 mr-3 rounded-full hidden sm:block"
+                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                         />
+                         <PublicTwoTone className="text-md-sys-color-primary mr-2 sm:hidden" />
+                       </>
+                    ) : (
+                       getIcon(name)
+                    )}
                     <h3 className="text-lg font-medium text-md-sys-color-on-surface">
-                        {name || "Unknown Device"}
+                        {name || (groupByType === GROUP_BY.DOMAIN ? "Unknown Website" : "Unknown Device")}
                     </h3>
                     <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full">
                         {tabs.length} tabs
