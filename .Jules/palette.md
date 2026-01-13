@@ -5,3 +5,7 @@
 ## 2024-05-24 - Accessibility on Responsive Icon Buttons
 **Learning:** When using responsive layouts where text labels are hidden on small screens (e.g., `md:hidden`), the button becomes icon-only and loses its accessible name. Adding `aria-label` ensures screen readers can identify the button regardless of the viewport size or CSS display properties.
 **Action:** Always add `aria-label` to buttons that might become icon-only in responsive views.
+
+## 2025-05-19 - Accessible Inactive States
+**Learning:** Using `hidden` (`display: none`) to hide labels for inactive states (like unselected tabs) removes them from the accessibility tree, leaving screen reader users with unnamed buttons. Replacing `hidden` with `sr-only` preserves the accessible name while maintaining the collapsed visual design.
+**Action:** Use `sr-only` instead of `hidden` for text labels that are visually toggled but should remain accessible.

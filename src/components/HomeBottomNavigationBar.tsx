@@ -71,7 +71,7 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({
             <CloudSyncTwoTone sx={{ fontSize: 24 }} />
             <span className={cn(
               "text-sm font-medium",
-               view === TABS_VIEWS.OPEN_TABS ? "block" : "hidden" // Only show label when active to save space? Or always show?
+               view === TABS_VIEWS.OPEN_TABS ? "block" : "sr-only" // Only show label when active to save space? Or always show?
                // Let's hide label when inactive for a cleaner pill look, common in floating navs
             )}>
               Open
@@ -94,7 +94,7 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({
             <ArchiveTwoTone sx={{ fontSize: 24 }} />
              <span className={cn(
               "text-sm font-medium",
-               view === TABS_VIEWS.ARCHIVED_TABS ? "block" : "hidden"
+               view === TABS_VIEWS.ARCHIVED_TABS ? "block" : "sr-only"
             )}>
               Archived
             </span>
