@@ -39,11 +39,11 @@ const QRCodeDialog: React.FC<Props> = () => {
       <DialogContent
         className={cn(
           "shadow-xl",
-          // MD3 Styling Replacement with Asymmetric Quacky Shape
-          "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
+          // Solid Geometric Styling
+          "bg-card/85 backdrop-blur-md text-card-foreground border border-border/50",
           isMobile
             ? "h-screen w-screen max-w-none pt-10 rounded-none overflow-y-auto"
-            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-3xl"
         )}
       >
         <div className={cn(
@@ -51,8 +51,8 @@ const QRCodeDialog: React.FC<Props> = () => {
           // Remove h-full on mobile to allow growing
           "h-auto md:h-full"
         )}>
-          {/* Left Column (Hero) - Quacky Expressive Style */}
-          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-center space-y-8 relative overflow-hidden shrink-0">
+          {/* Left Column (Hero) - Solid Expressive Style */}
+          <div className="flex-1 p-6 md:p-10 bg-primary/5 flex flex-col justify-center items-center space-y-8 relative overflow-hidden shrink-0">
 
             {/* Decorative background blob */}
             <div className="absolute -left-20 -bottom-20 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl" />
@@ -65,7 +65,7 @@ const QRCodeDialog: React.FC<Props> = () => {
               <DialogTitle className="text-4xl md:text-6xl font-black tracking-tighter leading-none">
                 Scan me <span className="inline-block hover:animate-bounce">🤳</span>
               </DialogTitle>
-              <DialogDescription className="text-lg md:text-xl font-medium opacity-90 text-md-sys-color-on-tertiary-container">
+              <DialogDescription className="text-lg md:text-xl font-medium opacity-90 text-muted-foreground">
                 To open on mobile
               </DialogDescription>
             </div>

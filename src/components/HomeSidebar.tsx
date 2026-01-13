@@ -22,10 +22,10 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
   return (
     <aside
       className={cn(
-        // Floating Navigation Rail
+        // Floating Navigation Rail - Solid Geometric Style
         "sticky z-40 hidden md:flex flex-col items-center justify-between py-6",
-        "bg-md-sys-color-surface-container shadow-sm border border-white/20 dark:border-white/10",
-        "rounded-2xl ml-4 mb-4"
+        "bg-card/85 backdrop-blur-md shadow-xl border border-border/50",
+        "rounded-3xl ml-4 mb-4"
       )}
       style={{
           width: drawerWidth,
