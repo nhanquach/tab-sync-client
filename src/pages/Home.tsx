@@ -41,6 +41,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import CommandPalette from "../components/CommandPalette";
+import PaginationControls from "../components/PaginationControls";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -208,6 +209,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [searchString, setSearchString] = useState<string>("");
   const [selectedDevice, setSelectedDevice] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const ITEMS_PER_PAGE = 20;
 
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
@@ -251,6 +254,19 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     searchString,
     orderBy,
   ]);
+
+  const totalPages = Math.ceil(urls.length / ITEMS_PER_PAGE);
+
+  const paginatedUrls = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return urls.slice(startIndex, endIndex);
+  }, [urls, currentPage]);
+
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchString, selectedDevice, currentView, orderBy]);
 
   const handleGetTabs = useCallback(async () => {
     setIsLoading(true);
@@ -554,7 +570,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                       {(urls.length > 0 && layout === "list") && (
                           <UrlList
                             view={currentView}
-                            urls={urls}
+                            urls={paginatedUrls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
@@ -569,7 +585,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                       {(urls.length > 0 && layout === "grid") && (
                           <UrlGrid
                             view={currentView}
-                            urls={urls}
+                            urls={paginatedUrls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
@@ -580,6 +596,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             exitingTabIds={exitingTabIds}
                           />
                       )}
+
+                      <PaginationControls
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                      />
                   </div>
               </div>
 
