@@ -256,18 +256,59 @@ const Toolbar: React.FC<IToolbarProps> = ({
             >
               {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
             </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleGroupBy}
-              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
-            >
-              {groupBy === GROUP_BY.DEVICE ? (
-                <DevicesTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-              ) : (
-                <PublicTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-              )}
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "rounded-full transition-all active:scale-90 duration-200 flex items-center gap-1.5 px-3",
+                    isScrolled ? "h-8" : "h-9"
+                  )}
+                >
+                  {groupBy === GROUP_BY.DEVICE ? (
+                    <DevicesTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  ) : (
+                    <PublicTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  )}
+                  <span className={cn("text-xs font-medium hidden md:inline", isScrolled ? "text-[11px]" : "text-[12px]")}>
+                    {groupBy === GROUP_BY.DEVICE ? "By Device" : "By Website"}
+                  </span>
+                  <KeyboardArrowDownTwoTone className="text-base opacity-40 ml-[-2px]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 rounded-[20px] p-1.5 bg-md-sys-color-surface-container-high backdrop-blur-xl border-md-sys-color-outline-variant/20 shadow-2xl">
+                <DropdownMenuLabel className="px-2 py-1.5 text-[10px] font-bold text-md-sys-color-on-surface-variant/50 uppercase tracking-widest">Group By</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-md-sys-color-outline-variant/10 my-1" />
+                <DropdownMenuItem
+                  onClick={toggleGroupBy}
+                  disabled={groupBy === GROUP_BY.DEVICE}
+                  className={cn(
+                    "rounded-[12px] px-2 py-2 focus:bg-md-sys-color-primary/10 cursor-pointer",
+                    groupBy === GROUP_BY.DEVICE && "bg-md-sys-color-secondary-container/50 text-md-sys-color-on-secondary-container"
+                  )}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <DevicesTwoTone className="text-lg" />
+                    <span className="flex-1 text-sm font-medium">Device</span>
+                    {groupBy === GROUP_BY.DEVICE && <Check className="text-base" />}
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={toggleGroupBy}
+                  disabled={groupBy === GROUP_BY.DOMAIN}
+                  className={cn(
+                    "rounded-[12px] px-2 py-2 focus:bg-md-sys-color-primary/10 cursor-pointer",
+                    groupBy === GROUP_BY.DOMAIN && "bg-md-sys-color-secondary-container/50 text-md-sys-color-on-secondary-container"
+                  )}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <PublicTwoTone className="text-lg" />
+                    <span className="flex-1 text-sm font-medium">Website</span>
+                    {groupBy === GROUP_BY.DOMAIN && <Check className="text-base" />}
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {toggleSelectionMode && (
               <Button
                 variant="ghost"

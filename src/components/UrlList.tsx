@@ -80,10 +80,14 @@ const UrlList: React.FC<IUrlListProps> = ({
                          <img
                             src={`https://www.google.com/s2/favicons?domain=${name}&sz=32`}
                             alt=""
-                            className="w-5 h-5 mr-3 rounded-full hidden sm:block"
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
+                            className="w-5 h-5 mr-3 rounded-full"
+                            onError={(e) => {
+                                e.currentTarget.style.display = 'none';
+                                const fallback = e.currentTarget.nextElementSibling;
+                                if (fallback) fallback.classList.remove('hidden');
+                            }}
                          />
-                         <PublicTwoTone className="text-md-sys-color-primary mr-2 sm:hidden" />
+                         <PublicTwoTone className="text-md-sys-color-primary mr-2 hidden" />
                        </>
                     ) : (
                        getIcon(name)
