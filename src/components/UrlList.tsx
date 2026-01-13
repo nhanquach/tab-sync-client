@@ -118,10 +118,10 @@ const UrlList: React.FC<IUrlListProps> = ({
 
             {/* Container Card for List Items */}
             <Card className={cn(
-                "overflow-hidden border-none shadow-sm",
-                "bg-md-sys-color-surface-container-low" // Filled card style
+                "overflow-hidden shadow-sm",
+                "bg-card/85 backdrop-blur-md border border-border/50 rounded-3xl" // Solid Geometric
             )}>
-              <div className="divide-y divide-md-sys-color-outline-variant/20">
+              <div className="divide-y divide-border/50">
                 {tabs.map((tab: ITab) => {
                   return (
                     <UrlListItem 

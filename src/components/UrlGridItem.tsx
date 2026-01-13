@@ -21,7 +21,7 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, i
   return (
     <div 
       className={cn(
-        "flex flex-col h-full p-3 rounded-lg border bg-card/50 hover:bg-muted/50 transition-all shadow-sm cursor-pointer relative overflow-hidden",
+        "flex flex-col h-full p-4 rounded-3xl border border-border/50 bg-card/85 backdrop-blur-md hover:bg-card/95 hover:shadow-md transition-all shadow-sm cursor-pointer relative overflow-hidden",
         isSelected && !isSelectionMode && "ring-2 ring-primary bg-primary/5",
         isChecked && isSelectionMode && "ring-2 ring-primary bg-primary/5",
         isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
