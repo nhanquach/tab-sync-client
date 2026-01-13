@@ -174,7 +174,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
           ) : (
             <div className={cn(
               "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
-              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
+              isScrolled ? "w-32 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
             )}>
               <SearchTwoTone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-md-sys-color-on-surface-variant pointer-events-none opacity-50" />
               <Input
@@ -202,7 +202,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                   className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200"
                 >
                   {getDeviceIcon(selectedDevice === "All" ? "all" : selectedDevice, true, true)}
-                  <span className="text-[12px] font-semibold max-w-[80px] truncate">{selectedDevice}</span>
+                  <span className="text-[12px] font-semibold max-w-[80px] truncate hidden md:block">{selectedDevice}</span>
                   <KeyboardArrowDownTwoTone className="text-base opacity-40" />
                 </Button>
               </DropdownMenuTrigger>
