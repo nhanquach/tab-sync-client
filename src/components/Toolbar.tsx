@@ -177,6 +177,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 onBlur={() => isScrolled && !searchString && setIsSearchExpanded(false)}
                 value={searchString}
                 onChange={handleSearch}
+                aria-label="Search tabs"
                 placeholder={isScrolled ? "Search..." : "Search your synced tabs..."}
                 className={cn(
                   "pl-12 pr-4 transition-all duration-200 border-none",
@@ -193,6 +194,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
+                  aria-label={`Select device. Current: ${selectedDevice}`}
                   className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200"
                 >
                   {getDeviceIcon(selectedDevice === "All" ? "all" : selectedDevice, true, true)}
@@ -238,6 +240,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
               variant="ghost"
               size="icon"
               onClick={toggleLayout}
+              aria-label={layout === "grid" ? "Switch to list view" : "Switch to grid view"}
               className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
             >
               {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
@@ -246,6 +249,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
               variant="ghost"
               size="icon"
               onClick={toggleOrderBy}
+              aria-label={orderBy === ORDER.TIME ? "Sort alphabetically" : "Sort by time"}
               className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
             >
               {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
@@ -255,6 +259,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 variant="ghost"
                 size="icon"
                 onClick={toggleSelectionMode}
+                aria-label={isSelectionMode ? "Exit selection mode" : "Enter selection mode"}
                 className={cn(
                   "rounded-full transition-all active:scale-90 duration-200",
                   isScrolled ? "h-8 w-8" : "h-9 w-9",
