@@ -13,24 +13,25 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222.2 84% 4.9%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Dynamic Theme Mapping (Light Mode) */
+    --primary: var(--md-sys-color-primary);
+    --primary-foreground: var(--md-sys-color-on-primary);
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: var(--md-sys-color-secondary-container);
+    --secondary-foreground: var(--md-sys-color-on-secondary-container);
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: var(--md-sys-color-surface-container-high);
+    --muted-foreground: var(--md-sys-color-outline);
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: var(--md-sys-color-tertiary-container);
+    --accent-foreground: var(--md-sys-color-on-tertiary-container);
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: var(--md-sys-color-outline-variant);
+    --input: var(--md-sys-color-outline);
+    --ring: var(--md-sys-color-primary);
 
     --radius: 0.5rem;
 
@@ -40,22 +41,27 @@
     --branding-primary-dark: #4e54c8;
     --branding-secondary: #696969;
 
-    /* MD3 Colors - Light (Indigo/Violet Theme) */
-    --md-sys-color-primary: 265 60% 50%;
-    --md-sys-color-on-primary: 0 0% 100%;
-    --md-sys-color-primary-container: 265 80% 94%;
-    --md-sys-color-on-primary-container: 265 60% 20%;
+    /* Theme Seed Hues (Default: Indigo/Violet) */
+    --seed-primary-hue: 265;
+    --seed-secondary-hue: 260;
+    --seed-tertiary-hue: 330;
 
-    --md-sys-color-secondary: 260 15% 45%;
+    /* MD3 Colors - Light */
+    --md-sys-color-primary: var(--seed-primary-hue) 60% 50%;
+    --md-sys-color-on-primary: 0 0% 100%;
+    --md-sys-color-primary-container: var(--seed-primary-hue) 80% 94%;
+    --md-sys-color-on-primary-container: var(--seed-primary-hue) 60% 20%;
+
+    --md-sys-color-secondary: var(--seed-secondary-hue) 15% 45%;
     --md-sys-color-on-secondary: 0 0% 100%;
-    --md-sys-color-secondary-container: 260 25% 90%;
-    --md-sys-color-on-secondary-container: 260 15% 15%;
+    --md-sys-color-secondary-container: var(--seed-secondary-hue) 25% 90%;
+    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 15% 15%;
 
     /* Tertiary - Pink/Raspberry for "Quacky" contrast */
-    --md-sys-color-tertiary: 330 60% 50%;
+    --md-sys-color-tertiary: var(--seed-tertiary-hue) 60% 50%;
     --md-sys-color-on-tertiary: 0 0% 100%;
-    --md-sys-color-tertiary-container: 330 80% 94%;
-    --md-sys-color-on-tertiary-container: 330 60% 20%;
+    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 80% 94%;
+    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 60% 20%;
 
     --md-sys-color-surface: 260 20% 98%;
     --md-sys-color-on-surface: 260 10% 10%;
@@ -77,41 +83,42 @@
     --popover: 222.2 84% 4.9%;
     --popover-foreground: 210 40% 98%;
 
-    --primary: 210 40% 98%;
-    --primary-foreground: 222.2 47.4% 11.2%;
+    /* Dynamic Theme Mapping (Dark Mode) */
+    --primary: var(--md-sys-color-primary);
+    --primary-foreground: var(--md-sys-color-on-primary);
 
-    --secondary: 217.2 32.6% 17.5%;
-    --secondary-foreground: 210 40% 98%;
+    --secondary: var(--md-sys-color-secondary-container);
+    --secondary-foreground: var(--md-sys-color-on-secondary-container);
 
-    --muted: 217.2 32.6% 17.5%;
-    --muted-foreground: 215 20.2% 65.1%;
+    --muted: var(--md-sys-color-surface-container-high);
+    --muted-foreground: var(--md-sys-color-outline);
 
-    --accent: 217.2 32.6% 17.5%;
-    --accent-foreground: 210 40% 98%;
+    --accent: var(--md-sys-color-tertiary-container);
+    --accent-foreground: var(--md-sys-color-on-tertiary-container);
 
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 217.2 32.6% 17.5%;
-    --input: 217.2 32.6% 17.5%;
-    --ring: 212.7 26.8% 83.9%;
+    --border: var(--md-sys-color-outline-variant);
+    --input: var(--md-sys-color-outline);
+    --ring: var(--md-sys-color-primary);
 
-    /* MD3 Colors - Dark (Indigo/Violet Theme) */
-    --md-sys-color-primary: 265 90% 80%;
-    --md-sys-color-on-primary: 265 60% 20%;
-    --md-sys-color-primary-container: 265 60% 35%;
-    --md-sys-color-on-primary-container: 265 90% 95%;
+    /* MD3 Colors - Dark */
+    --md-sys-color-primary: var(--seed-primary-hue) 90% 80%;
+    --md-sys-color-on-primary: var(--seed-primary-hue) 60% 20%;
+    --md-sys-color-primary-container: var(--seed-primary-hue) 60% 35%;
+    --md-sys-color-on-primary-container: var(--seed-primary-hue) 90% 95%;
 
-    --md-sys-color-secondary: 260 20% 75%;
-    --md-sys-color-on-secondary: 260 20% 20%;
-    --md-sys-color-secondary-container: 260 20% 35%;
-    --md-sys-color-on-secondary-container: 260 20% 90%;
+    --md-sys-color-secondary: var(--seed-secondary-hue) 20% 75%;
+    --md-sys-color-on-secondary: var(--seed-secondary-hue) 20% 20%;
+    --md-sys-color-secondary-container: var(--seed-secondary-hue) 20% 35%;
+    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 20% 90%;
 
     /* Tertiary - Pink/Raspberry Dark */
-    --md-sys-color-tertiary: 330 90% 80%;
-    --md-sys-color-on-tertiary: 330 60% 20%;
-    --md-sys-color-tertiary-container: 330 60% 35%;
-    --md-sys-color-on-tertiary-container: 330 90% 95%;
+    --md-sys-color-tertiary: var(--seed-tertiary-hue) 90% 80%;
+    --md-sys-color-on-tertiary: var(--seed-tertiary-hue) 60% 20%;
+    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 60% 35%;
+    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 90% 95%;
 
     --md-sys-color-surface: 260 20% 8%;
     --md-sys-color-on-surface: 260 10% 90%;
