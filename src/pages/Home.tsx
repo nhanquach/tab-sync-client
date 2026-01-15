@@ -76,6 +76,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isFocusMode, setIsFocusMode] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -460,42 +461,60 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar user={user} />
+      <div className={cn(
+        "transition-all duration-500 ease-in-out overflow-hidden",
+        isFocusMode ? "max-h-0 opacity-0" : "max-h-[200px] opacity-100"
+      )}>
+        <HomeAppBar user={user} />
+      </div>
 
-      <div className="flex flex-1">
-          <HomeSidebar view={currentView} user={user} />
+      <div className="flex flex-1 transition-all duration-500">
+          <div className={cn(
+            "transition-all duration-500 ease-in-out overflow-hidden",
+            isFocusMode ? "w-0 opacity-0" : "w-auto opacity-100"
+          )}>
+            <HomeSidebar view={currentView} user={user} />
+          </div>
 
           <Container
-            maxWidth="xl"
+            maxWidth={isFocusMode ? "lg" : "xl"}
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
+                "flex-grow transition-all duration-500 min-w-0 relative mx-auto",
+                isFocusMode ? "p-8 md:p-12" : "p-6"
             )}
             sx={{
               mt: 0,
-              paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
+              paddingTop: { xs: isFocusMode ? "24px" : `calc(${headerHeight}px + 24px)`, md: isFocusMode ? "48px" : "24px" },
             }}
             component="main"
           >
-            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+            <div className={cn(
+              "hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500 transition-all",
+              isFocusMode && "justify-center mb-12 scale-110"
+            )}>
                 <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
             </div>
 
-            <Toolbar
-                isLoading={isLoading}
-                handleRefresh={handleRefresh}
-                searchString={searchString}
-                handleSearch={handleSearch}
-                toggleLayout={toggleLayout}
-                layout={layout}
-                toggleOrderBy={toggleOrderBy}
-                orderBy={orderBy}
-                devices={browsers}
-                selectedDevice={selectedDevice}
-                onSelectDevice={setSelectedDevice}
-                isScrolled={isScrolled}
-                isSelectionMode={isSelectionMode}
-                toggleSelectionMode={toggleSelectionMode}
-            />
+            <div className={cn("transition-all duration-500", isFocusMode && "max-w-4xl mx-auto")}>
+              <Toolbar
+                  isLoading={isLoading}
+                  handleRefresh={handleRefresh}
+                  searchString={searchString}
+                  handleSearch={handleSearch}
+                  toggleLayout={toggleLayout}
+                  layout={layout}
+                  toggleOrderBy={toggleOrderBy}
+                  orderBy={orderBy}
+                  devices={browsers}
+                  selectedDevice={selectedDevice}
+                  onSelectDevice={setSelectedDevice}
+                  isScrolled={isScrolled}
+                  isSelectionMode={isSelectionMode}
+                  toggleSelectionMode={toggleSelectionMode}
+                  isFocusMode={isFocusMode}
+                  toggleFocusMode={() => setIsFocusMode(!isFocusMode)}
+              />
+            </div>
 
             {isLoading && (
               <div className="absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface/50 backdrop-blur-sm pt-32">

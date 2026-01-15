@@ -12,6 +12,7 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  FilterCenterFocusTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
@@ -53,6 +54,8 @@ interface IToolbarProps {
   isScrolled?: boolean;
   isSelectionMode?: boolean;
   toggleSelectionMode?: () => void;
+  isFocusMode?: boolean;
+  toggleFocusMode?: () => void;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -70,6 +73,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   isScrolled = false,
   isSelectionMode,
   toggleSelectionMode,
+  isFocusMode,
+  toggleFocusMode,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
@@ -263,6 +268,28 @@ const Toolbar: React.FC<IToolbarProps> = ({
               >
                 <Check className={isScrolled ? "text-[18px]" : "text-[20px]"} />
               </Button>
+            )}
+
+            {toggleFocusMode && (
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={toggleFocusMode}
+                      className={cn(
+                        "rounded-full transition-all active:scale-90 duration-200 ml-1",
+                        isScrolled ? "h-8 w-8" : "h-9 w-9",
+                        isFocusMode && "bg-md-sys-color-tertiary text-md-sys-color-on-tertiary hover:bg-md-sys-color-tertiary/90"
+                      )}
+                    >
+                      <FilterCenterFocusTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                    </Button>
+                  </TooltipTrigger>
+                  <TooltipContent>{isFocusMode ? "Exit Focus Mode" : "Enter Focus Mode"}</TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             )}
           </div>
         </div>
