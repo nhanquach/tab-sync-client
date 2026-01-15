@@ -117,9 +117,10 @@ const Toolbar: React.FC<IToolbarProps> = ({
   const tabs = ["All", ...devices];
 
   return (
-    <div
-      className={cn(
-        "sticky z-40 -mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
+    <TooltipProvider>
+      <div
+        className={cn(
+          "sticky z-40 -mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
         "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
         "top-16 md:top-0",
         isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40"
@@ -131,25 +132,24 @@ const Toolbar: React.FC<IToolbarProps> = ({
         isScrolled ? "h-full justify-between" : "flex-wrap md:flex-nowrap"
       )}>
         <div className="flex-none">
-          <TooltipProvider>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={handleRefresh}
-                  disabled={isLoading}
-                  className={cn(
-                    "rounded-full hover:bg-md-sys-color-surface-container-high transition-all active:scale-90 duration-200",
-                    isScrolled ? "h-10 w-10" : "h-12 w-12 bg-md-sys-color-surface-container-low"
-                  )}
-                >
-                  <RefreshTwoTone className={cn(isScrolled ? "text-[20px]" : "text-[24px]", isLoading && "animate-spin")} />
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>Refresh</TooltipContent>
-            </Tooltip>
-          </TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleRefresh}
+                disabled={isLoading}
+                aria-label="Refresh tabs"
+                className={cn(
+                  "rounded-full hover:bg-md-sys-color-surface-container-high transition-all active:scale-90 duration-200",
+                  isScrolled ? "h-10 w-10" : "h-12 w-12 bg-md-sys-color-surface-container-low"
+                )}
+              >
+                <RefreshTwoTone className={cn(isScrolled ? "text-[20px]" : "text-[24px]", isLoading && "animate-spin")} />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>Refresh</TooltipContent>
+          </Tooltip>
         </div>
 
         <div className={cn(
@@ -157,14 +157,20 @@ const Toolbar: React.FC<IToolbarProps> = ({
           isScrolled ? "flex-1 justify-end" : "flex-1 order-2 md:order-none w-full md:w-auto"
         )}>
           {isScrolled && !isSearchExpanded ? (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setIsSearchExpanded(true)}
-              className="h-10 w-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all duration-200"
-            >
-              <SearchTwoTone className="text-md-sys-color-on-surface-variant" />
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsSearchExpanded(true)}
+                  aria-label="Expand search"
+                  className="h-10 w-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all duration-200"
+                >
+                  <SearchTwoTone className="text-md-sys-color-on-surface-variant" />
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Search</TooltipContent>
+            </Tooltip>
           ) : (
             <div className={cn(
               "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
@@ -234,35 +240,53 @@ const Toolbar: React.FC<IToolbarProps> = ({
             "flex items-center gap-1 bg-md-sys-color-surface-container-low/50 rounded-full p-1 border border-md-sys-color-outline-variant/10 shrink-0 transition-all duration-200",
             !isScrolled && "p-1.5 bg-md-sys-color-surface-container-low"
           )}>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleLayout}
-              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
-            >
-              {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleOrderBy}
-              className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
-            >
-              {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleLayout}
+                  aria-label={layout === "grid" ? "Switch to list view" : "Switch to grid view"}
+                  className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+                >
+                  {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Change view</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleOrderBy}
+                  aria-label={orderBy === ORDER.TIME ? "Sort by name" : "Sort by time"}
+                  className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+                >
+                  {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>Sort order</TooltipContent>
+            </Tooltip>
             {toggleSelectionMode && (
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={toggleSelectionMode}
-                className={cn(
-                  "rounded-full transition-all active:scale-90 duration-200",
-                  isScrolled ? "h-8 w-8" : "h-9 w-9",
-                  isSelectionMode && "bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90"
-                )}
-              >
-                <Check className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleSelectionMode}
+                    aria-label={isSelectionMode ? "Exit selection mode" : "Enter selection mode"}
+                    className={cn(
+                      "rounded-full transition-all active:scale-90 duration-200",
+                      isScrolled ? "h-8 w-8" : "h-9 w-9",
+                      isSelectionMode && "bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90"
+                    )}
+                  >
+                    <Check className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>Select tabs</TooltipContent>
+              </Tooltip>
             )}
           </div>
         </div>
@@ -296,6 +320,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         })}
       </div>
     </div>
+    </TooltipProvider>
   );
 };
 
