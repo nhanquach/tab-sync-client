@@ -21,6 +21,7 @@ import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
 import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
+import { getDomain } from "../utils/getDomain";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
 import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
@@ -31,9 +32,11 @@ import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
   LAST_SAVED_ORDER_BY_KEY,
+  LAST_SAVED_GROUP_BY_KEY,
   LAYOUT,
   LAYOUT_KEY,
   ORDER,
+  GROUP_BY,
 } from "../utils/constants";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
@@ -121,13 +124,20 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
-  const handleToggleDeviceSelection = (deviceName: string, select: boolean) => {
+  const handleToggleDeviceSelection = (groupName: string, select: boolean) => {
     const tabsToProcess = isOpenTabsView ? tabs : archivedTabs;
-    const deviceTabs = tabsToProcess.filter(t => t.deviceName === deviceName);
+
+    // Filter tabs based on current grouping mode
+    const groupTabs = tabsToProcess.filter(t => {
+       if (groupBy === GROUP_BY.DOMAIN) {
+           return getDomain(t.url) === groupName;
+       }
+       return t.deviceName === groupName;
+    });
 
     setSelectedTabIds((prev) => {
         const newSet = new Set(prev);
-        deviceTabs.forEach(t => {
+        groupTabs.forEach(t => {
             if (select) newSet.add(t.id);
             else newSet.delete(t.id);
         });
@@ -215,6 +225,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [orderBy, setOrderBy] = useState<ORDER>(
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
+  const [groupBy, setGroupBy] = useState<GROUP_BY>(
+    getItem<GROUP_BY>(LAST_SAVED_GROUP_BY_KEY) ?? GROUP_BY.DEVICE
+  );
 
   const isOpenTabsView = useMemo(() => currentView === TABS_VIEWS.OPEN_TABS, [currentView]);
 
@@ -291,6 +304,15 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
+  const toggleGroupBy = () => {
+    setGroupBy((currentGroupBy) => {
+      const newGroupBy =
+        currentGroupBy === GROUP_BY.DEVICE ? GROUP_BY.DOMAIN : GROUP_BY.DEVICE;
+      saveItem(LAST_SAVED_GROUP_BY_KEY, newGroupBy);
+      return newGroupBy;
+    });
+  };
+
   useEffect(() => {
     if (!currentView) return;
 
@@ -359,12 +381,29 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     setSearchString(e.target.value);
   };
 
-  const clearOpenTabs = (deviceName: string) => {
-    archiveOpenTabs(deviceName);
+  const clearOpenTabs = (groupName: string) => {
+    // If grouped by device, groupName is the device name.
+    // If grouped by domain, we need to filter tabs by domain and archive them.
+    if (groupBy === GROUP_BY.DEVICE) {
+        archiveOpenTabs(groupName);
+    } else {
+        const tabsToArchive = tabs.filter(t => getDomain(t.url) === groupName);
+        if (tabsToArchive.length > 0) {
+            archiveTab(tabsToArchive);
+            removeTab(tabsToArchive.map(t => t.id));
+        }
+    }
   };
 
-  const clearArchivedTabs = (deviceName: string) => {
-    removeArchivedTabs(deviceName);
+  const clearArchivedTabs = (groupName: string) => {
+    if (groupBy === GROUP_BY.DEVICE) {
+        removeArchivedTabs(groupName);
+    } else {
+        const tabsToDelete = archivedTabs.filter(t => getDomain(t.url) === groupName);
+        if (tabsToDelete.length > 0) {
+            removeTab(tabsToDelete.map(t => t.id), TABLES.ARCHIVED_TABS);
+        }
+    }
   };
 
   const handleRefresh = async () => {
@@ -489,6 +528,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 layout={layout}
                 toggleOrderBy={toggleOrderBy}
                 orderBy={orderBy}
+                toggleGroupBy={toggleGroupBy}
+                groupBy={groupBy}
                 devices={browsers}
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
@@ -514,6 +555,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                           <UrlList
                             view={currentView}
                             urls={urls}
+                            groupBy={groupBy}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
@@ -529,6 +571,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                           <UrlGrid
                             view={currentView}
                             urls={urls}
+                            groupBy={groupBy}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}

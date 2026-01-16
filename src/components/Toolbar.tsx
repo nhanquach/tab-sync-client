@@ -12,10 +12,12 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  PublicTwoTone,
+  DevicesTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { ORDER } from "../utils/constants";
+import { ORDER, GROUP_BY } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
 
@@ -46,6 +48,8 @@ interface IToolbarProps {
   layout: Layout;
   toggleOrderBy(): void;
   orderBy: ORDER;
+  toggleGroupBy(): void;
+  groupBy: GROUP_BY;
 
   devices: string[];
   selectedDevice: string;
@@ -64,6 +68,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   layout,
   toggleOrderBy,
   orderBy,
+  toggleGroupBy,
+  groupBy,
   devices,
   selectedDevice,
   onSelectDevice,
@@ -168,7 +174,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
           ) : (
             <div className={cn(
               "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
-              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
+              isScrolled ? "w-32 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
             )}>
               <SearchTwoTone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-md-sys-color-on-surface-variant pointer-events-none opacity-50" />
               <Input
@@ -196,7 +202,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                   className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200"
                 >
                   {getDeviceIcon(selectedDevice === "All" ? "all" : selectedDevice, true, true)}
-                  <span className="text-[12px] font-semibold max-w-[80px] truncate">{selectedDevice}</span>
+                  <span className="text-[12px] font-semibold max-w-[80px] truncate hidden md:block">{selectedDevice}</span>
                   <KeyboardArrowDownTwoTone className="text-base opacity-40" />
                 </Button>
               </DropdownMenuTrigger>
@@ -250,6 +256,59 @@ const Toolbar: React.FC<IToolbarProps> = ({
             >
               {orderBy === ORDER.TIME ? <TimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <SortByAlphaTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
             </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  className={cn(
+                    "rounded-full transition-all active:scale-90 duration-200 flex items-center gap-1.5 px-3",
+                    isScrolled ? "h-8" : "h-9"
+                  )}
+                >
+                  {groupBy === GROUP_BY.DEVICE ? (
+                    <DevicesTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  ) : (
+                    <PublicTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  )}
+                  <span className={cn("text-xs font-medium hidden md:inline", isScrolled ? "text-[11px]" : "text-[12px]")}>
+                    {groupBy === GROUP_BY.DEVICE ? "By Device" : "By Website"}
+                  </span>
+                  <KeyboardArrowDownTwoTone className="text-base opacity-40 ml-[-2px]" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48 rounded-[20px] p-1.5 bg-md-sys-color-surface-container-high backdrop-blur-xl border-md-sys-color-outline-variant/20 shadow-2xl">
+                <DropdownMenuLabel className="px-2 py-1.5 text-[10px] font-bold text-md-sys-color-on-surface-variant/50 uppercase tracking-widest">Group By</DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-md-sys-color-outline-variant/10 my-1" />
+                <DropdownMenuItem
+                  onClick={toggleGroupBy}
+                  disabled={groupBy === GROUP_BY.DEVICE}
+                  className={cn(
+                    "rounded-[12px] px-2 py-2 focus:bg-md-sys-color-primary/10 cursor-pointer",
+                    groupBy === GROUP_BY.DEVICE && "bg-md-sys-color-secondary-container/50 text-md-sys-color-on-secondary-container"
+                  )}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <DevicesTwoTone className="text-lg" />
+                    <span className="flex-1 text-sm font-medium">Device</span>
+                    {groupBy === GROUP_BY.DEVICE && <Check className="text-base" />}
+                  </div>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  onClick={toggleGroupBy}
+                  disabled={groupBy === GROUP_BY.DOMAIN}
+                  className={cn(
+                    "rounded-[12px] px-2 py-2 focus:bg-md-sys-color-primary/10 cursor-pointer",
+                    groupBy === GROUP_BY.DOMAIN && "bg-md-sys-color-secondary-container/50 text-md-sys-color-on-secondary-container"
+                  )}
+                >
+                  <div className="flex items-center gap-2 w-full">
+                    <PublicTwoTone className="text-lg" />
+                    <span className="flex-1 text-sm font-medium">Website</span>
+                    {groupBy === GROUP_BY.DOMAIN && <Check className="text-base" />}
+                  </div>
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
             {toggleSelectionMode && (
               <Button
                 variant="ghost"
