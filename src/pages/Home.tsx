@@ -7,6 +7,8 @@ import {
   getArchivedTabs,
   onOpenTabChange,
   onArchivedTabChange,
+  archiveOpenTabs,
+  removeArchivedTabs,
   sendTab,
   archiveTab,
   removeTab,
@@ -40,7 +42,6 @@ import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
-import CommandPalette from "../components/CommandPalette";
 import PaginationControls from "../components/PaginationControls";
 
 interface IHomeProps {
@@ -76,7 +77,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,6 +95,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
   const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   // Bulk Actions State
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -227,41 +228,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }, [tabs]);
 
   const urls = useMemo(() => {
-    let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
+    return isOpenTabsView ? tabs : archivedTabs;
+  }, [isOpenTabsView, tabs, archivedTabs]);
 
-    if (selectedDevice !== "All") {
-      displayedTabs = displayedTabs.filter((tab) =>
-        tab.deviceName === selectedDevice
-      );
-    }
-
-    if (searchString) {
-      displayedTabs = displayedTabs.filter(
-        (tab) =>
-          tab.title.toLowerCase().includes(searchString.toLowerCase()) ||
-          tab.url.toLowerCase().includes(searchString.toLowerCase())
-      );
-    }
-
-    return displayedTabs.sort(
-      orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
-    );
-  }, [
-    isOpenTabsView,
-    tabs,
-    archivedTabs,
-    selectedDevice,
-    searchString,
-    orderBy,
-  ]);
-
-  const totalPages = Math.ceil(urls.length / ITEMS_PER_PAGE);
-
-  const paginatedUrls = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    const endIndex = startIndex + ITEMS_PER_PAGE;
-    return urls.slice(startIndex, endIndex);
-  }, [urls, currentPage]);
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
   // Reset page when filters change
   useEffect(() => {
@@ -273,7 +243,13 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     const fetchFunction = isOpenTabsView ? getOpenTabs : getArchivedTabs;
     const setTabsFunction = isOpenTabsView ? setTabs : setArchivedTabs;
 
-    const { data: newTabs, error } = await fetchFunction();
+    const { data: newTabs, count, error } = await fetchFunction(
+      currentPage,
+      ITEMS_PER_PAGE,
+      searchString,
+      selectedDevice,
+      orderBy === ORDER.TIME ? "TIME" : "TITLE"
+    );
 
     if (error) {
       console.error(error);
@@ -282,12 +258,19 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       return;
     }
 
-    newTabs.sort(sortByTimeStamp);
+    // newTabs.sort(sortByTimeStamp); // Sorting is now done on server
     setTabsFunction(newTabs);
+    setTotalCount(count);
 
     setIsLoading(false);
     showToast("Tabs are up to date.");
-  }, [isOpenTabsView]);
+  }, [
+    isOpenTabsView,
+    currentPage,
+    searchString,
+    selectedDevice,
+    orderBy,
+  ]);
 
   const toggleLayout = () => {
     setLayout((currentLayout: Layout) => {
@@ -309,29 +292,22 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   useEffect(() => {
     if (!currentView) return;
+    handleGetTabs();
+  }, [currentView, handleGetTabs]);
 
-    const hasData = isOpenTabsView ? tabs.length > 0 : archivedTabs.length > 0;
-    if (!hasData) {
+  useEffect(() => {
+    onOpenTabChange(() => {
+      // Simplest way to handle real-time updates with pagination is to just refresh the current page
       handleGetTabs();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentView, isOpenTabsView]);
+    });
+  }, [handleGetTabs]);
 
   useEffect(() => {
-    onOpenTabChange((payload: IDatabaseUpdatePayload) => {
-      setTabs((currentTabs) => {
-        return updateTabs(currentTabs, payload);
-      });
+    onArchivedTabChange(() => {
+      // Simplest way to handle real-time updates with pagination is to just refresh the current page
+      handleGetTabs();
     });
-  }, [tabs]);
-
-  useEffect(() => {
-    onArchivedTabChange((payload: IDatabaseUpdatePayload) => {
-      setArchivedTabs((currentTabs) => {
-        return updateTabs(currentTabs, payload);
-      });
-    });
-  }, [archivedTabs]);
+  }, [handleGetTabs]);
 
   useEffect(() => {
     if (window.location.pathname === "/share") {
@@ -376,52 +352,11 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const clearOpenTabs = (deviceName: string) => {
-    const tabsToArchive = tabs.filter((t) => t.deviceName === deviceName);
-    if (tabsToArchive.length === 0) return;
-
-    // Optimistic animation start
-    const ids = tabsToArchive.map((t) => t.id);
-    setExitingTabIds(new Set(ids));
-
-    setTimeout(async () => {
-      // Optimistic update after animation
-      setTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
-      setExitingTabIds(new Set());
-      showToast(`${tabsToArchive.length} tabs archived.`);
-
-      try {
-        await archiveTab(tabsToArchive);
-        await removeTab(ids);
-      } catch (error) {
-        console.error(error);
-        showToast("Error archiving tabs. Refreshing...");
-        handleRefresh();
-      }
-    }, 300);
+    archiveOpenTabs(deviceName);
   };
 
   const clearArchivedTabs = (deviceName: string) => {
-    const tabsToDelete = archivedTabs.filter((t) => t.deviceName === deviceName);
-    if (tabsToDelete.length === 0) return;
-
-    // Optimistic animation start
-    const ids = tabsToDelete.map((t) => t.id);
-    setExitingTabIds(new Set(ids));
-
-    setTimeout(async () => {
-      // Optimistic update after animation
-      setArchivedTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
-      setExitingTabIds(new Set());
-      showToast(`${tabsToDelete.length} tabs deleted permanently.`);
-
-      try {
-        await removeTab(ids, TABLES.ARCHIVED_TABS);
-      } catch (error) {
-        console.error(error);
-        showToast("Error deleting tabs. Refreshing...");
-        handleRefresh();
-      }
-    }, 300);
+    removeArchivedTabs(deviceName);
   };
 
   const handleRefresh = async () => {
@@ -570,7 +505,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                       {(urls.length > 0 && layout === "list") && (
                           <UrlList
                             view={currentView}
-                            urls={paginatedUrls}
+                            urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
@@ -585,7 +520,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                       {(urls.length > 0 && layout === "grid") && (
                           <UrlGrid
                             view={currentView}
-                            urls={paginatedUrls}
+                            urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
                             selectedId={selectedTab?.id}
@@ -672,22 +607,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onClearSelection={() => setSelectedTabIds(new Set())}
               onArchiveSelected={handleBulkArchive}
               onDeleteSelected={handleBulkDelete}
-            />
-
-            <CommandPalette
-              isOpen={isCommandPaletteOpen}
-              setIsOpen={setIsCommandPaletteOpen}
-              view={currentView}
-              setView={setViewAdapter}
-              layout={layout}
-              toggleLayout={toggleLayout}
-              orderBy={orderBy}
-              toggleOrderBy={toggleOrderBy}
-              isSelectionMode={isSelectionMode}
-              toggleSelectionMode={toggleSelectionMode}
-              handleRefresh={handleRefresh}
-              tabs={isOpenTabsView ? tabs : archivedTabs}
-              onSelectTab={handleSelectTab}
             />
 
             <Snackbar

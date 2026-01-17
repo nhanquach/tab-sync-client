@@ -79,12 +79,12 @@ const Toolbar: React.FC<IToolbarProps> = ({
   }, [isScrolled]);
 
   useKeyPress({
-    keys: ["/"],
+    keys: ["k"],
     callback: () => {
       if (isScrolled) setIsSearchExpanded(true);
       searchBoxRef.current?.focus();
     },
-    isCombinedWithCtrl: false,
+    isCombinedWithCtrl: true,
   });
 
   const getDeviceIcon = (name: string, isActive: boolean, isCondensed: boolean) => {
@@ -177,7 +177,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 onBlur={() => isScrolled && !searchString && setIsSearchExpanded(false)}
                 value={searchString}
                 onChange={handleSearch}
-                placeholder={isScrolled ? "Search (/)..." : "Search your synced tabs (Press /)..."}
+                placeholder={isScrolled ? "Search..." : "Search your synced tabs..."}
                 className={cn(
                   "pl-12 pr-4 transition-all duration-200 border-none",
                   isScrolled 
