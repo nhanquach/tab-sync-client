@@ -292,12 +292,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   useEffect(() => {
     if (!currentView) return;
 
-    if (
-      (isOpenTabsView && tabs.length === 0) ||
-      (!isOpenTabsView && archivedTabs.length === 0)
-    )
+    const hasData = isOpenTabsView ? tabs.length > 0 : archivedTabs.length > 0;
+    if (!hasData) {
       handleGetTabs();
-  }, [currentView, handleGetTabs, tabs.length, archivedTabs.length, isOpenTabsView]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentView, isOpenTabsView]);
 
   useEffect(() => {
     onOpenTabChange((payload: IDatabaseUpdatePayload) => {
