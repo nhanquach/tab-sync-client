@@ -42,6 +42,7 @@ import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
+import CommandPalette from "../components/CommandPalette";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -76,6 +77,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -609,6 +611,22 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onClearSelection={() => setSelectedTabIds(new Set())}
               onArchiveSelected={handleBulkArchive}
               onDeleteSelected={handleBulkDelete}
+            />
+
+            <CommandPalette
+              isOpen={isCommandPaletteOpen}
+              setIsOpen={setIsCommandPaletteOpen}
+              view={currentView}
+              setView={setViewAdapter}
+              layout={layout}
+              toggleLayout={toggleLayout}
+              orderBy={orderBy}
+              toggleOrderBy={toggleOrderBy}
+              isSelectionMode={isSelectionMode}
+              toggleSelectionMode={toggleSelectionMode}
+              handleRefresh={handleRefresh}
+              tabs={isOpenTabsView ? tabs : archivedTabs}
+              onSelectTab={handleSelectTab}
             />
 
             <Snackbar
