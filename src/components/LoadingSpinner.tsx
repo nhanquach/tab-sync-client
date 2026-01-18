@@ -13,7 +13,6 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ className }) => {
          size={40}
          thickness={5}
          className="text-md-sys-color-primary"
-         // Override MUI default color to use Tailwind class if needed, or just use 'inherit'
          sx={{ color: "var(--md-sys-color-primary)" }}
        />
     </div>

@@ -482,10 +482,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar user={user} />
+      <HomeAppBar user={user} isLoading={isLoading} />
 
       <div className="flex flex-1">
-          <HomeSidebar view={currentView} user={user} />
+          <HomeSidebar view={currentView} user={user} isLoading={isLoading} />
 
           <Container
             maxWidth="xl"
@@ -519,21 +519,23 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 toggleSelectionMode={toggleSelectionMode}
             />
 
-            {isLoading && (
-              <div className="absolute inset-0 z-50 flex items-start justify-center bg-md-sys-color-surface/50 backdrop-blur-sm pt-32">
-                 <LoadingSpinner />
-              </div>
-            )}
-
             <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">
               <div className="flex-1 min-w-0">
-                  {!isLoading && urls.length === 0 && (
-                      <NoData isEmptySearch={!!searchString} />
-                  )}
+                  {isLoading ? (
+                    <div className="flex h-64 items-center justify-center">
+                        <span className="text-lg text-md-sys-color-on-surface-variant font-medium animate-pulse">
+                            Getting your tabs...
+                        </span>
+                    </div>
+                  ) : (
+                    <>
+                        {urls.length === 0 && (
+                            <NoData isEmptySearch={!!searchString} />
+                        )}
 
-                  <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                      {(urls.length > 0 && layout === "list") && (
-                          <UrlList
+                        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            {(urls.length > 0 && layout === "list") && (
+                                <UrlList
                             view={currentView}
                             urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
@@ -558,16 +560,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
-                            exitingTabIds={exitingTabIds}
-                          />
-                      )}
+                                    exitingTabIds={exitingTabIds}
+                                />
+                            )}
 
-                      <PaginationControls
-                        currentPage={currentPage}
-                        totalPages={totalPages}
-                        onPageChange={setCurrentPage}
-                      />
-                  </div>
+                            <PaginationControls
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={setCurrentPage}
+                            />
+                        </div>
+                    </>
+                  )}
               </div>
 
               <div

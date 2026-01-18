@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils";
 import { headerHeight } from "./HomeAppBar";
 import HomeSidebar from "./HomeSidebar";
 import HomeAppBar from "./HomeAppBar";
-import LoadingSpinner from "./LoadingSpinner";
 import { TABS_VIEWS } from "../interfaces/iView";
 
 const LoadingHomeShell: React.FC = () => {
@@ -18,9 +17,9 @@ const LoadingHomeShell: React.FC = () => {
           <HomeSidebar view={TABS_VIEWS.OPEN_TABS} isLoading={true} />
 
           <Container
-            maxWidth={false}
+            maxWidth="xl"
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0"
+                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
             )}
             sx={{
               mt: 0,
@@ -28,8 +27,14 @@ const LoadingHomeShell: React.FC = () => {
             }}
             component="main"
           >
-             <div className="flex h-full items-center justify-center">
-                <LoadingSpinner />
+             <div className="hidden md:flex items-center gap-3 mb-8 opacity-50">
+                <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
+            </div>
+
+             <div className="flex h-full items-center justify-center -mt-20">
+                <span className="text-lg text-md-sys-color-on-surface-variant font-medium animate-pulse">
+                    Getting your tabs...
+                </span>
              </div>
           </Container>
       </div>
