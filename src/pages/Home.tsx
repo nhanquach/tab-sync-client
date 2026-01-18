@@ -14,10 +14,8 @@ import {
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
-import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -37,7 +35,6 @@ import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
-import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
@@ -47,26 +44,6 @@ interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
 }
-
-const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
-  if (payload.eventType === "UPDATE") {
-    const index = currentTabs.findIndex((tab) => tab.id === payload.new.id);
-
-    if (index > -1) {
-      const newTabs = [...currentTabs];
-      newTabs.splice(index, 1, payload.new);
-      return newTabs;
-    }
-
-    return [payload.new, ...currentTabs];
-  }
-
-  if (payload.eventType === "DELETE") {
-    return currentTabs.filter((t) => t.id !== payload.old.id);
-  }
-
-  return currentTabs;
-};
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
   const { view, tabId } = useParams();
@@ -582,7 +559,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 )}
                 style={{ height: "calc(100vh - 8rem)" }}
               >
-                <div className="w-[400px] h-full bg-md-sys-color-surface-container-low rounded-[24px] shadow-xl overflow-hidden border border-md-sys-color-outline-variant/20">
+                <div className="w-[400px] h-full bg-md-sys-color-surface-container-low/80 backdrop-blur-xl rounded-[24px] shadow-xl overflow-hidden border border-md-sys-color-outline-variant/20">
                    {desktopTab && (
                       <TabDetails
                         tab={desktopTab}
@@ -608,7 +585,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                         className={cn(
                             "w-full max-w-md shadow-2xl",
                             "h-[85vh]",
-                            "bg-md-sys-color-surface-container-low",
+                            "bg-md-sys-color-surface-container-low/80 backdrop-blur-xl border-t border-x border-white/10",
                             "rounded-t-[32px]",
                             "overflow-hidden",
                             "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"

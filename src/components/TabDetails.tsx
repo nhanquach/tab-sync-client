@@ -55,7 +55,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
 
   return (
     <div className="h-full bg-transparent flex flex-col overflow-hidden">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-md-sys-color-outline-variant/20 pt-2 md:pt-6">
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4 border-b border-white/10 pt-2 md:pt-6">
         <CardTitle className="text-xl font-medium text-md-sys-color-on-surface">
           Tab Details
         </CardTitle>
@@ -63,7 +63,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
           variant="ghost"
           size="icon"
           onClick={onClose}
-          className="rounded-full hover:bg-md-sys-color-surface-container-high"
+          className="rounded-full hover:bg-white/10"
         >
           <CloseTwoTone />
         </Button>
@@ -71,7 +71,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
 
       <CardContent className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-6 sm:space-y-8 no-scrollbar">
         <div className="flex flex-col items-center text-center space-y-3 sm:space-y-4">
-          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-2xl bg-white p-2 sm:p-3 shadow-md border border-md-sys-color-outline-variant/20 flex items-center justify-center">
+          <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-2xl bg-white/90 backdrop-blur-sm p-2 sm:p-3 shadow-sm border border-white/10 flex items-center justify-center">
             {!showFallback ? (
               <img
                 src={tab.favIconUrl}
@@ -103,7 +103,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
             URL
           </label>
           <div className="group relative">
-            <div className="w-full p-3 sm:p-4 rounded-xl bg-md-sys-color-surface-container-high border border-md-sys-color-outline-variant/20 text-xs sm:text-sm break-all text-md-sys-color-on-surface-variant pr-10 sm:pr-12">
+            <div className="w-full p-3 sm:p-4 rounded-xl bg-md-sys-color-surface-container-high/50 border border-white/10 text-xs sm:text-sm break-all text-md-sys-color-on-surface-variant pr-10 sm:pr-12">
               {tab.url}
             </div>
             <Button
@@ -124,7 +124,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
         <div className="grid grid-cols-1 xs:grid-cols-2 gap-2 sm:gap-3">
           <Button
             asChild
-            className="w-full bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90 h-10 sm:h-12 rounded-xl shadow-sm text-sm"
+            className="w-full bg-md-sys-color-primary text-md-sys-color-on-primary hover:bg-md-sys-color-primary/90 h-10 sm:h-12 rounded-xl shadow-sm text-sm border-0"
           >
             <a href={tab.url} target="_blank" rel="noreferrer">
               <OpenInNewTwoTone className="mr-2" style={{ fontSize: 18 }} />
@@ -134,7 +134,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
 
           <Button
             variant="outline"
-            className="w-full border-md-sys-color-outline-variant/50 text-md-sys-color-on-surface h-10 sm:h-12 rounded-xl hover:bg-md-sys-color-surface-container-high text-sm"
+            className="w-full border-white/10 text-md-sys-color-on-surface h-10 sm:h-12 rounded-xl hover:bg-white/10 text-sm bg-transparent"
             onClick={() => {
               if (navigator.share) {
                 navigator.share({
@@ -153,7 +153,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
           {view === TABS_VIEWS.OPEN_TABS ? (
             <Button
               variant="outline"
-              className="w-full xs:col-span-2 border-md-sys-color-outline-variant/50 text-md-sys-color-on-surface h-10 sm:h-12 rounded-xl hover:bg-md-sys-color-surface-container-high text-sm"
+              className="w-full xs:col-span-2 border-white/10 text-md-sys-color-on-surface h-10 sm:h-12 rounded-xl hover:bg-white/10 text-sm bg-transparent"
               onClick={() => onArchive?.(tab)}
             >
               <ArchiveTwoTone className="mr-2" style={{ fontSize: 18 }} />
@@ -162,7 +162,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
           ) : (
             <Button
               variant="outline"
-              className="w-full xs:col-span-2 border-md-sys-color-error/20 text-md-sys-color-error h-10 sm:h-12 rounded-xl hover:bg-md-sys-color-error/10 hover:border-md-sys-color-error/40 text-sm"
+              className="w-full xs:col-span-2 border-md-sys-color-error/20 text-md-sys-color-error h-10 sm:h-12 rounded-xl hover:bg-md-sys-color-error/10 hover:border-md-sys-color-error/40 text-sm bg-transparent"
               onClick={() => onDelete?.(tab)}
             >
               <DeleteForeverTwoTone className="mr-2" style={{ fontSize: 18 }} />

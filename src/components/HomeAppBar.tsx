@@ -23,7 +23,7 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => 
     <div className="flex flex-grow items-center justify-center md:hidden"> {/* Hidden on desktop */}
       <header
         className={cn(
-          "fixed z-50 flex items-center transition-all duration-300",
+          "fixed z-[120] flex items-center transition-all duration-300",
           "top-0 left-0 right-0 h-16",
           "bg-md-sys-color-surface-container/95 backdrop-blur-md", // Opaque for mobile
           "shadow-sm border-b border-white/10",
