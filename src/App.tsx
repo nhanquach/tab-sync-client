@@ -14,7 +14,7 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import LiveBackground from "./components/LiveBackground";
-import LoadingHomeShell from "./components/LoadingHomeShell";
+import LoadingScreen from "./components/LoadingScreen";
 import { PALETTE } from "./theme/palette";
 import { injectTheme } from "./theme/injectTheme";
 import { getItem } from "./utils/LocalStorageHelper";
@@ -133,7 +133,7 @@ function AppContent() {
       <ThemeProvider theme={theme}>
         <Box sx={{ display: "flex", minHeight: "100vh" }}>
           <CssBaseline />
-          <LoadingHomeShell />
+          <LoadingScreen />
         </Box>
       </ThemeProvider>
     );
