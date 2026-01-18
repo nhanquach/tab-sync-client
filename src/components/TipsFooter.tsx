@@ -27,6 +27,9 @@ const TipsFooter: React.FC<ITtipsFooterProps> = () => {
         We do not sync or store any or your sensitive information such as
         Cookies, Session or Login Credentials.
       </Typography>
+      <Typography sx={{ mt: 1, fontSize: "0.875rem", opacity: 0.8 }}>
+        <strong>Free Tier Limit:</strong> The most recent 200 Open and 200 Archived tabs are synced.
+      </Typography>
     </Box>
   );
 };

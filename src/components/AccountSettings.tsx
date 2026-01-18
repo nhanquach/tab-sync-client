@@ -104,6 +104,9 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = fa
                 <ExitToAppTwoTone className="mr-2 h-4 w-4" />
                 <span>Sign out</span>
               </DropdownMenuItem>
+              <DropdownMenuItem disabled>
+                <span className="text-xs opacity-50">Limit: 200 Open / 200 Archived</span>
+              </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setConfirmDeleteAccount(true)}>
                 <DeleteForeverTwoTone className="mr-2 h-4 w-4" />
                 <span>Delete account</span>
