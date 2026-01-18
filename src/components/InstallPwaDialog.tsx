@@ -27,6 +27,7 @@ const InstallPwaDialog: React.FC<IInstallPwaDialogProps> = ({ children }) => {
         "backdrop-blur-xl",
         "bg-white/40 border-0 md:border md:border-white/40",
         "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
+        "rounded-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]",
         "shadow-2xl"
       )}>
         <DialogHeader>

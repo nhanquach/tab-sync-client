@@ -58,7 +58,14 @@ export const ThemeSelector: React.FC = () => {
           <PaletteTwoTone className="text-md-sys-color-on-surface-variant" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md bg-md-sys-color-surface-container-high/95 backdrop-blur-xl border-white/20 rounded-[32px]">
+      <DialogContent className={cn(
+        "sm:max-w-md",
+        "backdrop-blur-xl",
+        "bg-white/40 border-0 md:border md:border-white/40",
+        "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
+        "rounded-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]",
+        "shadow-2xl"
+      )}>
         <DialogHeader>
           <DialogTitle className="text-2xl font-normal text-center">Appearance</DialogTitle>
           <DialogDescription className="text-center text-md-sys-color-on-surface-variant/70">
@@ -76,7 +83,7 @@ export const ThemeSelector: React.FC = () => {
                   "relative group flex flex-col items-center gap-3 p-4 rounded-[24px] border transition-all duration-300",
                   isSelected
                     ? "bg-md-sys-color-surface-container-low border-md-sys-color-primary shadow-lg scale-105"
-                    : "bg-md-sys-color-surface-container hover:bg-md-sys-color-surface border-transparent hover:scale-105"
+                    : "bg-md-sys-color-surface-container/50 hover:bg-md-sys-color-surface-container border-transparent hover:scale-105"
                 )}
               >
                 {/* Color Preview Circles */}
