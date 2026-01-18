@@ -572,41 +572,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 </div>
               </div>
 
-              {selectedTab && (
-                  <div 
-                    className={cn(
-                        "fixed inset-0 z-[100] flex items-end justify-center md:hidden",
-                        "bg-black/60 backdrop-blur-sm",
-                        "transition-all duration-300 ease-out animate-in fade-in"
-                    )}
-                    onClick={() => handleSelectTab(null)}
-                  >
-                      <div 
-                        className={cn(
-                            "w-full max-w-md shadow-2xl",
-                            "h-[85vh]",
-                            "bg-md-sys-color-surface-container-low/80 backdrop-blur-xl border-t border-x border-white/10",
-                            "rounded-t-[32px]",
-                            "overflow-hidden",
-                            "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                        )}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                          <div className="flex justify-center pt-3 pb-1">
-                              <div className="w-12 h-1.5 rounded-full bg-md-sys-color-outline-variant/40" />
-                          </div>
-
-                          <TabDetails 
-                            tab={selectedTab} 
-                            view={currentView} 
-                            onClose={() => handleSelectTab(null)}
-                            onArchive={handleArchiveTab}
-                            onDelete={handleDeleteTab}
-                          />
-                      </div>
-                  </div>
-              )}
-
             </div>
 
             <TipsFooter  />
@@ -645,6 +610,41 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             />
           </Container>
       </div>
+
+      {selectedTab && (
+          <div
+            className={cn(
+                "fixed inset-0 z-[1050] flex items-end justify-center md:hidden",
+                "bg-black/60 backdrop-blur-sm",
+                "transition-all duration-300 ease-out animate-in fade-in"
+            )}
+            onClick={() => handleSelectTab(null)}
+          >
+              <div
+                className={cn(
+                    "w-full max-w-md shadow-2xl",
+                    "h-[85vh]",
+                    "bg-md-sys-color-surface-container-low/80 backdrop-blur-xl border-t border-x border-white/10",
+                    "rounded-t-[32px]",
+                    "overflow-hidden",
+                    "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
+                )}
+                onClick={(e) => e.stopPropagation()}
+              >
+                  <div className="flex justify-center pt-3 pb-1">
+                      <div className="w-12 h-1.5 rounded-full bg-md-sys-color-outline-variant/40" />
+                  </div>
+
+                  <TabDetails
+                    tab={selectedTab}
+                    view={currentView}
+                    onClose={() => handleSelectTab(null)}
+                    onArchive={handleArchiveTab}
+                    onDelete={handleDeleteTab}
+                  />
+              </div>
+          </div>
+      )}
     </div>
   );
 };
