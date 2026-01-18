@@ -13,11 +13,12 @@ interface IHomeAppBarProps {
   user?: User;
   isLoading?: boolean;
   tabCounts?: { open: number; archived: number };
+  onOpenLimitInfo?: () => void;
 }
 
 export const headerHeight = 64;
 
-const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false, tabCounts }) => {
+const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false, tabCounts, onOpenLimitInfo }) => {
   const isMobile = isMobileApp();
 
   return (
@@ -38,7 +39,12 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false, tabCo
           <div className="flex gap-1 items-center">
             <QRCodeDialog />
             <FeedbackDialog />
-            <AccountSettings user={user} isLoading={isLoading} tabCounts={tabCounts} />
+            <AccountSettings
+                user={user}
+                isLoading={isLoading}
+                tabCounts={tabCounts}
+                onOpenLimitInfo={onOpenLimitInfo}
+            />
           </div>
         </div>
       </header>

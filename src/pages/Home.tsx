@@ -43,6 +43,7 @@ import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
 import CommandPalette from "../components/CommandPalette";
+import LimitInfoDialog from "../components/LimitInfoDialog";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -78,6 +79,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  const [isLimitInfoOpen, setIsLimitInfoOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -485,12 +487,23 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       return null;
   }
 
+  const handleOpenLimitInfo = () => setIsLimitInfoOpen(true);
+
   return (
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar user={user} tabCounts={tabCounts} />
+      <HomeAppBar
+        user={user}
+        tabCounts={tabCounts}
+        onOpenLimitInfo={handleOpenLimitInfo}
+      />
 
       <div className="flex flex-1">
-          <HomeSidebar view={currentView} user={user} tabCounts={tabCounts} />
+          <HomeSidebar
+            view={currentView}
+            user={user}
+            tabCounts={tabCounts}
+            onOpenLimitInfo={handleOpenLimitInfo}
+          />
 
           <Container
             maxWidth="xl"
@@ -633,7 +646,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
             </div>
 
-            <TipsFooter  />
+            <TipsFooter onOpenLimitInfo={handleOpenLimitInfo} />
             <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
 
             <BulkActionsBar
@@ -666,6 +679,11 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 onClose={closeToast}
                 message={toast.message || ""}
                 anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            />
+
+            <LimitInfoDialog
+                open={isLimitInfoOpen}
+                onOpenChange={setIsLimitInfoOpen}
             />
           </Container>
       </div>

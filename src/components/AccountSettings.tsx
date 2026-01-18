@@ -22,14 +22,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface IAccountSettingsProps {
   user?: User;
   isLoading?: boolean;
   tabCounts?: { open: number; archived: number };
+  onOpenLimitInfo?: () => void;
 }
 
-const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false, tabCounts }) => {
+const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false, tabCounts, onOpenLimitInfo }) => {
   const [open, setOpen] = React.useState(
     window.location.pathname === "/forgot-password"
   );
@@ -105,7 +107,14 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = fa
                 <ExitToAppTwoTone className="mr-2 h-4 w-4" />
                 <span>Sign out</span>
               </DropdownMenuItem>
-              <DropdownMenuItem disabled className="flex-col items-start opacity-100">
+              <DropdownMenuItem
+                  onClick={onOpenLimitInfo}
+                  disabled={!onOpenLimitInfo}
+                  className={cn(
+                      "flex-col items-start opacity-100 cursor-pointer",
+                       onOpenLimitInfo ? "hover:bg-accent hover:text-accent-foreground" : ""
+                  )}
+              >
                   <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mb-1">
                       Free Tier Usage
                   </span>

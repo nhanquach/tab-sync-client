@@ -85,6 +85,10 @@ export const getArchivedTabs = async (
   );
 };
 
+export const getTabsCount = async () => {
+  return (await getClient()).getTabsCount();
+};
+
 export const sendTab = async (
   tab: ITab
 ): Promise<{ data: ITab; error?: { message: string } }> => {
