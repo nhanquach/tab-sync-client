@@ -42,10 +42,11 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
         {/* Logo */}
         <div className="group relative flex items-center justify-center">
              {isLoading && (
-                <div className="absolute inset-[-4px] rounded-full border-2 border-transparent border-t-md-sys-color-primary animate-spin" />
+                <div className="absolute inset-[-8px] rounded-full border-2 border-transparent border-t-md-sys-color-primary animate-spin" />
              )}
              <Logo className={cn(
-                "w-10 h-10 transition-all duration-300 ease-in-out cursor-pointer",
+                "w-10 h-10 transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] cursor-pointer",
+                isLoading ? "scale-75" : "scale-100",
                 !isLoading && "group-hover:-translate-y-1 group-hover:scale-110 group-hover:brightness-110 group-hover:drop-shadow-md"
              )} />
         </div>
