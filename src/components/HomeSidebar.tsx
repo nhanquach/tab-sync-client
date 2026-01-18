@@ -17,9 +17,11 @@ interface IHomeSidebarProps {
   view: string;
   user?: User;
   isLoading?: boolean;
+  tabCounts?: { open: number; archived: number };
+  onOpenLimitInfo?: () => void;
 }
 
-const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = false }) => {
+const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = false, tabCounts, onOpenLimitInfo }) => {
   return (
     <aside
       className={cn(
@@ -92,7 +94,12 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
           <div className="w-8 h-[1px] bg-md-sys-color-outline-variant/30 my-1" />
           <QRCodeDialog />
           <FeedbackDialog iconOnly />
-          <AccountSettings user={user} isLoading={isLoading} />
+          <AccountSettings
+              user={user}
+              isLoading={isLoading}
+              tabCounts={tabCounts}
+              onOpenLimitInfo={onOpenLimitInfo}
+          />
       </div>
     </aside>
   );

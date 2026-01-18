@@ -22,13 +22,16 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { cn } from "@/lib/utils";
 
 interface IAccountSettingsProps {
   user?: User;
   isLoading?: boolean;
+  tabCounts?: { open: number; archived: number };
+  onOpenLimitInfo?: () => void;
 }
 
-const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false }) => {
+const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false, tabCounts, onOpenLimitInfo }) => {
   const [open, setOpen] = React.useState(
     window.location.pathname === "/forgot-password"
   );
@@ -103,6 +106,32 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = fa
               <DropdownMenuItem onClick={handleLogOut}>
                 <ExitToAppTwoTone className="mr-2 h-4 w-4" />
                 <span>Sign out</span>
+              </DropdownMenuItem>
+              <DropdownMenuItem
+                  onClick={onOpenLimitInfo}
+                  disabled={!onOpenLimitInfo}
+                  className={cn(
+                      "flex-col items-start opacity-100 cursor-pointer",
+                       onOpenLimitInfo ? "hover:bg-accent hover:text-accent-foreground" : ""
+                  )}
+              >
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mb-1">
+                      Free Tier Usage
+                  </span>
+                  <div className="flex flex-col gap-1 w-full">
+                      <div className="flex justify-between text-xs w-full">
+                          <span>Open Tabs</span>
+                          <span className={tabCounts && tabCounts.open >= 200 ? "text-red-500 font-bold" : ""}>
+                              {tabCounts?.open || 0} / 200
+                          </span>
+                      </div>
+                      <div className="flex justify-between text-xs w-full">
+                          <span>Archived</span>
+                          <span className={tabCounts && tabCounts.archived >= 200 ? "text-red-500 font-bold" : ""}>
+                              {tabCounts?.archived || 0} / 200
+                          </span>
+                      </div>
+                  </div>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setConfirmDeleteAccount(true)}>
                 <DeleteForeverTwoTone className="mr-2 h-4 w-4" />
