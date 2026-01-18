@@ -7,8 +7,6 @@ import {
   getArchivedTabs,
   onOpenTabChange,
   onArchivedTabChange,
-  archiveOpenTabs,
-  removeArchivedTabs,
   sendTab,
   archiveTab,
   removeTab,
@@ -43,6 +41,7 @@ import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
+import CommandPalette from "../components/CommandPalette";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -77,6 +76,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -352,26 +352,56 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const clearOpenTabs = (deviceName: string) => {
-    archiveOpenTabs(deviceName);
+    const tabsToArchive = tabs.filter((t) => t.deviceName === deviceName);
+    if (tabsToArchive.length === 0) return;
+
+    // Optimistic animation start
+    const ids = tabsToArchive.map((t) => t.id);
+    setExitingTabIds(new Set(ids));
+
+    setTimeout(async () => {
+      // Optimistic update after animation
+      setTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setExitingTabIds(new Set());
+      showToast(`${tabsToArchive.length} tabs archived.`);
+
+      try {
+        await archiveTab(tabsToArchive);
+        await removeTab(ids);
+      } catch (error) {
+        console.error(error);
+        showToast("Error archiving tabs. Refreshing...");
+        handleRefresh();
+      }
+    }, 300);
   };
 
   const clearArchivedTabs = (deviceName: string) => {
-    removeArchivedTabs(deviceName);
+    const tabsToDelete = archivedTabs.filter((t) => t.deviceName === deviceName);
+    if (tabsToDelete.length === 0) return;
+
+    // Optimistic animation start
+    const ids = tabsToDelete.map((t) => t.id);
+    setExitingTabIds(new Set(ids));
+
+    setTimeout(async () => {
+      // Optimistic update after animation
+      setArchivedTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setExitingTabIds(new Set());
+      showToast(`${tabsToDelete.length} tabs deleted permanently.`);
+
+      try {
+        await removeTab(ids, TABLES.ARCHIVED_TABS);
+      } catch (error) {
+        console.error(error);
+        showToast("Error deleting tabs. Refreshing...");
+        handleRefresh();
+      }
+    }, 300);
   };
 
   const handleRefresh = async () => {
-    setIsLoading(true);
-
-    if (isOpenTabsView) {
-      setTabs((await getOpenTabs()).data.sort(sortByTimeStamp));
-    } else {
-      setArchivedTabs((await getArchivedTabs()).data.sort(sortByTimeStamp));
-    }
-
-    setTimeout(() => {
-      setIsLoading(false);
-      showToast("Tabs are up to date.");
-    }, 250);
+    handleGetTabs();
   };
 
   const showToast = (message: string) => {
@@ -607,6 +637,22 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onClearSelection={() => setSelectedTabIds(new Set())}
               onArchiveSelected={handleBulkArchive}
               onDeleteSelected={handleBulkDelete}
+            />
+
+            <CommandPalette
+              isOpen={isCommandPaletteOpen}
+              setIsOpen={setIsCommandPaletteOpen}
+              view={currentView}
+              setView={setViewAdapter}
+              layout={layout}
+              toggleLayout={toggleLayout}
+              orderBy={orderBy}
+              toggleOrderBy={toggleOrderBy}
+              isSelectionMode={isSelectionMode}
+              toggleSelectionMode={toggleSelectionMode}
+              handleRefresh={handleRefresh}
+              tabs={isOpenTabsView ? tabs : archivedTabs}
+              onSelectTab={handleSelectTab}
             />
 
             <Snackbar

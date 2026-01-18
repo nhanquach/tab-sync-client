@@ -17,9 +17,23 @@ import LiveBackground from "./components/LiveBackground";
 import LoadingHomeShell from "./components/LoadingHomeShell";
 import { PALETTE } from "./theme/palette";
 import { injectTheme } from "./theme/injectTheme";
+import { getItem } from "./utils/LocalStorageHelper";
+import { THEMES } from "./theme/definitions";
 
 // Inject theme variables immediately
 injectTheme();
+
+// Restore saved theme on load
+const savedThemeId = getItem<string>("tabsync_theme_id");
+if (savedThemeId) {
+  const theme = THEMES.find((t) => t.id === savedThemeId);
+  if (theme) {
+    const root = document.documentElement;
+    root.style.setProperty("--seed-primary-hue", theme.seed.primaryHue.toString());
+    root.style.setProperty("--seed-secondary-hue", theme.seed.secondaryHue.toString());
+    root.style.setProperty("--seed-tertiary-hue", theme.seed.tertiaryHue.toString());
+  }
+}
 
 function AppContent() {
   const [user, setUser] = useState<User | null>(null);

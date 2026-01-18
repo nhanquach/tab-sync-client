@@ -3,7 +3,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 interface IUseKeyPress {
   keys: string[];
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  callback: (event: { key: string }) => any;
+  callback: (event: any) => any;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   node?: any;
   isCombinedWithCtrl?: boolean;
@@ -13,7 +13,7 @@ export const useKeyPress = ({
   keys,
   callback,
   node,
-  isCombinedWithCtrl,
+  isCombinedWithCtrl = false,
 }: IUseKeyPress) => {
   // implement the callback ref pattern
   const callbackRef = useRef(callback);
@@ -23,13 +23,24 @@ export const useKeyPress = ({
 
   // handle what happens on key press
   const handleKeyPress = useCallback(
-    (event: { key: string; metaKey: boolean }) => {
-      if (
-        isCombinedWithCtrl &&
-        event.metaKey &&
-        keys.some((key) => event.key === key)
-      ) {
-        return callbackRef.current(event);
+    (event: KeyboardEvent) => {
+      const isMatch = keys.some((key) => event.key === key);
+
+      if (isMatch) {
+        if (isCombinedWithCtrl) {
+          if (event.metaKey || event.ctrlKey) {
+            callbackRef.current(event);
+          }
+        } else {
+           // Don't trigger if user is typing in an input
+           const target = event.target as HTMLElement;
+           const isInput = target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable;
+
+           if (!isInput) {
+             event.preventDefault();
+             callbackRef.current(event);
+           }
+        }
       }
     },
     [isCombinedWithCtrl, keys]
@@ -40,13 +51,13 @@ export const useKeyPress = ({
     const targetNode = node ?? document;
     // attach the event listener
     if (targetNode) {
-      targetNode.addEventListener("keydown", handleKeyPress);
+      targetNode.addEventListener("keydown", handleKeyPress as EventListener);
     }
 
     // remove the event listener
     return () => {
       if (targetNode) {
-        targetNode.removeEventListener("keydown", handleKeyPress);
+        targetNode.removeEventListener("keydown", handleKeyPress as EventListener);
       }
     };
   }, [handleKeyPress, node]);
