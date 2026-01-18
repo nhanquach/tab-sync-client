@@ -5,6 +5,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import {
   getOpenTabs,
   getArchivedTabs,
+  getTabsCount,
   onOpenTabChange,
   onArchivedTabChange,
   sendTab,
@@ -96,6 +97,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
   const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [tabCounts, setTabCounts] = useState({ open: 0, archived: 0 });
 
   // Bulk Actions State
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -261,6 +263,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     // newTabs.sort(sortByTimeStamp); // Sorting is now done on server
     setTabsFunction(newTabs);
     setTotalCount(count);
+
+    // Refresh overall counts
+    getTabsCount().then(setTabCounts);
 
     setIsLoading(false);
     showToast("Tabs are up to date.");
@@ -482,10 +487,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   return (
     <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar user={user} />
+      <HomeAppBar user={user} tabCounts={tabCounts} />
 
       <div className="flex flex-1">
-          <HomeSidebar view={currentView} user={user} />
+          <HomeSidebar view={currentView} user={user} tabCounts={tabCounts} />
 
           <Container
             maxWidth="xl"

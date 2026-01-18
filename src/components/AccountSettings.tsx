@@ -26,9 +26,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 interface IAccountSettingsProps {
   user?: User;
   isLoading?: boolean;
+  tabCounts?: { open: number; archived: number };
 }
 
-const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false }) => {
+const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = false, tabCounts }) => {
   const [open, setOpen] = React.useState(
     window.location.pathname === "/forgot-password"
   );
@@ -104,8 +105,24 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = fa
                 <ExitToAppTwoTone className="mr-2 h-4 w-4" />
                 <span>Sign out</span>
               </DropdownMenuItem>
-              <DropdownMenuItem disabled>
-                <span className="text-xs opacity-50">Limit: 200 Open / 200 Archived</span>
+              <DropdownMenuItem disabled className="flex-col items-start opacity-100">
+                  <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider mb-1">
+                      Free Tier Usage
+                  </span>
+                  <div className="flex flex-col gap-1 w-full">
+                      <div className="flex justify-between text-xs w-full">
+                          <span>Open Tabs</span>
+                          <span className={tabCounts && tabCounts.open >= 200 ? "text-red-500 font-bold" : ""}>
+                              {tabCounts?.open || 0} / 200
+                          </span>
+                      </div>
+                      <div className="flex justify-between text-xs w-full">
+                          <span>Archived</span>
+                          <span className={tabCounts && tabCounts.archived >= 200 ? "text-red-500 font-bold" : ""}>
+                              {tabCounts?.archived || 0} / 200
+                          </span>
+                      </div>
+                  </div>
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setConfirmDeleteAccount(true)}>
                 <DeleteForeverTwoTone className="mr-2 h-4 w-4" />

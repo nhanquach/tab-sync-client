@@ -254,6 +254,26 @@ export const getArchivedTabs = async (
   return { data: [], count: 0, error: "No user id" };
 };
 
+export const getTabsCount = async (): Promise<{ open: number; archived: number }> => {
+  try {
+    const { client, userId } = await getClient();
+    if (!client || !userId) return { open: 0, archived: 0 };
+
+    const [open, archived] = await Promise.all([
+      client.from(TABLES.OPEN_TABS).select("*", { count: "exact", head: true }).eq("userId", userId),
+      client.from(TABLES.ARCHIVED_TABS).select("*", { count: "exact", head: true }).eq("userId", userId),
+    ]);
+
+    return {
+      open: open.count || 0,
+      archived: archived.count || 0,
+    };
+  } catch (error) {
+    console.error("Error fetching tab counts:", error);
+    return { open: 0, archived: 0 };
+  }
+};
+
 export const sendTab = async (
   tab: ITab
 ): Promise<{ data: ITab; error?: { message: string } }> => {
