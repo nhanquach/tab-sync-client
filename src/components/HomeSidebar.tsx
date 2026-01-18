@@ -40,7 +40,10 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
       {/* Top Section: Logo + Nav */}
       <div className="flex flex-col items-center gap-8 w-full">
         {/* Logo */}
-        <div className={cn("group", isLoading && "animate-spin duration-[3000ms]")}>
+        <div className="group relative flex items-center justify-center">
+             {isLoading && (
+                <div className="absolute inset-[-4px] rounded-full border-2 border-transparent border-t-md-sys-color-primary animate-spin" />
+             )}
              <Logo className={cn(
                 "w-10 h-10 transition-all duration-300 ease-in-out cursor-pointer",
                 !isLoading && "group-hover:-translate-y-1 group-hover:scale-110 group-hover:brightness-110 group-hover:drop-shadow-md"
