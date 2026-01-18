@@ -53,12 +53,36 @@ export const deleteAccount = async () => {
   return (await getClient()).deleteAccount();
 }
 
-export const getOpenTabs = async () => {
-  return (await getClient()).getOpenTabs();
+export const getOpenTabs = async (
+  page?: number,
+  limit?: number,
+  searchString?: string,
+  deviceName?: string,
+  orderBy?: string
+) => {
+  return (await getClient()).getOpenTabs(
+    page,
+    limit,
+    searchString,
+    deviceName,
+    orderBy
+  );
 };
 
-export const getArchivedTabs = async () => {
-  return (await getClient()).getArchivedTabs();
+export const getArchivedTabs = async (
+  page?: number,
+  limit?: number,
+  searchString?: string,
+  deviceName?: string,
+  orderBy?: string
+) => {
+  return (await getClient()).getArchivedTabs(
+    page,
+    limit,
+    searchString,
+    deviceName,
+    orderBy
+  );
 };
 
 export const sendTab = async (

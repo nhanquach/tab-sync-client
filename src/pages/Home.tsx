@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
+import PaginationControls from "../components/PaginationControls";
 import CommandPalette from "../components/CommandPalette";
 
 interface IHomeProps {
@@ -94,6 +95,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [tabs, setTabs] = useState<ITab[]>([]);
   const [archivedTabs, setArchivedTabs] = useState<ITab[]>([]);
   const [selectedTab, setSelectedTab] = useState<ITab | null>(null);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   // Bulk Actions State
   const [isSelectionMode, setIsSelectionMode] = useState(false);
@@ -208,6 +210,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [searchString, setSearchString] = useState<string>("");
   const [selectedDevice, setSelectedDevice] = useState<string>("All");
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const ITEMS_PER_PAGE = 20;
 
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
@@ -224,40 +228,28 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }, [tabs]);
 
   const urls = useMemo(() => {
-    let displayedTabs = isOpenTabsView ? tabs : archivedTabs;
+    return isOpenTabsView ? tabs : archivedTabs;
+  }, [isOpenTabsView, tabs, archivedTabs]);
 
-    if (selectedDevice !== "All") {
-      displayedTabs = displayedTabs.filter((tab) =>
-        tab.deviceName === selectedDevice
-      );
-    }
+  const totalPages = Math.ceil(totalCount / ITEMS_PER_PAGE);
 
-    if (searchString) {
-      displayedTabs = displayedTabs.filter(
-        (tab) =>
-          tab.title.toLowerCase().includes(searchString.toLowerCase()) ||
-          tab.url.toLowerCase().includes(searchString.toLowerCase())
-      );
-    }
-
-    return displayedTabs.sort(
-      orderBy === ORDER.TIME ? sortByTimeStamp : sortByTitle
-    );
-  }, [
-    isOpenTabsView,
-    tabs,
-    archivedTabs,
-    selectedDevice,
-    searchString,
-    orderBy,
-  ]);
+  // Reset page when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchString, selectedDevice, currentView, orderBy]);
 
   const handleGetTabs = useCallback(async () => {
     setIsLoading(true);
     const fetchFunction = isOpenTabsView ? getOpenTabs : getArchivedTabs;
     const setTabsFunction = isOpenTabsView ? setTabs : setArchivedTabs;
 
-    const { data: newTabs, error } = await fetchFunction();
+    const { data: newTabs, count, error } = await fetchFunction(
+      currentPage,
+      ITEMS_PER_PAGE,
+      searchString,
+      selectedDevice,
+      orderBy === ORDER.TIME ? "TIME" : "TITLE"
+    );
 
     if (error) {
       console.error(error);
@@ -266,12 +258,19 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       return;
     }
 
-    newTabs.sort(sortByTimeStamp);
+    // newTabs.sort(sortByTimeStamp); // Sorting is now done on server
     setTabsFunction(newTabs);
+    setTotalCount(count);
 
     setIsLoading(false);
     showToast("Tabs are up to date.");
-  }, [isOpenTabsView]);
+  }, [
+    isOpenTabsView,
+    currentPage,
+    searchString,
+    selectedDevice,
+    orderBy,
+  ]);
 
   const toggleLayout = () => {
     setLayout((currentLayout: Layout) => {
@@ -293,29 +292,22 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   useEffect(() => {
     if (!currentView) return;
+    handleGetTabs();
+  }, [currentView, handleGetTabs]);
 
-    const hasData = isOpenTabsView ? tabs.length > 0 : archivedTabs.length > 0;
-    if (!hasData) {
+  useEffect(() => {
+    onOpenTabChange(() => {
+      // Simplest way to handle real-time updates with pagination is to just refresh the current page
       handleGetTabs();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentView, isOpenTabsView]);
+    });
+  }, [handleGetTabs]);
 
   useEffect(() => {
-    onOpenTabChange((payload: IDatabaseUpdatePayload) => {
-      setTabs((currentTabs) => {
-        return updateTabs(currentTabs, payload);
-      });
+    onArchivedTabChange(() => {
+      // Simplest way to handle real-time updates with pagination is to just refresh the current page
+      handleGetTabs();
     });
-  }, [tabs]);
-
-  useEffect(() => {
-    onArchivedTabChange((payload: IDatabaseUpdatePayload) => {
-      setArchivedTabs((currentTabs) => {
-        return updateTabs(currentTabs, payload);
-      });
-    });
-  }, [archivedTabs]);
+  }, [handleGetTabs]);
 
   useEffect(() => {
     if (window.location.pathname === "/share") {
@@ -409,18 +401,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
   const handleRefresh = async () => {
-    setIsLoading(true);
-
-    if (isOpenTabsView) {
-      setTabs((await getOpenTabs()).data.sort(sortByTimeStamp));
-    } else {
-      setArchivedTabs((await getArchivedTabs()).data.sort(sortByTimeStamp));
-    }
-
-    setTimeout(() => {
-      setIsLoading(false);
-      showToast("Tabs are up to date.");
-    }, 250);
+    handleGetTabs();
   };
 
   const showToast = (message: string) => {
@@ -580,6 +561,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             exitingTabIds={exitingTabIds}
                           />
                       )}
+
+                      <PaginationControls
+                        currentPage={currentPage}
+                        totalPages={totalPages}
+                        onPageChange={setCurrentPage}
+                      />
                   </div>
               </div>
 

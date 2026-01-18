@@ -157,46 +157,101 @@ export const deleteAccount = async () => {
 };
 
 export const getOpenTabs = async (
-  deviceName?: string
+  page = 1,
+  limit = 20,
+  searchString = "",
+  deviceName?: string,
+  orderBy = "TIME"
 ): Promise<{
   data: ITab[];
+  count: number;
   error?: string;
 }> => {
   const { client, userId } = await getClient();
 
   if (client && userId) {
-    const { data, error } = deviceName
-      ? await client
-          .from(TABLES.OPEN_TABS)
-          .select()
-          .eq("deviceName", deviceName)
-      : await client.from(TABLES.OPEN_TABS).select();
+    let query = client
+      .from(TABLES.OPEN_TABS)
+      .select("*", { count: "exact" });
+
+    if (deviceName && deviceName !== "All") {
+      query = query.eq("deviceName", deviceName);
+    }
+
+    if (searchString) {
+      query = query.or(
+        `title.ilike.%${searchString}%,url.ilike.%${searchString}%`
+      );
+    }
+
+    if (orderBy === "TIME") {
+      query = query.order("timeStamp", { ascending: false });
+    } else {
+      query = query.order("title", { ascending: true });
+    }
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    const { data, error, count } = await query.range(from, to);
+
     return {
       data: data as ITab[],
+      count: count || 0,
       error: error?.message,
     };
   }
 
-  return { data: [], error: "No user id" };
+  return { data: [], count: 0, error: "No user id" };
 };
 
-export const getArchivedTabs = async (deviceName?: string) => {
+export const getArchivedTabs = async (
+  page = 1,
+  limit = 20,
+  searchString = "",
+  deviceName?: string,
+  orderBy = "TIME"
+): Promise<{
+  data: ITab[];
+  count: number;
+  error?: string;
+}> => {
   const { client, userId } = await getClient();
 
   if (client && userId) {
-    const { data, error } = deviceName
-      ? await client
-          .from(TABLES.ARCHIVED_TABS)
-          .select()
-          .eq("deviceName", deviceName)
-      : await client.from(TABLES.ARCHIVED_TABS).select();
+    let query = client
+      .from(TABLES.ARCHIVED_TABS)
+      .select("*", { count: "exact" });
+
+    if (deviceName && deviceName !== "All") {
+      query = query.eq("deviceName", deviceName);
+    }
+
+    if (searchString) {
+      query = query.or(
+        `title.ilike.%${searchString}%,url.ilike.%${searchString}%`
+      );
+    }
+
+    if (orderBy === "TIME") {
+      query = query.order("timeStamp", { ascending: false });
+    } else {
+      query = query.order("title", { ascending: true });
+    }
+
+    const from = (page - 1) * limit;
+    const to = from + limit - 1;
+
+    const { data, error, count } = await query.range(from, to);
+
     return {
       data: data as ITab[],
+      count: count || 0,
       error: error?.message,
     };
   }
 
-  return { data: [], error: "No user id" };
+  return { data: [], count: 0, error: "No user id" };
 };
 
 export const sendTab = async (
