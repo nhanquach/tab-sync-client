@@ -77,7 +77,7 @@ const LimitInfoDialog = ({ open, onOpenChange }: LimitInfoDialogProps) => {
 
                 <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
                     <p className="text-sm font-medium text-primary">
-                        <strong>Tip:</strong> You can export your data anytime or delete old devices to free up space in your view, though the limit applies to your total account cloud storage.
+                        <strong>Tip:</strong> You can delete old devices to free up space in your view, though the limit applies to your total account cloud storage.
                     </p>
                 </div>
             </div>
