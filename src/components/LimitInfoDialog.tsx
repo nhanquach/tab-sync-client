@@ -1,4 +1,3 @@
-import React from "react";
 import { SpeedTwoTone, StorageTwoTone } from "@mui/icons-material";
 
 import { isMobileApp } from "../utils/isMobile";
