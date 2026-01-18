@@ -10,6 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 interface IInstallPwaDialogProps {
     children?: React.ReactNode;
@@ -21,7 +22,13 @@ const InstallPwaDialog: React.FC<IInstallPwaDialogProps> = ({ children }) => {
       <DialogTrigger asChild>
         {children || <Button variant="link" className="text-muted-foreground p-0 h-auto">How to install?</Button>}
       </DialogTrigger>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className={cn(
+        "sm:max-w-md",
+        "backdrop-blur-xl",
+        "bg-white/40 border-0 md:border md:border-white/40",
+        "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
+        "shadow-2xl"
+      )}>
         <DialogHeader>
           <DialogTitle>Install TabSync</DialogTitle>
           <DialogDescription>
