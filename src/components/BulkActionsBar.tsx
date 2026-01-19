@@ -2,7 +2,8 @@ import React from "react";
 import {
   ArchiveTwoTone,
   DeleteForeverTwoTone,
-  CloseTwoTone
+  CloseTwoTone,
+  ContentCopyTwoTone
 } from "@mui/icons-material";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -14,6 +15,7 @@ interface IBulkActionsBarProps {
   onClearSelection: () => void;
   onArchiveSelected: () => void;
   onDeleteSelected: () => void;
+  onCopySelected: () => void;
 }
 
 const BulkActionsBar: React.FC<IBulkActionsBarProps> = ({
@@ -22,6 +24,7 @@ const BulkActionsBar: React.FC<IBulkActionsBarProps> = ({
   onClearSelection,
   onArchiveSelected,
   onDeleteSelected,
+  onCopySelected,
 }) => {
   if (selectedCount === 0) return null;
 
@@ -44,6 +47,16 @@ const BulkActionsBar: React.FC<IBulkActionsBarProps> = ({
         </div>
 
         <div className="h-6 w-px bg-md-sys-color-outline-variant/30 mx-1" />
+
+        <Button
+          onClick={onCopySelected}
+          variant="ghost"
+          size="sm"
+          className="rounded-full hover:bg-md-sys-color-secondary/10 hover:text-md-sys-color-secondary gap-2"
+        >
+          <ContentCopyTwoTone fontSize="small" />
+          <span className="hidden sm:inline">Copy</span>
+        </Button>
 
         {view === TABS_VIEWS.OPEN_TABS ? (
           <Button

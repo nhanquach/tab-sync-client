@@ -14,10 +14,8 @@ import {
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
-import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -37,7 +35,6 @@ import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
-import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
@@ -47,26 +44,6 @@ interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
 }
-
-const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
-  if (payload.eventType === "UPDATE") {
-    const index = currentTabs.findIndex((tab) => tab.id === payload.new.id);
-
-    if (index > -1) {
-      const newTabs = [...currentTabs];
-      newTabs.splice(index, 1, payload.new);
-      return newTabs;
-    }
-
-    return [payload.new, ...currentTabs];
-  }
-
-  if (payload.eventType === "DELETE") {
-    return currentTabs.filter((t) => t.id !== payload.old.id);
-  }
-
-  return currentTabs;
-};
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
   const { view, tabId } = useParams();
@@ -161,6 +138,28 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           handleRefresh();
         }
     }, 300);
+  };
+
+  const handleBulkCopy = async () => {
+    if (selectedTabIds.size === 0) return;
+
+    const tabsToCopy = (isOpenTabsView ? tabs : archivedTabs).filter(t => selectedTabIds.has(t.id));
+
+    if (tabsToCopy.length === 0) return;
+
+    const textToCopy = tabsToCopy.map(tab => `${tab.url}`).join("\n");
+    // Alternatively, for Markdown:
+    // const textToCopy = tabsToCopy.map(tab => `[${tab.title}](${tab.url})`).join("\n");
+
+    try {
+        await navigator.clipboard.writeText(textToCopy);
+        showToast(`Copied ${tabsToCopy.length} links to clipboard.`);
+        setIsSelectionMode(false);
+        setSelectedTabIds(new Set());
+    } catch (error) {
+        console.error("Failed to copy tabs:", error);
+        showToast("Failed to copy links to clipboard.");
+    }
   };
 
   const handleBulkDelete = async () => {
@@ -641,6 +640,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onClearSelection={() => setSelectedTabIds(new Set())}
               onArchiveSelected={handleBulkArchive}
               onDeleteSelected={handleBulkDelete}
+              onCopySelected={handleBulkCopy}
             />
 
             <CommandPalette
