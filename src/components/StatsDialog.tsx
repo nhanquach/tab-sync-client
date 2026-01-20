@@ -117,11 +117,11 @@ export const StatsDialog: React.FC = () => {
       )}>
         <div className="flex flex-col md:flex-row min-h-[450px]">
            {/* Left Column (Hero) */}
-           <div className="flex-1 p-8 md:p-10 bg-gradient-to-br from-tertiary/20 via-tertiary/5 to-transparent border-r border-white/20 dark:border-white/10 flex flex-col justify-center items-start space-y-6 md:space-y-8 relative overflow-hidden shrink-0">
-                <div className="absolute -right-20 -top-20 w-64 h-64 bg-tertiary/10 rounded-full blur-3xl" />
+           <div className="flex-1 p-6 md:p-10 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border-r border-white/20 dark:border-white/10 flex flex-col justify-center items-start space-y-6 md:space-y-8 relative overflow-hidden shrink-0">
+                <div className="absolute -right-20 -top-20 w-64 h-64 bg-primary/10 rounded-full blur-3xl" />
 
-                <div className="flex items-center gap-2 transform -rotate-6 transition-transform hover:rotate-0 duration-500 origin-bottom-left">
-                  <PieChartTwoTone className="!text-6xl md:!text-8xl opacity-80 text-md-sys-color-tertiary" />
+                <div className="flex items-center gap-2 transform -rotate-12 transition-transform hover:rotate-0 duration-500 origin-bottom-left">
+                  <PieChartTwoTone className="!text-6xl md:!text-8xl opacity-80 text-md-sys-color-primary" />
                 </div>
 
                 <div className="space-y-4 z-10">
@@ -148,7 +148,7 @@ export const StatsDialog: React.FC = () => {
            </div>
 
            {/* Right Column (Details) */}
-           <div className="flex-1 p-8 md:p-10 flex flex-col relative bg-white/30 dark:bg-black/20 backdrop-blur-sm shrink-0 overflow-y-auto">
+           <div className="flex-1 p-6 md:p-10 flex flex-col relative bg-white/30 dark:bg-black/20 backdrop-blur-sm shrink-0 overflow-y-auto">
                {isLoading ? (
                    <div className="flex-1 flex items-center justify-center">
                        <LoadingSpinner />
