@@ -33,6 +33,7 @@ import {
   LAYOUT_KEY,
   ORDER,
 } from "../utils/constants";
+import { isMobileApp } from "../utils/isMobile";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
@@ -213,9 +214,23 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 20;
 
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768 || isMobileApp());
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768 || isMobileApp());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [layout, setLayout] = useState<Layout>(
-    getItem(LAYOUT_KEY) || LAYOUT.LIST
+    isMobile ? LAYOUT.GRID : (getItem(LAYOUT_KEY) || LAYOUT.LIST)
   );
+
+  useEffect(() => {
+    if (isMobile && layout !== LAYOUT.GRID) {
+        setLayout(LAYOUT.GRID);
+    }
+  }, [isMobile, layout]);
   const [orderBy, setOrderBy] = useState<ORDER>(
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
@@ -273,6 +288,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   ]);
 
   const toggleLayout = () => {
+    if (isMobile) return;
     setLayout((currentLayout: Layout) => {
       const newLayout =
         currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;

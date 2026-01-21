@@ -67,12 +67,35 @@ const Toolbar: React.FC<IToolbarProps> = ({
   devices,
   selectedDevice,
   onSelectDevice,
-  isScrolled = false,
+  isScrolled: isScrolledProp = false,
   isSelectionMode,
   toggleSelectionMode,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
+
+  // Force scrolled appearance on mobile (collapsed toolbar)
+  // We don't have isMobile prop here, but we can infer or pass it.
+  // However, the cleanest way without prop drilling is using a media query hook or CSS.
+  // Given the requirement "Toolbar will always in collapsed mode" on mobile:
+  // We can use window.innerWidth or a hook.
+  // Since we already have isMobile utility in other files, let's use it or just check window.
+  // Actually, Toolbar is a controlled component, so it reacts to isScrolled.
+  // BUT the parent Home.tsx passes isScrolled based on window.scrollY.
+  // We should modify the parent to pass isScrolled=true always on mobile?
+  // OR handle it here to force the visual state.
+  // Let's modify isScrolled inside the component to be true if mobile.
+
+  // A simple check for mobile width
+  const [isMobile, setIsMobile] = React.useState(window.innerWidth < 768);
+
+  React.useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isScrolled = isMobile || isScrolledProp;
 
   React.useEffect(() => {
     if (!isScrolled) setIsSearchExpanded(false);
