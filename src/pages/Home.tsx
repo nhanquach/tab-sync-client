@@ -490,11 +490,11 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           <Container
             maxWidth="xl"
             className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
+                "flex-grow p-4 md:p-6 transition-all duration-300 min-w-0 relative mx-auto"
             )}
             sx={{
               mt: 0,
-              paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
+              paddingTop: { xs: `calc(${headerHeight}px + 16px)`, md: "24px" },
             }}
             component="main"
           >

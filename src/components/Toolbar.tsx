@@ -120,12 +120,12 @@ const Toolbar: React.FC<IToolbarProps> = ({
     <TooltipProvider>
       <div
         className={cn(
-          "sticky z-40 -mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
+          "sticky z-40 -mx-4 md:-mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
           "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
           "top-16 md:top-0",
-          isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40"
+          isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40",
+          "w-[calc(100%+32px)] md:w-[calc(100%+48px)]"
         )}
-        style={{ width: "calc(100% + 48px)" }}
       >
         <div className={cn(
           "flex items-center w-full transition-all duration-300 gap-3",
