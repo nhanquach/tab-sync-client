@@ -368,7 +368,12 @@ export const onArchivedTabChange = async (
 };
 
 export const archiveOpenTabs = async (deviceName?: string) => {
-  const { data: openTabs, error } = await getOpenTabs(deviceName);
+  const { data: openTabs, error } = await getOpenTabs(
+    1,
+    1000,
+    "",
+    deviceName
+  );
 
   if (error) {
     console.error(error);
@@ -381,7 +386,7 @@ export const archiveOpenTabs = async (deviceName?: string) => {
 };
 
 export const removeArchivedTabs = async (deviceName?: string) => {
-  const archivedTabs = await getArchivedTabs(deviceName);
+  const archivedTabs = await getArchivedTabs(1, 1000, "", deviceName);
 
   const tabIds = archivedTabs.data.map<number>((t) => t.id);
   await removeTab(tabIds, TABLES.ARCHIVED_TABS);
