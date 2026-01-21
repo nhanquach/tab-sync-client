@@ -75,7 +75,7 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
       </div>
 
       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-        <div className="flex items-baseline justify-between gap-2 min-w-0">
+        <div className="flex items-center justify-between gap-2 min-w-0">
             <a
             href={tab.url}
             target="_blank"
@@ -90,9 +90,9 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
             </span>
         </div>
 
-        <div className="text-sm text-md-sys-color-on-surface-variant truncate w-full flex items-center gap-2">
-           <span className="truncate">{tab.url}</span>
-           <span className="text-xs text-md-sys-color-outline sm:hidden">
+        <div className="text-sm text-md-sys-color-on-surface-variant w-full flex items-center gap-2 min-w-0">
+           <span className="truncate flex-1 min-w-0">{tab.url}</span>
+           <span className="text-xs text-md-sys-color-outline flex-shrink-0 sm:hidden">
              • {dayjs(tab.timeStamp).format("MMM D")}
            </span>
         </div>
