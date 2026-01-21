@@ -103,6 +103,7 @@ export const StatsDialog: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
+          aria-label="View Insights"
           className="w-10 h-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all"
         >
           <BarChartTwoTone className="text-md-sys-color-on-surface-variant" />
@@ -113,7 +114,7 @@ export const StatsDialog: React.FC = () => {
           "backdrop-blur-xl",
           "bg-white/40 border-0 md:border md:border-white/40",
           "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
-          "max-h-[85vh] overflow-y-auto sm:max-w-4xl p-0 rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]"
+          "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]"
       )}>
         <div className="flex flex-col md:flex-row min-h-[450px]">
            {/* Left Column (Hero) */}
