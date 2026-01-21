@@ -12,6 +12,7 @@ import {
   PhoneIphoneTwoTone,
   DevicesOtherTwoTone,
   PublicTwoTone,
+  ViewWeekTwoTone,
 } from "@mui/icons-material";
 
 import {
@@ -27,7 +28,7 @@ import {
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ITab } from "../interfaces/iTab";
 import { Layout } from "../interfaces/Layout";
-import { ORDER } from "../utils/constants";
+import { ORDER, LAYOUT } from "../utils/constants";
 import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
 
 interface ICommandPaletteProps {
@@ -142,8 +143,22 @@ const CommandPalette: React.FC<ICommandPaletteProps> = ({
             </CommandItem>
 
             <CommandItem onSelect={() => runCommand(toggleLayout)}>
-                {layout === "grid" ? <ListAltTwoTone className="mr-2" /> : <Grid3x3TwoTone className="mr-2" />}
-                <span>Switch to {layout === "grid" ? "List" : "Grid"} View</span>
+                {layout === LAYOUT.GRID ? (
+                  <ViewWeekTwoTone className="mr-2" />
+                ) : layout === LAYOUT.KANBAN ? (
+                  <ListAltTwoTone className="mr-2" />
+                ) : (
+                  <Grid3x3TwoTone className="mr-2" />
+                )}
+                <span>
+                  Switch to{" "}
+                  {layout === LAYOUT.GRID
+                    ? "Kanban"
+                    : layout === LAYOUT.KANBAN
+                    ? "List"
+                    : "Grid"}{" "}
+                  View
+                </span>
             </CommandItem>
 
             <CommandItem onSelect={() => runCommand(toggleOrderBy)}>

@@ -17,6 +17,7 @@ import { TABS_VIEWS } from "../interfaces/iView";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
+import UrlKanban from "../components/UrlKanban";
 import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
@@ -274,8 +275,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const toggleLayout = () => {
     setLayout((currentLayout: Layout) => {
-      const newLayout =
-        currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;
+      let newLayout;
+      if (currentLayout === LAYOUT.LIST) newLayout = LAYOUT.GRID;
+      else if (currentLayout === LAYOUT.GRID) newLayout = LAYOUT.KANBAN;
+      else newLayout = LAYOUT.LIST;
 
       saveItem(LAYOUT_KEY, newLayout);
       return newLayout;
@@ -534,7 +537,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                         )}
 
                         <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            {(urls.length > 0 && layout === "list") && (
+                            {(urls.length > 0 && layout === LAYOUT.LIST) && (
                                 <UrlList
                             view={currentView}
                             urls={urls}
@@ -549,7 +552,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                           />
                       )}
 
-                      {(urls.length > 0 && layout === "grid") && (
+                      {(urls.length > 0 && layout === LAYOUT.GRID) && (
                           <UrlGrid
                             view={currentView}
                             urls={urls}
@@ -563,6 +566,21 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                                     exitingTabIds={exitingTabIds}
                                 />
                             )}
+
+                      {(urls.length > 0 && layout === LAYOUT.KANBAN) && (
+                          <UrlKanban
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={handleSelectTab}
+                            selectedId={selectedTab?.id}
+                            isSelectionMode={isSelectionMode}
+                            selectedTabIds={selectedTabIds}
+                            onToggleTabSelection={handleToggleTabSelection}
+                            onToggleDeviceSelection={handleToggleDeviceSelection}
+                            exitingTabIds={exitingTabIds}
+                          />
+                      )}
 
                             <PaginationControls
                                 currentPage={currentPage}

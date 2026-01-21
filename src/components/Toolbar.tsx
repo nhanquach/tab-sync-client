@@ -12,10 +12,11 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  ViewWeekTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { ORDER } from "../utils/constants";
+import { LAYOUT, ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
 
@@ -243,16 +244,34 @@ const Toolbar: React.FC<IToolbarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  aria-label={layout === "grid" ? "Switch to list view" : "Switch to grid view"}
+                  aria-label={
+                    layout === LAYOUT.GRID
+                      ? "Switch to kanban view"
+                      : layout === LAYOUT.KANBAN
+                      ? "Switch to list view"
+                      : "Switch to grid view"
+                  }
                   variant="ghost"
                   size="icon"
                   onClick={toggleLayout}
                   className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
                 >
-                  {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
+                  {layout === LAYOUT.GRID ? (
+                    <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  ) : layout === LAYOUT.KANBAN ? (
+                    <ViewWeekTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  ) : (
+                    <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  )}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>{layout === "grid" ? "Switch to list view" : "Switch to grid view"}</TooltipContent>
+              <TooltipContent>
+                {layout === LAYOUT.GRID
+                  ? "Switch to kanban view"
+                  : layout === LAYOUT.KANBAN
+                  ? "Switch to list view"
+                  : "Switch to grid view"}
+              </TooltipContent>
             </Tooltip>
 
             <Tooltip>
