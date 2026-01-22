@@ -31,6 +31,7 @@ const QRCodeDialog: React.FC<Props> = () => {
           size="sm"
           variant="ghost"
           className="flex min-w-[50px]"
+          aria-label="Open on mobile"
         >
           <QrCode2TwoTone />
         </Button>
