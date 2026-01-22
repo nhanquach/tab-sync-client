@@ -51,6 +51,7 @@ export const ThemeSelector: React.FC = () => {
         <Button
           variant="ghost"
           size="icon"
+          aria-label="Change theme"
           className="w-10 h-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all"
         >
           <PaletteTwoTone className="text-md-sys-color-on-surface-variant" />

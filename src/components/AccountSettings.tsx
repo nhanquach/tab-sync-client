@@ -76,7 +76,7 @@ const AccountSettings: React.FC<IAccountSettingsProps> = ({ user, isLoading = fa
            <Dialog open={open} onOpenChange={handleOpenChange}>
             <TooltipTrigger asChild>
               <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="rounded-full">
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label="Account settings">
                   {isLoading ? (
                     <Skeleton className="h-10 w-10 rounded-full" />
                   ) : (

@@ -17,7 +17,6 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getOpenTabs, getArchivedTabs } from "@/clients";
 import LoadingSpinner from "./LoadingSpinner";
-import { ITab } from "@/interfaces/iTab";
 
 // Simple helper to avoid dependency issues with lodash types
 const groupBy = <T,>(array: T[], key: keyof T): Record<string, T[]> => {
