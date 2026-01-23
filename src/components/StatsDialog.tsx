@@ -17,16 +17,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { getOpenTabs, getArchivedTabs } from "@/clients";
 import LoadingSpinner from "./LoadingSpinner";
-import { ITab } from "@/interfaces/iTab";
-
-// Simple helper to avoid dependency issues with lodash types
-const groupBy = <T,>(array: T[], key: keyof T): Record<string, T[]> => {
-  return array.reduce((result, item) => {
-    const groupKey = String(item[key]);
-    (result[groupKey] = result[groupKey] || []).push(item);
-    return result;
-  }, {} as Record<string, T[]>);
-};
+import { groupBy } from "@/utils/groupBy";
 
 export const StatsDialog: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +49,7 @@ export const StatsDialog: React.FC = () => {
       const allTabs = [...openTabs, ...archivedTabs];
 
       // Process Devices
-      const groupedByDevice = groupBy(allTabs, 'deviceName');
+      const groupedByDevice = groupBy(allTabs, (t) => t.deviceName);
       const byDevice = Object.entries(groupedByDevice).map(([name, tabs]) => ({
         name,
         count: tabs.length

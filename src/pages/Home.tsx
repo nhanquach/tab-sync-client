@@ -12,12 +12,11 @@ import {
   removeTab,
 } from "../clients";
 import UrlList from "../components/UrlList";
+import UrlKanban from "../components/UrlKanban";
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
-import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -37,7 +36,6 @@ import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
-import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
@@ -47,26 +45,6 @@ interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
 }
-
-const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
-  if (payload.eventType === "UPDATE") {
-    const index = currentTabs.findIndex((tab) => tab.id === payload.new.id);
-
-    if (index > -1) {
-      const newTabs = [...currentTabs];
-      newTabs.splice(index, 1, payload.new);
-      return newTabs;
-    }
-
-    return [payload.new, ...currentTabs];
-  }
-
-  if (payload.eventType === "DELETE") {
-    return currentTabs.filter((t) => t.id !== payload.old.id);
-  }
-
-  return currentTabs;
-};
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
   const { view, tabId } = useParams();
@@ -274,8 +252,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const toggleLayout = () => {
     setLayout((currentLayout: Layout) => {
-      const newLayout =
-        currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;
+      let newLayout = LAYOUT.LIST;
+      if (currentLayout === LAYOUT.LIST) newLayout = LAYOUT.GRID;
+      else if (currentLayout === LAYOUT.GRID) newLayout = LAYOUT.KANBAN;
 
       saveItem(LAYOUT_KEY, newLayout);
       return newLayout;
@@ -563,6 +542,21 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                                     exitingTabIds={exitingTabIds}
                                 />
                             )}
+
+                      {(urls.length > 0 && layout === "kanban") && (
+                          <UrlKanban
+                            view={currentView}
+                            urls={urls}
+                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+                            onSelect={handleSelectTab}
+                            selectedId={selectedTab?.id}
+                            isSelectionMode={isSelectionMode}
+                            selectedTabIds={selectedTabIds}
+                            onToggleTabSelection={handleToggleTabSelection}
+                            onToggleDeviceSelection={handleToggleDeviceSelection}
+                            exitingTabIds={exitingTabIds}
+                          />
+                      )}
 
                             <PaginationControls
                                 currentPage={currentPage}
