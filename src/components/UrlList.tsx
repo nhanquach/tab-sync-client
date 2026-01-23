@@ -67,12 +67,12 @@ const UrlList: React.FC<IUrlListProps> = ({
           <div key={name} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
              {/* Section Header */}
             <div className="flex items-center justify-between mb-3 px-1">
-                <div className="flex items-center">
+                <div className="flex items-center min-w-0 flex-1 mr-2">
                     {getIcon(name)}
-                    <h3 className="text-lg font-medium text-md-sys-color-on-surface">
+                    <h3 className="text-lg font-medium text-md-sys-color-on-surface truncate min-w-0">
                         {name || "Unknown Device"}
                     </h3>
-                    <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full">
+                    <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full flex-shrink-0">
                         {tabs.length} tabs
                     </span>
                 </div>

@@ -53,6 +53,7 @@ interface IToolbarProps {
   isScrolled?: boolean;
   isSelectionMode?: boolean;
   toggleSelectionMode?: () => void;
+  isMobile?: boolean;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -67,12 +68,16 @@ const Toolbar: React.FC<IToolbarProps> = ({
   devices,
   selectedDevice,
   onSelectDevice,
-  isScrolled = false,
+  isScrolled: isScrolledProp = false,
   isSelectionMode,
   toggleSelectionMode,
+  isMobile = false,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
   const [isSearchExpanded, setIsSearchExpanded] = React.useState(false);
+
+  const isScrolled = isMobile || isScrolledProp;
+  const isMobileSearchExpanded = isMobile && isSearchExpanded;
 
   React.useEffect(() => {
     if (!isScrolled) setIsSearchExpanded(false);
@@ -120,18 +125,18 @@ const Toolbar: React.FC<IToolbarProps> = ({
     <TooltipProvider>
       <div
         className={cn(
-          "sticky z-40 -mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
+          "sticky z-40 -mx-4 md:-mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
           "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
           "top-16 md:top-0",
-          isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40"
+          isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40",
+          "w-[calc(100%+32px)] md:w-[calc(100%+48px)]"
         )}
-        style={{ width: "calc(100% + 48px)" }}
       >
         <div className={cn(
           "flex items-center w-full transition-all duration-300 gap-3",
           isScrolled ? "h-full justify-between" : "flex-wrap md:flex-nowrap"
         )}>
-          <div className="flex-none">
+          <div className={cn("flex-none", isMobileSearchExpanded && "hidden")}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -154,7 +159,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
 
           <div className={cn(
             "transition-all duration-300 min-w-0 flex items-center gap-2",
-            isScrolled ? "flex-1 justify-end" : "flex-1 order-2 md:order-none w-full md:w-auto"
+            isScrolled ? "flex-1 justify-end" : "flex-1 order-2 md:order-none w-full md:w-auto",
+            isMobileSearchExpanded && "w-full justify-center"
           )}>
             {isScrolled && !isSearchExpanded ? (
               <Tooltip>
@@ -174,7 +180,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
             ) : (
             <div className={cn(
               "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
-              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto"
+              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto",
+              isMobileSearchExpanded && "w-full"
             )}>
               <SearchTwoTone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-md-sys-color-on-surface-variant pointer-events-none opacity-50" />
               <Input
@@ -194,7 +201,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
             </div>
           )}
 
-          {isScrolled && (
+          {isScrolled && !isMobileSearchExpanded && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -234,7 +241,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
 
         <div className={cn(
           "flex items-center gap-1 transition-all duration-300",
-          isScrolled ? "flex-none" : "flex-none order-1 md:order-none ml-auto"
+          isScrolled ? "flex-none" : "flex-none order-1 md:order-none ml-auto",
+          isMobileSearchExpanded && "hidden"
         )}>
           <div className={cn(
             "flex items-center gap-1 bg-md-sys-color-surface-container-low/50 rounded-full p-1 border border-md-sys-color-outline-variant/10 shrink-0 transition-all duration-200",

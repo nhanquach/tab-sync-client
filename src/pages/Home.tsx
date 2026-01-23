@@ -14,10 +14,8 @@ import {
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
-import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import { sortByTitle } from "../utils/sortByTitle";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -33,11 +31,11 @@ import {
   LAYOUT_KEY,
   ORDER,
 } from "../utils/constants";
+import { isMobileApp } from "../utils/isMobile";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
-import LoadingSpinner from "../components/LoadingSpinner";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
@@ -47,26 +45,6 @@ interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   user?: any;
 }
-
-const updateTabs = (currentTabs: ITab[], payload: IDatabaseUpdatePayload) => {
-  if (payload.eventType === "UPDATE") {
-    const index = currentTabs.findIndex((tab) => tab.id === payload.new.id);
-
-    if (index > -1) {
-      const newTabs = [...currentTabs];
-      newTabs.splice(index, 1, payload.new);
-      return newTabs;
-    }
-
-    return [payload.new, ...currentTabs];
-  }
-
-  if (payload.eventType === "DELETE") {
-    return currentTabs.filter((t) => t.id !== payload.old.id);
-  }
-
-  return currentTabs;
-};
 
 const Home: React.FC<IHomeProps> = ({ user }) => {
   const { view, tabId } = useParams();
@@ -213,9 +191,25 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 20;
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768 || isMobileApp());
+    const handleResize = () => setIsMobile(window.innerWidth < 768 || isMobileApp());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
   );
+
+  useEffect(() => {
+    if (isMobile && layout !== LAYOUT.GRID) {
+        setLayout(LAYOUT.GRID);
+    }
+  }, [isMobile, layout]);
+
   const [orderBy, setOrderBy] = useState<ORDER>(
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
@@ -273,6 +267,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   ]);
 
   const toggleLayout = () => {
+    if (isMobile) return;
     setLayout((currentLayout: Layout) => {
       const newLayout =
         currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;
@@ -517,6 +512,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 isScrolled={isScrolled}
                 isSelectionMode={isSelectionMode}
                 toggleSelectionMode={toggleSelectionMode}
+                isMobile={isMobile}
             />
 
             <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">

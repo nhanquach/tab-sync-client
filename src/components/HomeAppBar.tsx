@@ -20,7 +20,7 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => 
   const isMobile = isMobileApp();
 
   return (
-    <div className="flex flex-grow items-center justify-center md:hidden"> {/* Hidden on desktop */}
+    <div className="md:hidden"> {/* Hidden on desktop */}
       <header
         className={cn(
           "fixed z-50 flex items-center transition-all duration-300",
