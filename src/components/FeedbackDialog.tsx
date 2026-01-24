@@ -37,6 +37,7 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
         <Button
           size="sm"
           variant="ghost"
+          aria-label="Feedback and Support"
           className="min-w-[50px] md:min-w-0"
         >
           <FeedbackTwoTone />
