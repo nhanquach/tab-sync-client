@@ -1,11 +1,13 @@
 import React from "react";
 // @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
-import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone } from "@mui/icons-material";
+import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone, PublicTwoTone } from "@mui/icons-material";
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import UrlListItem from "./UrlListItem";
+import { GROUP_BY } from "../utils/constants";
+import { getDomain } from "../utils/urlUtils";
 
 // Shadcn UI
 import { Card } from "@/components/ui/card";
@@ -29,6 +31,7 @@ interface IUrlListProps {
   onToggleTabSelection?: (id: number) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
   exitingTabIds?: Set<number>;
+  groupBy?: string;
 }
 
 const UrlList: React.FC<IUrlListProps> = ({
@@ -41,15 +44,29 @@ const UrlList: React.FC<IUrlListProps> = ({
   selectedTabIds,
   onToggleTabSelection,
   onToggleDeviceSelection,
-  exitingTabIds
+  exitingTabIds,
+  groupBy: groupByMode = GROUP_BY.DEVICE,
 }) => {
-  const groupByBrowser = groupBy(urls, "deviceName");
-  const browsers = Object.keys(groupByBrowser);
+  const groupedTabs = groupByMode === GROUP_BY.DOMAIN
+    ? groupBy(urls, (t: ITab) => getDomain(t.url))
+    : groupBy(urls, "deviceName");
+
+  const groups = Object.keys(groupedTabs);
 
   // Helper to get icon for header
-  const getIcon = (name: string) => {
-    const lower = name.toLowerCase();
+  const getIcon = (name: string, tabs: ITab[]) => {
     const className = "text-md-sys-color-primary mr-2";
+
+    if (groupByMode === GROUP_BY.DOMAIN) {
+      if (tabs.length > 0 && tabs[0].favIconUrl) {
+         return <img src={tabs[0].favIconUrl} alt="icon" className="w-5 h-5 mr-2 rounded-sm" onError={(e) => {
+            (e.target as HTMLImageElement).style.display = 'none';
+         }}/>
+      }
+      return <PublicTwoTone className={className} />;
+    }
+
+    const lower = name.toLowerCase();
     if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
       return <LaptopMacTwoTone className={className} />;
     if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
@@ -59,8 +76,8 @@ const UrlList: React.FC<IUrlListProps> = ({
 
   return (
     <div className="space-y-8 my-4">
-      {browsers.map((name) => {
-        const tabs: ITab[] = groupByBrowser[name];
+      {groups.map((name) => {
+        const tabs: ITab[] = groupedTabs[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.id));
 
         return (
@@ -68,9 +85,9 @@ const UrlList: React.FC<IUrlListProps> = ({
              {/* Section Header */}
             <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center min-w-0 flex-1 mr-2">
-                    {getIcon(name)}
+                    {getIcon(name, tabs)}
                     <h3 className="text-lg font-medium text-md-sys-color-on-surface truncate min-w-0">
-                        {name || "Unknown Device"}
+                        {name || (groupByMode === GROUP_BY.DOMAIN ? "Unknown Domain" : "Unknown Device")}
                     </h3>
                     <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full flex-shrink-0">
                         {tabs.length} tabs
