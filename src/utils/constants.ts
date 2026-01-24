@@ -5,10 +5,16 @@ export const EXTENSION_PAGE =
 export const LAYOUT_KEY = "displayMode";
 export const LAST_SAVED_DISPLAYED_BROWSERS_KEY = "lastSavedDisplayedBrowsers";
 export const LAST_SAVED_ORDER_BY_KEY = "lastSavedOrderBy";
+export const GROUP_BY_KEY = "groupBy";
 
 export const LAYOUT = {
   LIST: "list",
   GRID: "grid",
+};
+
+export const GROUP_BY = {
+  DEVICE: "device",
+  DOMAIN: "domain",
 };
 
 export enum ORDER {

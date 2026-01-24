@@ -30,8 +30,11 @@ import {
   LAYOUT,
   LAYOUT_KEY,
   ORDER,
+  GROUP_BY,
+  GROUP_BY_KEY,
 } from "../utils/constants";
 import { isMobileApp } from "../utils/isMobile";
+import { getDomain } from "../utils/urlUtils";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
@@ -214,6 +217,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
 
+  const [groupBy, setGroupBy] = useState<string>(
+    getItem(GROUP_BY_KEY) || GROUP_BY.DEVICE
+  );
+
   const isOpenTabsView = useMemo(() => currentView === TABS_VIEWS.OPEN_TABS, [currentView]);
 
   const browsers = useMemo(() => {
@@ -285,6 +292,15 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
+  const toggleGroupBy = () => {
+    setGroupBy((currentGroupBy) => {
+      const newGroupBy =
+        currentGroupBy === GROUP_BY.DEVICE ? GROUP_BY.DOMAIN : GROUP_BY.DEVICE;
+      saveItem(GROUP_BY_KEY, newGroupBy);
+      return newGroupBy;
+    });
+  };
+
   useEffect(() => {
     if (!currentView) return;
     handleGetTabs();
@@ -346,8 +362,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     setSearchString(e.target.value);
   };
 
-  const clearOpenTabs = (deviceName: string) => {
-    const tabsToArchive = tabs.filter((t) => t.deviceName === deviceName);
+  const clearOpenTabs = (groupKey: string) => {
+    const tabsToArchive = tabs.filter((t) => {
+      if (groupBy === GROUP_BY.DOMAIN) {
+        return getDomain(t.url) === groupKey;
+      }
+      return t.deviceName === groupKey;
+    });
+
     if (tabsToArchive.length === 0) return;
 
     // Optimistic animation start
@@ -356,7 +378,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
     setTimeout(async () => {
       // Optimistic update after animation
-      setTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setTabs((prev) => prev.filter((t) => {
+         if (groupBy === GROUP_BY.DOMAIN) {
+           return getDomain(t.url) !== groupKey;
+         }
+         return t.deviceName !== groupKey;
+      }));
       setExitingTabIds(new Set());
       showToast(`${tabsToArchive.length} tabs archived.`);
 
@@ -371,8 +398,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     }, 300);
   };
 
-  const clearArchivedTabs = (deviceName: string) => {
-    const tabsToDelete = archivedTabs.filter((t) => t.deviceName === deviceName);
+  const clearArchivedTabs = (groupKey: string) => {
+    const tabsToDelete = archivedTabs.filter((t) => {
+       if (groupBy === GROUP_BY.DOMAIN) {
+        return getDomain(t.url) === groupKey;
+      }
+      return t.deviceName === groupKey;
+    });
+
     if (tabsToDelete.length === 0) return;
 
     // Optimistic animation start
@@ -381,7 +414,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
     setTimeout(async () => {
       // Optimistic update after animation
-      setArchivedTabs((prev) => prev.filter((t) => t.deviceName !== deviceName));
+      setArchivedTabs((prev) => prev.filter((t) => {
+         if (groupBy === GROUP_BY.DOMAIN) {
+           return getDomain(t.url) !== groupKey;
+         }
+         return t.deviceName !== groupKey;
+      }));
       setExitingTabIds(new Set());
       showToast(`${tabsToDelete.length} tabs deleted permanently.`);
 
@@ -506,6 +544,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 layout={layout}
                 toggleOrderBy={toggleOrderBy}
                 orderBy={orderBy}
+                toggleGroupBy={toggleGroupBy}
+                groupBy={groupBy}
                 devices={browsers}
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
@@ -542,6 +582,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
                             exitingTabIds={exitingTabIds}
+                            groupBy={groupBy}
                           />
                       )}
 
@@ -556,7 +597,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
-                                    exitingTabIds={exitingTabIds}
+                            exitingTabIds={exitingTabIds}
+                            groupBy={groupBy}
                                 />
                             )}
 

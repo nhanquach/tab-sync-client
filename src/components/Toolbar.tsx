@@ -12,10 +12,12 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  PublicTwoTone,
+  CategoryTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { ORDER } from "../utils/constants";
+import { ORDER, GROUP_BY } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
 
@@ -47,6 +49,9 @@ interface IToolbarProps {
   toggleOrderBy(): void;
   orderBy: ORDER;
 
+  toggleGroupBy?: () => void;
+  groupBy?: string;
+
   devices: string[];
   selectedDevice: string;
   onSelectDevice: (device: string) => void;
@@ -65,6 +70,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   layout,
   toggleOrderBy,
   orderBy,
+  toggleGroupBy,
+  groupBy,
   devices,
   selectedDevice,
   onSelectDevice,
@@ -277,6 +284,29 @@ const Toolbar: React.FC<IToolbarProps> = ({
               </TooltipTrigger>
               <TooltipContent>{orderBy === ORDER.TIME ? "Sort by name" : "Sort by time"}</TooltipContent>
             </Tooltip>
+
+            {toggleGroupBy && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    aria-label={groupBy === GROUP_BY.DEVICE ? "Group by domain" : "Group by device"}
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggleGroupBy}
+                    className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
+                  >
+                    {groupBy === GROUP_BY.DEVICE ? (
+                      <CategoryTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                    ) : (
+                      <PublicTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {groupBy === GROUP_BY.DEVICE ? "Group by domain" : "Group by device"}
+                </TooltipContent>
+              </Tooltip>
+            )}
 
             {toggleSelectionMode && (
               <Tooltip>
