@@ -6,18 +6,18 @@ import {
   TimelineTwoTone,
   SortByAlphaTwoTone,
   SearchTwoTone,
+  LaptopMacTwoTone,
+  PhoneIphoneTwoTone,
+  DevicesOtherTwoTone,
+  AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
-  ViewHeadlineTwoTone,
-  ViewStreamTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
-import { ORDER, DENSITY } from "../utils/constants";
+import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
-import { Density } from "../interfaces/Density";
-import DeviceIcon from "./DeviceIcon";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -47,9 +47,6 @@ interface IToolbarProps {
   toggleOrderBy(): void;
   orderBy: ORDER;
 
-  toggleDensity(): void;
-  density: Density;
-
   devices: string[];
   selectedDevice: string;
   onSelectDevice: (device: string) => void;
@@ -68,8 +65,6 @@ const Toolbar: React.FC<IToolbarProps> = ({
   layout,
   toggleOrderBy,
   orderBy,
-  toggleDensity,
-  density,
   devices,
   selectedDevice,
   onSelectDevice,
@@ -107,7 +102,21 @@ const Toolbar: React.FC<IToolbarProps> = ({
         : "text-md-sys-color-on-surface-variant"
     );
 
-    return <DeviceIcon name={name} className={className} />;
+    const lower = name.toLowerCase();
+    if (lower === "all") return <AppsTwoTone className={className} />;
+    if (
+      lower.includes("mac") ||
+      lower.includes("windows") ||
+      lower.includes("laptop")
+    )
+      return <LaptopMacTwoTone className={className} />;
+    if (
+      lower.includes("iphone") ||
+      lower.includes("android") ||
+      lower.includes("mobile")
+    )
+      return <PhoneIphoneTwoTone className={className} />;
+    return <DevicesOtherTwoTone className={className} />;
   };
 
   const tabs = ["All", ...devices];
@@ -267,25 +276,6 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>{orderBy === ORDER.TIME ? "Sort by name" : "Sort by time"}</TooltipContent>
-            </Tooltip>
-
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <Button
-                  aria-label={density === DENSITY.COMFORTABLE ? "Switch to compact view" : "Switch to comfortable view"}
-                  variant="ghost"
-                  size="icon"
-                  onClick={toggleDensity}
-                  className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
-                >
-                  {density === DENSITY.COMFORTABLE ? (
-                    <ViewHeadlineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  ) : (
-                    <ViewStreamTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  )}
-                </Button>
-              </TooltipTrigger>
-              <TooltipContent>{density === DENSITY.COMFORTABLE ? "Switch to compact view" : "Switch to comfortable view"}</TooltipContent>
             </Tooltip>
 
             {toggleSelectionMode && (

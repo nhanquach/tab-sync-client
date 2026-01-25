@@ -15,8 +15,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { Density } from "../interfaces/Density";
-import { DENSITY } from "../utils/constants";
 
 interface IUrlGridProps {
   view: TABS_VIEWS;
@@ -29,7 +27,6 @@ interface IUrlGridProps {
   onToggleTabSelection?: (id: number) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
   exitingTabIds?: Set<number>;
-  density?: Density;
 }
 
 const UrlGrid: React.FC<IUrlGridProps> = ({
@@ -42,8 +39,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   selectedTabIds,
   onToggleTabSelection,
   onToggleDeviceSelection,
-  exitingTabIds,
-  density = DENSITY.COMFORTABLE
+  exitingTabIds
 }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
@@ -136,7 +132,6 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                       isSelectionMode={isSelectionMode}
                       isChecked={selectedTabIds?.has(tab.id)}
                       isExiting={exitingTabIds?.has(tab.id)}
-                      density={density}
                     />
                   );
                 })}
