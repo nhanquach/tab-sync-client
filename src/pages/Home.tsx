@@ -16,7 +16,6 @@ import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import UrlTimeline from "../components/UrlTimeline";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -270,10 +269,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const toggleLayout = () => {
     if (isMobile) return;
     setLayout((currentLayout: Layout) => {
-      let newLayout = LAYOUT.LIST;
-      if (currentLayout === LAYOUT.LIST) newLayout = LAYOUT.GRID;
-      else if (currentLayout === LAYOUT.GRID) newLayout = LAYOUT.TIMELINE;
-      else newLayout = LAYOUT.LIST;
+      const newLayout =
+        currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;
 
       saveItem(LAYOUT_KEY, newLayout);
       return newLayout;
@@ -562,21 +559,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                                     exitingTabIds={exitingTabIds}
                                 />
                             )}
-
-                      {(urls.length > 0 && layout === "timeline") && (
-                          <UrlTimeline
-                            view={currentView}
-                            urls={urls}
-                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                            onSelect={handleSelectTab}
-                            selectedId={selectedTab?.id}
-                            isSelectionMode={isSelectionMode}
-                            selectedTabIds={selectedTabIds}
-                            onToggleTabSelection={handleToggleTabSelection}
-                            onToggleDeviceSelection={handleToggleDeviceSelection}
-                            exitingTabIds={exitingTabIds}
-                          />
-                      )}
 
                             <PaginationControls
                                 currentPage={currentPage}

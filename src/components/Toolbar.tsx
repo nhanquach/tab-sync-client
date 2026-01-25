@@ -3,7 +3,6 @@ import {
   RefreshTwoTone,
   Grid3x3TwoTone,
   ListAltTwoTone,
-  ViewTimelineTwoTone,
   TimelineTwoTone,
   SortByAlphaTwoTone,
   SearchTwoTone,
@@ -252,30 +251,16 @@ const Toolbar: React.FC<IToolbarProps> = ({
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
-                  aria-label={
-                    layout === "grid" ? "Switch to timeline view" :
-                    layout === "timeline" ? "Switch to list view" :
-                    "Switch to grid view"
-                  }
+                  aria-label={layout === "grid" ? "Switch to list view" : "Switch to grid view"}
                   variant="ghost"
                   size="icon"
                   onClick={toggleLayout}
                   className={cn("rounded-full transition-all active:scale-90 duration-200", isScrolled ? "h-8 w-8" : "h-9 w-9")}
                 >
-                  {layout === "grid" ? (
-                    <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  ) : layout === "timeline" ? (
-                    <ViewTimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  ) : (
-                    <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  )}
+                  {layout === "grid" ? <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} /> : <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />}
                 </Button>
               </TooltipTrigger>
-              <TooltipContent>
-                {layout === "grid" ? "Switch to timeline view" :
-                 layout === "timeline" ? "Switch to list view" :
-                 "Switch to grid view"}
-              </TooltipContent>
+              <TooltipContent>{layout === "grid" ? "Switch to list view" : "Switch to grid view"}</TooltipContent>
             </Tooltip>
 
             <Tooltip>
