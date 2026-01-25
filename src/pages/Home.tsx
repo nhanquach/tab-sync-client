@@ -30,10 +30,13 @@ import {
   LAYOUT,
   LAYOUT_KEY,
   ORDER,
+  DENSITY_KEY,
+  DENSITY,
 } from "../utils/constants";
 import { isMobileApp } from "../utils/isMobile";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
+import { Density } from "../interfaces/Density";
 import { ROUTES } from "../routes";
 import { cn } from "@/lib/utils";
 import TabDetails from "../components/TabDetails";
@@ -204,6 +207,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     getItem(LAYOUT_KEY) || LAYOUT.LIST
   );
 
+  const [density, setDensity] = useState<Density>(
+    getItem(DENSITY_KEY) || DENSITY.COMFORTABLE
+  );
+
   useEffect(() => {
     if (isMobile && layout !== LAYOUT.GRID) {
         setLayout(LAYOUT.GRID);
@@ -274,6 +281,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
       saveItem(LAYOUT_KEY, newLayout);
       return newLayout;
+    });
+  };
+
+  const toggleDensity = () => {
+    setDensity((currentDensity: Density) => {
+        const newDensity = currentDensity === DENSITY.COMFORTABLE ? DENSITY.COMPACT : DENSITY.COMFORTABLE;
+        saveItem(DENSITY_KEY, newDensity);
+        return newDensity;
     });
   };
 
@@ -506,6 +521,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 layout={layout}
                 toggleOrderBy={toggleOrderBy}
                 orderBy={orderBy}
+                toggleDensity={toggleDensity}
+                density={density}
                 devices={browsers}
                 selectedDevice={selectedDevice}
                 onSelectDevice={setSelectedDevice}
@@ -542,6 +559,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
                             exitingTabIds={exitingTabIds}
+                            density={density}
                           />
                       )}
 
@@ -556,9 +574,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
                             onToggleDeviceSelection={handleToggleDeviceSelection}
-                                    exitingTabIds={exitingTabIds}
-                                />
-                            )}
+                            exitingTabIds={exitingTabIds}
+                            density={density}
+                          />
+                      )}
 
                             <PaginationControls
                                 currentPage={currentPage}
