@@ -3,10 +3,14 @@ import {
   RefreshTwoTone,
   Grid3x3TwoTone,
   ListAltTwoTone,
-  ViewColumnTwoTone,
+  ViewTimelineTwoTone,
   TimelineTwoTone,
   SortByAlphaTwoTone,
   SearchTwoTone,
+  LaptopMacTwoTone,
+  PhoneIphoneTwoTone,
+  DevicesOtherTwoTone,
+  AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
 } from "@mui/icons-material";
@@ -15,7 +19,6 @@ import { Layout } from "../interfaces/Layout";
 import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
-import DeviceIcon from "./DeviceIcon";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -100,7 +103,21 @@ const Toolbar: React.FC<IToolbarProps> = ({
         : "text-md-sys-color-on-surface-variant"
     );
 
-    return <DeviceIcon name={name} className={className} />;
+    const lower = name.toLowerCase();
+    if (lower === "all") return <AppsTwoTone className={className} />;
+    if (
+      lower.includes("mac") ||
+      lower.includes("windows") ||
+      lower.includes("laptop")
+    )
+      return <LaptopMacTwoTone className={className} />;
+    if (
+      lower.includes("iphone") ||
+      lower.includes("android") ||
+      lower.includes("mobile")
+    )
+      return <PhoneIphoneTwoTone className={className} />;
+    return <DevicesOtherTwoTone className={className} />;
   };
 
   const tabs = ["All", ...devices];
@@ -236,8 +253,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
               <TooltipTrigger asChild>
                 <Button
                   aria-label={
-                    layout === "grid" ? "Switch to kanban view" :
-                    layout === "kanban" ? "Switch to list view" :
+                    layout === "grid" ? "Switch to timeline view" :
+                    layout === "timeline" ? "Switch to list view" :
                     "Switch to grid view"
                   }
                   variant="ghost"
@@ -247,16 +264,16 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 >
                   {layout === "grid" ? (
                     <Grid3x3TwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
-                  ) : layout === "kanban" ? (
-                    <ViewColumnTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
+                  ) : layout === "timeline" ? (
+                    <ViewTimelineTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
                   ) : (
                     <ListAltTwoTone className={isScrolled ? "text-[18px]" : "text-[20px]"} />
                   )}
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                {layout === "grid" ? "Switch to kanban view" :
-                 layout === "kanban" ? "Switch to list view" :
+                {layout === "grid" ? "Switch to timeline view" :
+                 layout === "timeline" ? "Switch to list view" :
                  "Switch to grid view"}
               </TooltipContent>
             </Tooltip>

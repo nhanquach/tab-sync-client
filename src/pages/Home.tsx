@@ -16,7 +16,7 @@ import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
-import UrlKanban from "../components/UrlKanban";
+import UrlTimeline from "../components/UrlTimeline";
 import { getNextTab } from "../utils/getNextTab";
 import HomeSidebar from "../components/HomeSidebar";
 import Toolbar from "../components/Toolbar";
@@ -272,7 +272,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     setLayout((currentLayout: Layout) => {
       let newLayout = LAYOUT.LIST;
       if (currentLayout === LAYOUT.LIST) newLayout = LAYOUT.GRID;
-      else if (currentLayout === LAYOUT.GRID) newLayout = LAYOUT.KANBAN;
+      else if (currentLayout === LAYOUT.GRID) newLayout = LAYOUT.TIMELINE;
       else newLayout = LAYOUT.LIST;
 
       saveItem(LAYOUT_KEY, newLayout);
@@ -563,8 +563,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                                 />
                             )}
 
-                      {(urls.length > 0 && layout === "kanban") && (
-                          <UrlKanban
+                      {(urls.length > 0 && layout === "timeline") && (
+                          <UrlTimeline
                             view={currentView}
                             urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}

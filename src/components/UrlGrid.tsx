@@ -1,12 +1,11 @@
 import React from "react";
 // @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
-import { ArchiveTwoTone, DeleteForeverTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone } from "@mui/icons-material";
+import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone } from "@mui/icons-material";
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import UrlGridItem from "./UrlGridItem";
-import DeviceIcon from "./DeviceIcon";
 
 // Shadcn UI
 import { Button } from "@/components/ui/button";
@@ -45,6 +44,17 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
 
+   // Helper to get icon for header (Duplicated from UrlList, could be extracted to util but fine here for now)
+  const getIcon = (name: string) => {
+    const lower = name.toLowerCase();
+    const className = "text-md-sys-color-primary mr-2";
+    if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
+      return <LaptopMacTwoTone className={className} />;
+    if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
+      return <PhoneIphoneTwoTone className={className} />;
+    return <DevicesOtherTwoTone className={className} />;
+  };
+
   return (
     <div className="space-y-8 my-4">
       {browsers.map((name) => {
@@ -56,7 +66,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
              {/* Section Header */}
             <div className="flex items-center justify-between mb-3 px-1">
                 <div className="flex items-center min-w-0 flex-1 mr-2">
-                    <DeviceIcon name={name} className="text-md-sys-color-primary mr-2" />
+                    {getIcon(name)}
                     <h3 className="text-lg font-medium text-md-sys-color-on-surface truncate min-w-0">
                         {name || "Unknown Device"}
                     </h3>

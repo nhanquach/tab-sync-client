@@ -9,7 +9,7 @@ export const LAST_SAVED_ORDER_BY_KEY = "lastSavedOrderBy";
 export const LAYOUT = {
   LIST: "list",
   GRID: "grid",
-  KANBAN: "kanban",
+  TIMELINE: "timeline",
 };
 
 export enum ORDER {
