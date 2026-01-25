@@ -5,10 +5,8 @@ import { ArchiveTwoTone, DeleteForeverTwoTone, CheckBoxTwoTone, CheckBoxOutlineB
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
-import UrlGridItem from "./UrlGridItem";
+import UrlListItem from "./UrlListItem";
 import DeviceIcon from "./DeviceIcon";
-
-// Shadcn UI
 import { Button } from "@/components/ui/button";
 import {
   Tooltip,
@@ -17,7 +15,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
-interface IUrlGridProps {
+interface IUrlKanbanProps {
   view: TABS_VIEWS;
   onClear: (deviceName: string) => void;
   urls: ITab[];
@@ -30,7 +28,7 @@ interface IUrlGridProps {
   exitingTabIds?: Set<number>;
 }
 
-const UrlGrid: React.FC<IUrlGridProps> = ({
+const UrlKanban: React.FC<IUrlKanbanProps> = ({
   onClear,
   urls,
   view,
@@ -46,23 +44,30 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   const browsers = Object.keys(groupByBrowser);
 
   return (
-    <div className="space-y-8 my-4">
+    <div className="flex gap-4 overflow-x-auto pb-6 items-start h-full min-h-[calc(100vh-220px)] px-1">
       {browsers.map((name) => {
         const tabs: ITab[] = groupByBrowser[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.id));
 
         return (
-          <div key={name} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-             {/* Section Header */}
-            <div className="flex items-center justify-between mb-3 px-1">
-                <div className="flex items-center min-w-0 flex-1 mr-2">
-                    <DeviceIcon name={name} className="text-md-sys-color-primary mr-2" />
-                    <h3 className="text-lg font-medium text-md-sys-color-on-surface truncate min-w-0">
-                        {name || "Unknown Device"}
-                    </h3>
-                    <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full flex-shrink-0">
-                        {tabs.length} tabs
-                    </span>
+          <div
+            key={name}
+            className="w-[320px] flex-shrink-0 flex flex-col bg-md-sys-color-surface-container-low/50 rounded-[24px] border border-md-sys-color-outline-variant/20 shadow-sm animate-in fade-in slide-in-from-bottom-4 duration-500"
+          >
+             {/* Column Header */}
+            <div className="p-3 pb-2 flex items-center justify-between">
+                <div className="flex items-center min-w-0 flex-1 mr-2 gap-2">
+                    <div className="p-2 bg-md-sys-color-surface-container-high rounded-full">
+                        <DeviceIcon name={name} className="text-md-sys-color-primary text-xl" />
+                    </div>
+                    <div className="min-w-0">
+                        <h3 className="text-sm font-bold text-md-sys-color-on-surface truncate">
+                            {name || "Unknown"}
+                        </h3>
+                        <span className="text-xs text-md-sys-color-on-surface-variant font-medium">
+                            {tabs.length} tabs
+                        </span>
+                    </div>
                 </div>
 
                 {!isSelectionMode ? (
@@ -89,40 +94,37 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                     variant="ghost"
                     size="sm"
                     onClick={() => onToggleDeviceSelection?.(name, !allSelected)}
-                    className="text-md-sys-color-primary hover:bg-md-sys-color-primary/10 rounded-full px-3"
+                    className="text-md-sys-color-primary hover:bg-md-sys-color-primary/10 rounded-full px-2"
                   >
                      {allSelected ? (
-                       <>
-                        <CheckBoxTwoTone fontSize="small" className="mr-2" /> Deselect All
-                       </>
+                       <CheckBoxTwoTone fontSize="small" />
                      ) : (
-                       <>
-                        <CheckBoxOutlineBlankTwoTone fontSize="small" className="mr-2" /> Select All
-                       </>
+                       <CheckBoxOutlineBlankTwoTone fontSize="small" />
                      )}
                   </Button>
                 )}
             </div>
 
-            {/* Grid Container */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {/* List Container */}
+            <div className="flex-1 overflow-y-auto min-h-[100px] p-2 space-y-1">
                 {tabs.map((tab: ITab) => {
                   return (
-                    <UrlGridItem 
-                      key={tab.id} 
-                      tab={tab} 
-                      onSelect={() => {
-                        if (isSelectionMode) {
-                            onToggleTabSelection?.(tab.id);
-                        } else {
-                            onSelect?.(tab);
-                        }
-                      }}
-                      isSelected={tab.id === selectedId}
-                      isSelectionMode={isSelectionMode}
-                      isChecked={selectedTabIds?.has(tab.id)}
-                      isExiting={exitingTabIds?.has(tab.id)}
-                    />
+                    <div key={tab.id} className="bg-md-sys-color-surface rounded-[16px] shadow-sm border border-md-sys-color-outline-variant/10 overflow-hidden">
+                        <UrlListItem
+                        tab={tab}
+                        onSelect={() => {
+                            if (isSelectionMode) {
+                                onToggleTabSelection?.(tab.id);
+                            } else {
+                                onSelect?.(tab);
+                            }
+                        }}
+                        isSelected={tab.id === selectedId}
+                        isSelectionMode={isSelectionMode}
+                        isChecked={selectedTabIds?.has(tab.id)}
+                        isExiting={exitingTabIds?.has(tab.id)}
+                        />
+                    </div>
                   );
                 })}
             </div>
@@ -133,4 +135,4 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   );
 };
 
-export default UrlGrid;
+export default UrlKanban;

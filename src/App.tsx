@@ -61,7 +61,7 @@ function AppContent() {
       }
       setLoading(false);
     });
-  }, []);
+  }, [location.pathname, navigate]);
 
   const onSignUp = async ({
     email,
