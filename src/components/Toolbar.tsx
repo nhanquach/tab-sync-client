@@ -313,6 +313,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
           return (
             <button
               key={device}
+              type="button"
+              aria-pressed={isActive}
               onClick={() => onSelectDevice(device)}
               className={cn(
                 "relative flex items-center justify-center rounded-[16px] px-5 h-10 transition-all duration-200 whitespace-nowrap select-none border",
