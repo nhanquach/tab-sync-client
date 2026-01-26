@@ -54,7 +54,11 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
 
         {/* Nav Items */}
         <nav className="flex flex-col gap-6 w-full items-center">
-          <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="w-full flex flex-col items-center group">
+          <Link
+            to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`}
+            className="w-full flex flex-col items-center group"
+            aria-current={view === TABS_VIEWS.OPEN_TABS ? "page" : undefined}
+          >
             <div className={cn(
                 "w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
                  view === TABS_VIEWS.OPEN_TABS
@@ -73,7 +77,11 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
             </span>
           </Link>
 
-          <Link to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`} className="w-full flex flex-col items-center group">
+          <Link
+            to={`${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`}
+            className="w-full flex flex-col items-center group"
+            aria-current={view === TABS_VIEWS.ARCHIVED_TABS ? "page" : undefined}
+          >
              <div className={cn(
                 "w-12 h-8 rounded-full flex items-center justify-center transition-all duration-300 mb-1",
                  view === TABS_VIEWS.ARCHIVED_TABS
