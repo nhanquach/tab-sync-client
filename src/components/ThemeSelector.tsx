@@ -94,12 +94,14 @@ export const ThemeSelector: React.FC = () => {
 
            {/* Right Column (Grid) */}
            <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-white/30 dark:bg-black/20 backdrop-blur-sm shrink-0">
-               <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+               <div className="grid grid-cols-2 sm:grid-cols-2 gap-4" role="radiogroup" aria-label="Theme selection">
                   {THEMES.map((theme) => {
                     const isSelected = currentThemeId === theme.id;
                     return (
                       <button
                         key={theme.id}
+                        role="radio"
+                        aria-checked={isSelected}
                         onClick={() => handleSelectTheme(theme)}
                         className={cn(
                           "relative group flex flex-col items-center gap-3 p-4 rounded-[24px] border transition-all duration-300",
