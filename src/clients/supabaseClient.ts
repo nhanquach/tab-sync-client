@@ -392,6 +392,83 @@ export const removeArchivedTabs = async (deviceName?: string) => {
   await removeTab(tabIds, TABLES.ARCHIVED_TABS);
 };
 
+export const importData = async ({
+  openTabs,
+  archivedTabs,
+}: {
+  openTabs: ITab[];
+  archivedTabs: ITab[];
+}): Promise<{
+  success: boolean;
+  importedOpenCount: number;
+  importedArchivedCount: number;
+  error?: string;
+}> => {
+  checkTokenExpired();
+  const { client, userId } = await getClient();
+
+  if (!userId || !client) {
+    return {
+      success: false,
+      importedOpenCount: 0,
+      importedArchivedCount: 0,
+      error: "User not authenticated",
+    };
+  }
+
+  // Filter and prepare Open Tabs
+  const openTabsPayload = openTabs
+    .filter((t) => t.url && t.title)
+    .map((t) => ({
+      ...t,
+      userId,
+    }));
+
+  // Filter and prepare Archived Tabs
+  const archivedTabsPayload = archivedTabs
+    .filter((t) => t.url && t.title)
+    .map((t) => ({
+      ...t,
+      userId,
+    }));
+
+  try {
+    let importedOpenCount = 0;
+    let importedArchivedCount = 0;
+
+    if (openTabsPayload.length > 0) {
+      const { error: openError } = await client
+        .from(TABLES.OPEN_TABS)
+        .upsert(openTabsPayload);
+      if (openError) throw openError;
+      importedOpenCount = openTabsPayload.length;
+    }
+
+    if (archivedTabsPayload.length > 0) {
+      const { error: archivedError } = await client
+        .from(TABLES.ARCHIVED_TABS)
+        .upsert(archivedTabsPayload);
+      if (archivedError) throw archivedError;
+      importedArchivedCount = archivedTabsPayload.length;
+    }
+
+    return {
+      success: true,
+      importedOpenCount,
+      importedArchivedCount,
+    };
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error during import";
+    return {
+      success: false,
+      importedOpenCount: 0,
+      importedArchivedCount: 0,
+      error: errorMessage,
+    };
+  }
+};
+
 export const sendFeedback = async (type: string, description: string) => {
   const { client } = await getClient();
   const currentUser = await getUser();
