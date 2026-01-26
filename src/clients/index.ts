@@ -117,3 +117,13 @@ export const archiveOpenTabs = async (deviceName?: string) => {
 export const removeArchivedTabs = async (deviceName?: string) => {
   return (await getClient()).removeArchivedTabs(deviceName);
 };
+
+export const importData = async ({
+  openTabs,
+  archivedTabs,
+}: {
+  openTabs: ITab[];
+  archivedTabs: ITab[];
+}) => {
+  return (await getClient()).importData({ openTabs, archivedTabs });
+};

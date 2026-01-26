@@ -13,6 +13,7 @@ import FeedbackDialog from "./FeedbackDialog";
 import QRCodeDialog from "./QRCodeDialog";
 import { ThemeSelector } from "./ThemeSelector";
 import { StatsDialog } from "./StatsDialog";
+import { DataManagementDialog } from "./DataManagementDialog";
 
 interface IHomeSidebarProps {
   view: string;
@@ -96,6 +97,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
 
       {/* Bottom Section: Feedback + Settings */}
       <div className="flex flex-col items-center gap-4 mb-2">
+          <DataManagementDialog />
           <StatsDialog />
           <ThemeSelector />
           <div className="w-8 h-[1px] bg-md-sys-color-outline-variant/30 my-1" />
