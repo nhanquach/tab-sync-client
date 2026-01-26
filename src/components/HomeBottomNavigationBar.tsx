@@ -60,6 +60,7 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({
       <div className="flex h-16 items-center px-2 gap-2 min-w-[280px] justify-between">
         {/* Open Tabs Item */}
         <button
+          aria-label="Open tabs"
           onClick={() => setView(TABS_VIEWS.OPEN_TABS)}
           className={cn(
             "flex-1 flex items-center justify-center gap-2 h-12 rounded-full transition-all duration-200",
@@ -83,6 +84,7 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({
 
         {/* Archived Tabs Item */}
         <button
+          aria-label="Archived tabs"
           onClick={() => setView(TABS_VIEWS.ARCHIVED_TABS)}
           className={cn(
             "flex-1 flex items-center justify-center gap-2 h-12 rounded-full transition-all duration-200",

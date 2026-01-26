@@ -5,3 +5,7 @@
 ## 2024-05-24 - Accessibility on Responsive Icon Buttons
 **Learning:** When using responsive layouts where text labels are hidden on small screens (e.g., `md:hidden`), the button becomes icon-only and loses its accessible name. Adding `aria-label` ensures screen readers can identify the button regardless of the viewport size or CSS display properties.
 **Action:** Always add `aria-label` to buttons that might become icon-only in responsive views.
+
+## 2026-01-26 - Navigation Accessibility
+**Learning:** `Link` components do not automatically indicate active state to screen readers. While `NavLink` handles this automatically, when using `Link` with custom logic, you must manually apply `aria-current="page"`. Additionally, for buttons where text labels are visually hidden on mobile (e.g., bottom nav), an explicit `aria-label` is required to prevent "nameless button" errors.
+**Action:** Use `NavLink` where possible, or manually add `aria-current="page"`. Always verify responsive buttons have accessible names even when text is hidden.
