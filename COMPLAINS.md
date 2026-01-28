@@ -16,3 +16,23 @@ This inconsistency breaks user immersion and makes the product feel like a patch
 Pick a lane and stick to it. If the Glassmorphism look of the `StatsDialog` and `SignIn` page is the intended direction (which it seems to be, as it's more distinctive), then **apply it universally**. The Sidebar should be frosted glass. The Tab Cards should have subtle borders and blur effects.
 
 *Consistency is not a "nice-to-have" feature; it is the baseline for trust.*
+
+## 2. Mobile Dictatorship (Forced Grid Layout)
+
+The application restricts user agency by enforcing layout choices on mobile devices.
+
+**The Problem:**
+The application forcibly overrides user layout preferences on screens narrower than 768px (Mobile).
+- **Forced Grid:** The interface automatically switches to Grid View.
+- **Disabled Choice:** The Layout Toggle button is explicitly disabled (`if (isMobile) return;`), preventing users from switching back to List View.
+
+**Why this matters:**
+Grid View is often suboptimal for small screens:
+- **Truncation:** Long titles (e.g., Jira tickets, documentation paths) are aggressively truncated, making them indistinguishable.
+- **Vertical Space:** Grid cards often consume more vertical space than compact list items, reducing information density.
+- **UX Hostility:** Removing control from the user creates frustration. Responsive design should enable adaptation, not enforce restriction.
+
+**The Demand:**
+Unlock the Layout Toggle on mobile. Allow users to choose List View if it suits their workflow better. Trust the user to decide how they want to consume their data.
+
+*Responsiveness means adapting to the device, not dictating the experience.*
