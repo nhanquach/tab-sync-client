@@ -578,7 +578,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 )}
                 style={{ height: "calc(100vh - 8rem)" }}
               >
-                <div className="w-[400px] h-full bg-md-sys-color-surface-container-low rounded-[24px] shadow-xl overflow-hidden border border-md-sys-color-outline-variant/20">
+                <div className="w-[400px] h-full backdrop-blur-xl bg-white/40 dark:bg-black/40 rounded-[24px] shadow-xl overflow-hidden border border-white/20 dark:border-white/10">
                    {desktopTab && (
                       <TabDetails
                         tab={desktopTab}
@@ -604,7 +604,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                         className={cn(
                             "w-full max-w-md shadow-2xl",
                             "h-[85vh]",
-                            "bg-md-sys-color-surface-container-low",
+                            "backdrop-blur-xl bg-white/60 dark:bg-black/60",
                             "rounded-t-[32px]",
                             "overflow-hidden",
                             "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
