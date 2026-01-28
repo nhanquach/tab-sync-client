@@ -33,7 +33,10 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
       onKeyDown={handleKeyDown}
       className={cn(
         "flex items-center gap-4 p-4 transition-all group relative",
-        "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-md-sys-color-primary focus-visible:ring-inset",
+        "backdrop-blur-sm bg-white/20 dark:bg-black/20",
+        "border-b border-white/10 dark:border-white/5",
+        "hover:bg-white/40 dark:hover:bg-black/40",
+        "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-md-sys-color-primary focus-visible:ring-inset",
         isSelected && !isSelectionMode && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15",
         isChecked && isSelectionMode && "bg-md-sys-color-surface-container-highest",
         isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
