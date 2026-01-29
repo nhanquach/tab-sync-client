@@ -16,3 +16,18 @@ This inconsistency breaks user immersion and makes the product feel like a patch
 Pick a lane and stick to it. If the Glassmorphism look of the `StatsDialog` and `SignIn` page is the intended direction (which it seems to be, as it's more distinctive), then **apply it universally**. The Sidebar should be frosted glass. The Tab Cards should have subtle borders and blur effects.
 
 *Consistency is not a "nice-to-have" feature; it is the baseline for trust.*
+
+## 2. Pagination Prison (User Control Issues)
+
+**The Problem:**
+The application enforces a rigid 20-items-per-page limit with absolutely no way to change it.
+- **Power Users:** With 27-inch monitors, I'm staring at whitespace while clicking "Next" fifty times to find a tab from last week.
+- **Search Friction:** Searching happens on the server, but the limited view makes context gathering impossible.
+
+**Why this matters:**
+This is a productivity tool, not an Instagram feed. Limiting information density arbitrarily hinders the primary goal: *managing* tabs. I shouldn't have to paginate to see my active workspace.
+
+**The Demand:**
+Give me control. Add a "Rows per page" dropdown (20, 50, 100). Better yet, implement an "Infinite Scroll" option so I can just doom-scroll through my chaos like a civilized human being.
+
+*Don't make me click "Next" to see the tab I just closed 5 minutes ago.*
