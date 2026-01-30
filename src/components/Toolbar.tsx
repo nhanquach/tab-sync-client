@@ -128,7 +128,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
           "sticky z-40 -mx-4 md:-mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
           "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
           "top-16 md:top-0",
-          isScrolled ? "py-2 h-14 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40",
+          isScrolled ? "py-2 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40",
           "w-[calc(100%+32px)] md:w-[calc(100%+48px)]"
         )}
       >
@@ -136,7 +136,10 @@ const Toolbar: React.FC<IToolbarProps> = ({
           "flex items-center w-full transition-all duration-300 gap-3",
           isScrolled ? "h-full justify-between" : "flex-wrap md:flex-nowrap"
         )}>
-          <div className={cn("flex-none", isMobileSearchExpanded && "hidden")}>
+          <div className={cn(
+            "flex-none transition-all duration-300 ease-in-out overflow-hidden",
+            isMobileSearchExpanded ? "w-0 opacity-0 -ml-3" : "w-12 opacity-100"
+          )}>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button
@@ -162,28 +165,37 @@ const Toolbar: React.FC<IToolbarProps> = ({
             isScrolled ? "flex-1 justify-end" : "flex-1 order-2 md:order-none w-full md:w-auto",
             isMobileSearchExpanded && "w-full justify-center"
           )}>
-            {isScrolled && !isSearchExpanded ? (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    aria-label="Search tabs"
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setIsSearchExpanded(true)}
-                    className="h-10 w-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all duration-200"
-                  >
-                    <SearchTwoTone className="text-md-sys-color-on-surface-variant" />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent>Search tabs</TooltipContent>
-              </Tooltip>
-            ) : (
             <div className={cn(
-              "relative transition-all duration-300 group focus-within:scale-[1.01] z-20",
-              isScrolled ? "w-40 md:w-80 shrink-0" : "flex-1 max-w-2xl mx-auto",
+              "relative transition-all duration-300 group z-20",
+              // Logic for container width and expansion
+              isScrolled && !isSearchExpanded ? "w-10 overflow-hidden cursor-pointer" : "", // Collapsed state for icon only
+              isScrolled && isSearchExpanded ? "w-40 md:w-80 shrink-0" : "",
+              !isScrolled && "flex-1 max-w-2xl mx-auto",
               isMobileSearchExpanded && "w-full"
             )}>
-              <SearchTwoTone className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-md-sys-color-on-surface-variant pointer-events-none opacity-50" />
+               {/* Search Icon (Always visible, acts as placeholder or decoration) */}
+              <div
+                className={cn(
+                   "absolute top-1/2 -translate-y-1/2 transition-all duration-300 pointer-events-none z-10",
+                   isScrolled && !isSearchExpanded ? "left-1/2 -translate-x-1/2" : "left-4"
+                )}
+              >
+                  <SearchTwoTone className="h-5 w-5 text-md-sys-color-on-surface-variant opacity-50" />
+              </div>
+
+              {/* Input Field - Hidden when collapsed in scroll mode to show button behavior, but we can just style the input to look like the button or toggle visibility */}
+               {isScrolled && !isSearchExpanded ? (
+                 <Button
+                   aria-label="Search tabs"
+                   variant="ghost"
+                   size="icon"
+                   onClick={() => setIsSearchExpanded(true)}
+                   className="h-10 w-10 rounded-full hover:bg-md-sys-color-surface-container-high transition-all duration-200 absolute inset-0 z-30 cursor-pointer"
+                 >
+                   <span className="sr-only">Search</span>
+                 </Button>
+               ) : null}
+
               <Input
                 ref={searchBoxRef}
                 autoFocus={isScrolled && isSearchExpanded}
@@ -192,21 +204,25 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 onChange={handleSearch}
                 placeholder={isScrolled ? "Search (/)..." : "Search your synced tabs (Press /)..."}
                 className={cn(
-                  "pl-12 pr-4 transition-all duration-200 border-none",
+                  "pl-12 pr-4 transition-all duration-300 border-none",
+                  isScrolled && !isSearchExpanded ? "opacity-0 w-0 p-0 h-10" : "opacity-100 w-full",
                   isScrolled 
                     ? "h-10 rounded-full bg-md-sys-color-surface-container-high/40 placeholder:text-md-sys-color-on-surface-variant/40" 
                     : "h-12 rounded-[20px] bg-md-sys-color-surface-container-high/60 text-base shadow-inner focus:shadow-lg focus:bg-md-sys-color-surface-container-high"
                 )}
               />
             </div>
-          )}
 
-          {((!isMobile) || isScrolled) && !isMobileSearchExpanded && (
+          {((!isMobile) || isScrolled) && (
+             <div className={cn(
+               "transition-all duration-300 ease-in-out overflow-hidden",
+               isMobileSearchExpanded ? "w-0 opacity-0 scale-95 ml-0" : "w-auto opacity-100 scale-100 ml-1"
+             )}>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
                   variant="ghost"
-                  className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200"
+                  className="h-10 px-3 rounded-full hover:bg-md-sys-color-surface-container-high flex items-center gap-1 border border-md-sys-color-outline-variant/20 transition-all duration-200 whitespace-nowrap"
                 >
                   {getDeviceIcon(selectedDevice === "All" ? "all" : selectedDevice, true, true)}
                   <span className="text-[12px] font-semibold max-w-[80px] truncate">{selectedDevice}</span>
@@ -236,13 +252,14 @@ const Toolbar: React.FC<IToolbarProps> = ({
                 </div>
               </DropdownMenuContent>
             </DropdownMenu>
+            </div>
           )}
         </div>
 
         <div className={cn(
-          "flex items-center gap-1 transition-all duration-300",
+          "flex items-center gap-1 transition-all duration-300 ease-in-out",
           isScrolled ? "flex-none" : "flex-none order-1 md:order-none ml-auto",
-          isMobileSearchExpanded && "hidden"
+          isMobileSearchExpanded ? "w-0 opacity-0 overflow-hidden" : "w-auto opacity-100"
         )}>
           <div className={cn(
             "flex items-center gap-1 bg-md-sys-color-surface-container-low/50 rounded-full p-1 border border-md-sys-color-outline-variant/10 shrink-0 transition-all duration-200",
