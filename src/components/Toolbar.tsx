@@ -201,7 +201,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
             </div>
           )}
 
-          {isScrolled && !isMobileSearchExpanded && (
+          {((!isMobile) || isScrolled) && !isMobileSearchExpanded && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -306,7 +306,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         "flex items-center gap-2 overflow-x-auto no-scrollbar w-full transition-all duration-300",
         isScrolled 
           ? "h-0 opacity-0 pointer-events-none translate-y-[-10px] invisible absolute" 
-          : "h-auto opacity-100 visible relative mt-6 px-1"
+          : "h-auto opacity-100 visible relative mt-6 px-1 md:hidden"
       )}>
         {tabs.map((device) => {
           const isActive = selectedDevice === device;
