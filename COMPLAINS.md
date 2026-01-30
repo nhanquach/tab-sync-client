@@ -16,3 +16,16 @@ This inconsistency breaks user immersion and makes the product feel like a patch
 Pick a lane and stick to it. If the Glassmorphism look of the `StatsDialog` and `SignIn` page is the intended direction (which it seems to be, as it's more distinctive), then **apply it universally**. The Sidebar should be frosted glass. The Tab Cards should have subtle borders and blur effects.
 
 *Consistency is not a "nice-to-have" feature; it is the baseline for trust.*
+
+## 2. Arbitrary Pagination Limits (Data Jail)
+
+The application enforces a hardcoded limit of 20 items per page with no way to change it.
+
+**The Problem:**
+Users are restricted to viewing only 20 tabs at a time, regardless of their screen size or preference.
+
+**Why this matters:**
+This is hostile to power users. On a high-resolution display, 20 items leaves mostly empty space. More importantly, it breaks standard browser functionality: I cannot use `Ctrl+F` to find a tab if it's on page 2, 3, or 10. I am forced to click through pagination controls like it's 2005. I feel like I'm viewing my data through a keyhole.
+
+**The Demand:**
+Implement a density/pagination control immediately. Allow users to select 20, 50, 100, or "All" items per page. Respect my screen real estate and my intelligence.
