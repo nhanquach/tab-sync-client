@@ -493,8 +493,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             }}
             component="main"
           >
-            <div className="hidden md:flex items-center gap-3 mb-4 animate-in fade-in slide-in-from-left-4 duration-500">
-                <h1 className="text-2xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
+            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
+                <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
             </div>
 
             <Toolbar
