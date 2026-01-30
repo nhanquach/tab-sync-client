@@ -119,7 +119,10 @@ const Toolbar: React.FC<IToolbarProps> = ({
       <div
         className={cn(
           "sticky z-40 -mx-4 md:-mx-6 px-4 md:px-6 transition-all duration-300 ease-out",
+          // Parent styles: transparent on desktop when scrolled (for islands)
           "bg-md-sys-color-surface/80 backdrop-blur-2xl border-b border-md-sys-color-outline-variant/10",
+          isScrolled && "md:bg-transparent md:backdrop-blur-none md:border-none md:shadow-none md:pointer-events-none",
+
           "top-16 md:top-0",
           isScrolled ? "py-2 mb-4 shadow-md" : "py-4 mb-6 shadow-sm bg-md-sys-color-surface/40",
           "w-[calc(100%+32px)] md:w-[calc(100%+48px)]"
@@ -130,10 +133,14 @@ const Toolbar: React.FC<IToolbarProps> = ({
           isScrolled ? "h-full" : "flex-wrap md:flex-nowrap"
         )}>
 
-          {/* Left Group: Title (Sticky) + Refresh */}
-          <div className="flex items-center gap-3 flex-none">
+          {/* Left Group (Island 1) */}
+          <div className={cn(
+            "flex items-center gap-3 flex-none transition-all duration-300",
+            // Island styling on desktop when scrolled
+            isScrolled && "md:bg-md-sys-color-surface/80 md:backdrop-blur-xl md:shadow-md md:border md:border-md-sys-color-outline-variant/10 md:rounded-full md:px-4 md:py-2 md:pointer-events-auto"
+          )}>
             {isScrolled && (
-               <span className="text-xl font-normal text-md-sys-color-on-surface tracking-tight animate-in fade-in slide-in-from-left-2 duration-300">
+               <span className="text-xl font-normal text-md-sys-color-on-surface tracking-tight animate-in fade-in slide-in-from-left-2 duration-300 hidden md:block">
                   TabSync
                </span>
             )}
@@ -158,8 +165,14 @@ const Toolbar: React.FC<IToolbarProps> = ({
             </Tooltip>
           </div>
 
-          {/* Right Group: Devices + Actions + Search */}
-          <div className="flex items-center gap-2 flex-1 justify-end min-w-0">
+          {/* Right Group Container */}
+          <div className={cn(
+            "flex items-center gap-2 justify-end min-w-0 transition-all duration-300",
+            // Island styling on desktop when scrolled
+            isScrolled && "md:bg-md-sys-color-surface/80 md:backdrop-blur-xl md:shadow-md md:border md:border-md-sys-color-outline-variant/10 md:rounded-full md:px-4 md:py-2 md:pointer-events-auto",
+            // Use flex-1 only when not scrolled (or on mobile) to fill space if needed, otherwise let justify-between handle it
+            !isScrolled && "flex-1"
+          )}>
 
             {/* Device Dropdown */}
             {((!isMobile) || isScrolled) && (
