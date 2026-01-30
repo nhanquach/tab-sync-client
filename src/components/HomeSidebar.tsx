@@ -26,7 +26,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({ view, user, isLoading = fals
       className={cn(
         // Floating Navigation Rail
         "sticky z-40 hidden md:flex flex-col items-center justify-between py-6",
-        "bg-md-sys-color-surface-container shadow-sm border border-white/20 dark:border-white/10",
+        "backdrop-blur-xl bg-white/40 dark:bg-black/40 shadow-sm border border-white/20 dark:border-white/10",
         "rounded-2xl ml-4 mb-4"
       )}
       style={{

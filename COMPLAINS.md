@@ -1,6 +1,6 @@
 # Application Complaints
 
-## 1. Visual Identity Crisis (Design Inconsistency)
+## 1. Visual Identity Crisis (Design Inconsistency) (DONE)
 
 The application currently suffers from a severe lack of visual cohesion.
 
