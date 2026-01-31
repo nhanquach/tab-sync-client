@@ -6,6 +6,7 @@ import { isMobileApp } from "../utils/isMobile";
 import FeedbackDialog from "./FeedbackDialog";
 import AccountSettings from "./AccountSettings";
 import QRCodeDialog from "./QRCodeDialog";
+import { LimitInfoDialog } from "./LimitInfoDialog";
 import LogoWithTabSync from "./LogoWithTabSync";
 import { cn } from "@/lib/utils";
 
@@ -36,6 +37,7 @@ const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => 
           </div>
           <div className="flex gap-1 items-center">
             <QRCodeDialog />
+            <LimitInfoDialog />
             <FeedbackDialog />
             <AccountSettings user={user} isLoading={isLoading} />
           </div>
