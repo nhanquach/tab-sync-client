@@ -388,7 +388,12 @@ export const onArchivedTabChange = async (
 };
 
 export const archiveOpenTabs = async (deviceName?: string) => {
-  const { data: openTabs, error } = await getOpenTabs(1, 1000, "", deviceName);
+  const { data: openTabs, error } = await getOpenTabs(
+    1,
+    1000,
+    "",
+    deviceName
+  );
 
   if (error) {
     console.error(error);

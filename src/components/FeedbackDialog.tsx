@@ -46,12 +46,17 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
 
       <DialogContent
         className={cn(
-          "shadow-xl",
-          // MD3 Styling Replacement with Asymmetric Quacky Shape
-          "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
+          "shadow-none md:shadow-2xl",
+          // Material: Glassmorphism
+          "backdrop-blur-xl",
+          // Light Mode
+          "bg-white/40 border-0 md:border md:border-white/40",
+          // Dark Mode
+          "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
+
           isMobile
             ? "h-screen w-screen max-w-none pt-10 rounded-none overflow-y-auto"
-            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-5xl p-0 rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]"
         )}
       >
         <div className={cn(
@@ -59,11 +64,11 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
           // Remove h-full on mobile to allow growing
           "h-auto md:h-full"
         )}>
-          {/* Left Column (Hero) - Quacky Expressive Style */}
-          <div className="flex-1 p-6 md:p-10 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-start space-y-6 md:space-y-8 relative overflow-hidden shrink-0">
+          {/* Left Column (Hero) - Glassmorphic Style */}
+          <div className="flex-1 p-6 md:p-10 bg-gradient-to-br from-primary/20 via-primary/5 to-transparent border-r border-white/20 dark:border-white/10 flex flex-col justify-center items-start space-y-6 md:space-y-8 relative overflow-hidden shrink-0">
 
             {/* Decorative background blob */}
-            <div className="absolute -right-20 -top-20 w-40 h-40 md:w-64 md:h-64 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -right-20 -top-20 w-40 h-40 md:w-64 md:h-64 bg-primary/10 rounded-full blur-3xl" />
 
             <div className="flex items-center gap-2 transform -rotate-12 transition-transform hover:rotate-0 duration-500 origin-bottom-left">
               {/* Force large font size using Tailwind !text classes which override MUI styles */}
@@ -98,7 +103,7 @@ const FeedbackDialog = ({ iconOnly }: FeedbackDialogProps) => {
           </div>
 
           {/* Right Column (Form) */}
-          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-transparent shrink-0">
+          <div className="flex-1 p-6 md:p-10 flex flex-col justify-center relative bg-white/30 dark:bg-black/20 backdrop-blur-sm shrink-0">
             {/* Custom Close button removed to avoid duplicates with the default DialogContent close button */}
 
             <FeedbackForm sendFeedback={onSendFeedback} />

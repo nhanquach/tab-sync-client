@@ -44,12 +44,17 @@ export const AccountDeleteConfirmDialog: React.FC<
     <Dialog open={open} onOpenChange={(val) => !val && onClose()}>
       <DialogContent
         className={cn(
-          "shadow-xl p-0 gap-0",
-          // Quacky Styling: Asymmetric corners and surface colors
-          "bg-md-sys-color-surface-container-high text-md-sys-color-on-surface border-none",
+          "shadow-none md:shadow-2xl p-0 gap-0",
+          // Material: Glassmorphism
+          "backdrop-blur-xl",
+          // Light Mode
+          "bg-white/40 border-0 md:border md:border-white/40",
+          // Dark Mode
+          "dark:bg-black/40 dark:border-0 md:dark:border md:dark:border-white/10",
+
           isMobile
             ? "h-screen w-screen max-w-none rounded-none overflow-y-auto"
-            : "max-h-[85vh] overflow-y-auto sm:max-w-4xl rounded-tl-[32px] rounded-br-[32px] rounded-tr-[16px] rounded-bl-[16px] md:rounded-tl-[64px] md:rounded-br-[64px] md:rounded-tr-[24px] md:rounded-bl-[24px]"
+            : "max-h-[85vh] overflow-y-auto sm:max-w-4xl rounded-tl-[32px] md:rounded-tl-[48px] md:rounded-tr-[16px] md:rounded-bl-[16px] md:rounded-br-[16px]"
         )}
       >
         <div
@@ -59,11 +64,11 @@ export const AccountDeleteConfirmDialog: React.FC<
             "md:min-h-[450px]"
           )}
         >
-          {/* Left Column (Hero) - Quacky Expressive Style */}
-          <div className="flex-1 p-8 md:p-12 bg-md-sys-color-tertiary-container text-md-sys-color-on-tertiary-container flex flex-col justify-center items-start space-y-6 relative overflow-hidden shrink-0">
+          {/* Left Column (Hero) - Glassmorphic Style (Destructive) */}
+          <div className="flex-1 p-8 md:p-12 bg-gradient-to-br from-destructive/20 via-destructive/5 to-transparent border-r border-white/20 dark:border-white/10 flex flex-col justify-center items-start space-y-6 relative overflow-hidden shrink-0">
 
             {/* Decorative background blob */}
-            <div className="absolute -right-16 -top-16 w-32 h-32 md:w-56 md:h-56 bg-white/10 rounded-full blur-3xl" />
+            <div className="absolute -right-16 -top-16 w-32 h-32 md:w-56 md:h-56 bg-destructive/10 rounded-full blur-3xl" />
 
             <div className="flex items-center gap-2 transform -rotate-12 transition-transform hover:rotate-0 duration-500 origin-bottom-left z-10">
                {/* Force large font size */}
@@ -81,7 +86,7 @@ export const AccountDeleteConfirmDialog: React.FC<
           </div>
 
           {/* Right Column (Actions & Details) */}
-          <div className="flex-1 p-8 md:p-12 flex flex-col justify-center bg-transparent shrink-0 space-y-6">
+          <div className="flex-1 p-8 md:p-12 flex flex-col justify-center bg-white/30 dark:bg-black/20 backdrop-blur-sm shrink-0 space-y-6">
 
             <div className="space-y-4">
               <div className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 text-destructive border border-destructive/20">

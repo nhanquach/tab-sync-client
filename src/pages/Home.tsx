@@ -32,6 +32,7 @@ import {
   LAYOUT_KEY,
   ORDER,
 } from "../utils/constants";
+import { isMobileApp } from "../utils/isMobile";
 import { TABLES } from "../clients/constants";
 import { Layout } from "../interfaces/Layout";
 import { ROUTES } from "../routes";
@@ -194,9 +195,25 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 20;
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768 || isMobileApp());
+    const handleResize = () => setIsMobile(window.innerWidth < 768 || isMobileApp());
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const [layout, setLayout] = useState<Layout>(
     getItem(LAYOUT_KEY) || LAYOUT.LIST
   );
+
+  useEffect(() => {
+    if (isMobile && layout !== LAYOUT.GRID) {
+        setLayout(LAYOUT.GRID);
+    }
+  }, [isMobile, layout]);
+
   const [orderBy, setOrderBy] = useState<ORDER>(
     getItem<ORDER>(LAST_SAVED_ORDER_BY_KEY) ?? ORDER.TIME
   );
@@ -257,6 +274,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   ]);
 
   const toggleLayout = () => {
+    if (isMobile) return;
     setLayout((currentLayout: Layout) => {
       const newLayout =
         currentLayout === LAYOUT.GRID ? LAYOUT.LIST : LAYOUT.GRID;
@@ -514,6 +532,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 isScrolled={isScrolled}
                 isSelectionMode={isSelectionMode}
                 toggleSelectionMode={toggleSelectionMode}
+                isMobile={isMobile}
             />
 
             <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">
@@ -579,7 +598,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 )}
                 style={{ height: "calc(100vh - 8rem)" }}
               >
-                <div className="w-[400px] h-full bg-md-sys-color-surface-container-low rounded-[24px] shadow-xl overflow-hidden border border-md-sys-color-outline-variant/20">
+                <div className="w-[400px] h-full backdrop-blur-xl bg-white/40 dark:bg-black/40 rounded-[24px] shadow-xl overflow-hidden border border-white/20 dark:border-white/10">
                    {desktopTab && (
                       <TabDetails
                         tab={desktopTab}
@@ -605,7 +624,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                         className={cn(
                             "w-full max-w-md shadow-2xl",
                             "h-[85vh]",
-                            "bg-md-sys-color-surface-container-low",
+                            "backdrop-blur-xl bg-white/60 dark:bg-black/60",
                             "rounded-t-[32px]",
                             "overflow-hidden",
                             "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"

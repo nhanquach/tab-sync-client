@@ -33,7 +33,10 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
       onKeyDown={handleKeyDown}
       className={cn(
         "flex items-center gap-4 p-4 transition-all group relative",
-        "hover:bg-md-sys-color-surface-container-high/50 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-md-sys-color-primary focus-visible:ring-inset",
+        "backdrop-blur-sm bg-white/20 dark:bg-black/20",
+        "border-b border-white/10 dark:border-white/5",
+        "hover:bg-white/40 dark:hover:bg-black/40",
+        "cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-md-sys-color-primary focus-visible:ring-inset",
         isSelected && !isSelectionMode && "bg-md-sys-color-primary/10 hover:bg-md-sys-color-primary/15",
         isChecked && isSelectionMode && "bg-md-sys-color-surface-container-highest",
         isExiting && "animate-out zoom-out-95 fade-out slide-out-to-left-2 duration-300 fill-mode-forwards pointer-events-none"
@@ -75,7 +78,7 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
       </div>
 
       <div className="flex flex-col gap-0.5 flex-1 min-w-0">
-        <div className="flex items-baseline justify-between gap-2 min-w-0">
+        <div className="flex items-center justify-between gap-2 min-w-0">
             <a
             href={tab.url}
             target="_blank"
@@ -90,9 +93,9 @@ const UrlListItem: React.FC<IUrlListItem> = ({ tab, onSelect, isSelected, isSele
             </span>
         </div>
 
-        <div className="text-sm text-md-sys-color-on-surface-variant truncate w-full flex items-center gap-2">
-           <span className="truncate">{tab.url}</span>
-           <span className="text-xs text-md-sys-color-outline sm:hidden">
+        <div className="text-sm text-md-sys-color-on-surface-variant w-full flex items-center gap-2 min-w-0">
+           <span className="truncate flex-1 min-w-0">{tab.url}</span>
+           <span className="text-xs text-md-sys-color-outline flex-shrink-0 sm:hidden">
              • {dayjs(tab.timeStamp).format("MMM D")}
            </span>
         </div>
