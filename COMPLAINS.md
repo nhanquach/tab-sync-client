@@ -29,3 +29,17 @@ This is hostile to power users. On a high-resolution display, 20 items leaves mo
 
 **The Demand:**
 Implement a density/pagination control immediately. Allow users to select 20, 50, 100, or "All" items per page. Respect my screen real estate and my intelligence.
+
+## 3. Data Sovereignty Violation (No Export)
+
+**The Problem:**
+The application functions as a "roach motel" for data: tabs check in, but they can't check out. There is no functionality to export my data to a standard format (JSON, CSV, HTML).
+
+**Why this matters:**
+I am entrusting this tool with my browsing history and workflow state. Without an export feature, I am completely locked into this specific deployment. If the server goes down, if I want to migrate to another tool, or if I simply want to back up my data locally, I am out of luck. Relying on "Bulk Copy" of just URLs is insufficient; I need the metadata (timestamps, device info) that I've generated.
+
+**The Demand:**
+Implement a full data export feature immediately.
+- **Format:** JSON (for machine readability/restore) and CSV (for spreadsheet analysis).
+- **Scope:** All data (Open Tabs, Archived Tabs, Device usage stats).
+- **Privacy:** Client-side generation to ensure I can grab my data without it needing to be processed by a third party again.
