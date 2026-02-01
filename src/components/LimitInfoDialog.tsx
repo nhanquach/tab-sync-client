@@ -90,8 +90,7 @@ export const LimitInfoDialog: React.FC = () => {
 
             <div className="space-y-4 z-10">
               <DialogTitle className="text-4xl md:text-5xl font-black tracking-tighter leading-none">
-                Usage Limits{" "}
-                <span className="inline-block hover:animate-pulse">📉</span>
+                Usage Limits
               </DialogTitle>
               <DialogDescription className="text-lg md:text-xl font-medium opacity-90 max-w-sm text-foreground">
                 To keep this service free for everyone, we limit the number of tabs you can sync.
