@@ -43,3 +43,18 @@ Implement a full data export feature immediately.
 - **Format:** JSON (for machine readability/restore) and CSV (for spreadsheet analysis).
 - **Scope:** All data (Open Tabs, Archived Tabs, Device usage stats).
 - **Privacy:** Client-side generation to ensure I can grab my data without it needing to be processed by a third party again.
+
+## 4. The "Potemkin" Command Palette (Broken Search Scope)
+
+**The Problem:**
+The `Cmd+K` Command Palette masquerades as a global navigation tool, but it is lobotomized. It only searches through the *currently loaded page* of tabs (the visible 20 items).
+
+**Why this matters:**
+This is a UX lie. A Command Palette is a promise of global accessibility ("Press `Cmd+K` to jump anywhere"). But here, if I search for a tab that exists on Page 2, the palette reports "No results found."
+This trains users *not* to trust the tool. It forces me to manually paginate or use the slower main search bar. It makes the feature worse than useless—it is misleading.
+
+**The Demand:**
+Unify the search logic. The Command Palette must query the *entire* dataset, not just the local DOM.
+- **Option A:** Hook `Cmd+K` input to the backend search API (Async Search).
+- **Option B:** If the dataset is small enough, pre-load headers for client-side search.
+Do not ship a "global" shortcut that only works on 2% of the data.
