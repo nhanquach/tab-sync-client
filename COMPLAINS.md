@@ -58,3 +58,21 @@ Unify the search logic. The Command Palette must query the *entire* dataset, not
 - **Option A:** Hook `Cmd+K` input to the backend search API (Async Search).
 - **Option B:** If the dataset is small enough, pre-load headers for client-side search.
 Do not ship a "global" shortcut that only works on 2% of the data.
+
+## 5. The "Dumb" Link Bucket (Context Blindness)
+
+**The Problem:**
+The application treats tabs as static strings (URL + Title). It fails to capture the *human context* behind why a tab was saved.
+- I cannot tag tabs (e.g., "Work", "Research", "To Read").
+- I cannot add notes (e.g., "Read section 3 for the meeting").
+- I cannot manually group them beyond "Device" or "Window".
+
+**Why this matters:**
+A list of 200 URLs is not a knowledge base; it's a haystack. Six months from now, a tab titled "Generic Documentation" is meaningless to me without a note explaining *why* I saved it. The lack of organizational metadata transforms the app from a "Workflow Manager" into a "Digital Hoarding Assistant." I am scared to archive things because I lose the mental context of where they belong.
+
+**The Demand:**
+Add metadata capabilities to tabs immediately.
+- **Tags:** Allow arbitrary coloring/labeling of tabs.
+- **Notes:** A simple text field to annotate a tab.
+- **Smart Groups:** Let me define filters (e.g., "All tabs tagged 'Project X'") and save them as views.
+Don't just store the link; store the *intent*.
