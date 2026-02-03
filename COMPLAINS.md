@@ -58,3 +58,17 @@ Unify the search logic. The Command Palette must query the *entire* dataset, not
 - **Option A:** Hook `Cmd+K` input to the backend search API (Async Search).
 - **Option B:** If the dataset is small enough, pre-load headers for client-side search.
 Do not ship a "global" shortcut that only works on 2% of the data.
+
+## 5. The Metadata Desert (Organization Vacuum)
+
+**The Problem:**
+The application treats tabs as flat, 2-dimensional objects (Title + URL). It ignores the human context of *why* I opened that tab. A URL is just a pointer. Without context, a list of 200 URLs is a digital junk drawer. I can't tag items as "Urgent", "Reference", or "To Read". I can't add a note saying "Use the code snippet in paragraph 3".
+
+**Why this matters:**
+For professional workflows, context is king. If I'm researching 3 different topics, I need to segregate them. Without user-defined metadata (Tags, Notes, Categories), the only way to organize is by... nothing. The app forces a flat hierarchy on complex information. It renders the search function half-blind because I can't search for my own mental model, only the page's title.
+
+**The Demand:**
+Add a "Metadata Layer" to the `ITab` interface immediately.
+- **Tags:** Allow arbitrary string tags (many-to-many).
+- **Notes:** A simple text field for user annotations.
+- **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
