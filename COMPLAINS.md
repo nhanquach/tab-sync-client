@@ -72,3 +72,14 @@ Add a "Metadata Layer" to the `ITab` interface immediately.
 - **Tags:** Allow arbitrary string tags (many-to-many).
 - **Notes:** A simple text field for user annotations.
 - **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. Mobile Layout Tyranny (Forced Grid)
+
+**The Problem:**
+The application enforces `LAYOUT.GRID` on mobile devices (< 768px) and disables the ability to toggle to `LAYOUT.LIST`.
+
+**Why this matters:**
+Grid view on small screens sacrifices readability for thumbnails, truncating titles and making quick scanning difficult. It treats mobile users as second-class citizens by removing control.
+
+**The Demand:**
+Remove the artificial restriction and allow users to choose between List and Grid view on any device size.
