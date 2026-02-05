@@ -72,3 +72,18 @@ Add a "Metadata Layer" to the `ITab` interface immediately.
 - **Tags:** Allow arbitrary string tags (many-to-many).
 - **Notes:** A simple text field for user annotations.
 - **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. The One-Way Archive (Data Black Hole)
+
+**The Problem:**
+The application treats the "Archive" action as a one-way trip to oblivion. Once a tab enters the "Archived Tabs" list, there is no button, gesture, or command to restore it to the "Open Tabs" view. It is stuck there until I either delete it permanently or... well, that's it.
+
+**Why this matters:**
+This fundamentally misunderstands the concept of an "Archive." An archive is storage for *later retrieval*, not a trash can with a fancy name. If I archive a project's tabs to clear my workspace, and then want to resume that project next week, I expect to be able to "Unarchive" them back to my active workspace.
+Currently, I have to manually open the URL in a new browser tab, which creates a *duplicate* entry, and then delete the old archived one? This is user-hostile friction. It makes me afraid to use the Archive feature.
+
+**The Demand:**
+Implement "Restore" / "Unarchive" functionality immediately.
+- **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
+- **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
+- **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
