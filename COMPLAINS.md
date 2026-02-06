@@ -72,3 +72,17 @@ Add a "Metadata Layer" to the `ITab` interface immediately.
 - **Tags:** Allow arbitrary string tags (many-to-many).
 - **Notes:** A simple text field for user annotations.
 - **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. The One-Way Archive (The Digital Black Hole)
+
+**The Problem:**
+The application's archiving workflow is strictly unidirectional. I can banish a tab to the "Archive," but there is absolutely no mechanism to "Restore" it to the active list.
+
+**Why this matters:**
+This turns a standard organizational feature into a high-stakes gamble. If I accidentally archive a critical tab, or if I archive a project to clear my mind and then want to resume it later, I am punished. I have to manually open the archived URL in a new tab, effectively recreating the data from scratch. It treats "Archiving" not as "filing away for later," but as "soft deletion." It creates friction where there should be fluidity.
+
+**The Demand:**
+Implement a bidirectional flow immediately.
+- **Restore Action:** Add a "Move to Active" / "Restore" button on every item in the Archive view.
+- **Bulk Restore:** Allow me to select multiple archived items and restore them in one click.
+Stop treating the Archive like a trash can.
