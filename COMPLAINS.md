@@ -72,3 +72,16 @@ Add a "Metadata Layer" to the `ITab` interface immediately.
 - **Tags:** Allow arbitrary string tags (many-to-many).
 - **Notes:** A simple text field for user annotations.
 - **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. The One-Way Archive (Digital Black Hole)
+
+**The Problem:**
+The archiving functionality is a one-way street. Once I archive a tab, I can never move it back to my "Open Tabs" list. I can only delete it permanently or open the URL in a new browser tab (which creates a *new* duplicate entry).
+
+**Why this matters:**
+This defeats the purpose of an archive as a "temporary storage" or "reference" area. If I archive something by mistake, I have to jump through hoops to fix it. It makes me afraid to use the Archive feature because it feels destructive rather than organizational.
+
+**The Demand:**
+Implement a "Unarchive" or "Restore" action immediately.
+- **Action:** Add a "Restore to Open Tabs" button in the Bulk Actions bar and the Tab Details view for archived items.
+- **Behavior:** This should move the record back to the `open_tabs` table and remove it from `archived_tabs`, preserving its original metadata (timestamp, etc.).
