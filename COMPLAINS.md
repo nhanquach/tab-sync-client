@@ -72,3 +72,17 @@ Add a "Metadata Layer" to the `ITab` interface immediately.
 - **Tags:** Allow arbitrary string tags (many-to-many).
 - **Notes:** A simple text field for user annotations.
 - **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. The Archive Black Hole (One-Way Workflow)
+
+**The Problem:**
+The application treats archiving as a prelude to death. Once a tab is moved to the "Archive", it is stranded there. There is no "Restore", "Unarchive", or "Move to Open Tabs" functionality. The only action available in the Archive view is "Delete Permanently".
+
+**Why this matters:**
+This fundamentally misunderstands the purpose of an archive. An archive is for *storage*, not just disposal. If I mistakenly archive a tab, or if I want to resurrect an old research topic, I am forced to manually open the URL in a new tab, effectively duplicating the work and losing the original context (timestamp, etc.) in the process. It turns the Archive into a trash can rather than a filing cabinet.
+
+**The Demand:**
+Implement a "Restore" function immediately.
+- **Action:** Allow users to move tabs from the Archive back to the Open Tabs list.
+- **UI:** Add this action to the `TabDetails` view and the `BulkActionsBar`.
+- Stop treating the Archive like a digital graveyard.
