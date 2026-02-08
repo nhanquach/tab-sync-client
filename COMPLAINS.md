@@ -59,20 +59,45 @@ Unify the search logic. The Command Palette must query the *entire* dataset, not
 - **Option B:** If the dataset is small enough, pre-load headers for client-side search.
 Do not ship a "global" shortcut that only works on 2% of the data.
 
-## 5. The "Dumb" Link Bucket (Context Blindness)
+## 5. The Metadata Desert (Organization Vacuum)
 
 **The Problem:**
-The application treats tabs as static strings (URL + Title). It fails to capture the *human context* behind why a tab was saved.
-- I cannot tag tabs (e.g., "Work", "Research", "To Read").
-- I cannot add notes (e.g., "Read section 3 for the meeting").
-- I cannot manually group them beyond "Device" or "Window".
+The application treats tabs as flat, 2-dimensional objects (Title + URL). It ignores the human context of *why* I opened that tab. A URL is just a pointer. Without context, a list of 200 URLs is a digital junk drawer. I can't tag items as "Urgent", "Reference", or "To Read". I can't add a note saying "Use the code snippet in paragraph 3".
 
 **Why this matters:**
-A list of 200 URLs is not a knowledge base; it's a haystack. Six months from now, a tab titled "Generic Documentation" is meaningless to me without a note explaining *why* I saved it. The lack of organizational metadata transforms the app from a "Workflow Manager" into a "Digital Hoarding Assistant." I am scared to archive things because I lose the mental context of where they belong.
+For professional workflows, context is king. If I'm researching 3 different topics, I need to segregate them. Without user-defined metadata (Tags, Notes, Categories), the only way to organize is by... nothing. The app forces a flat hierarchy on complex information. It renders the search function half-blind because I can't search for my own mental model, only the page's title.
 
 **The Demand:**
-Add metadata capabilities to tabs immediately.
-- **Tags:** Allow arbitrary coloring/labeling of tabs.
-- **Notes:** A simple text field to annotate a tab.
-- **Smart Groups:** Let me define filters (e.g., "All tabs tagged 'Project X'") and save them as views.
-Don't just store the link; store the *intent*.
+Add a "Metadata Layer" to the `ITab` interface immediately.
+- **Tags:** Allow arbitrary string tags (many-to-many).
+- **Notes:** A simple text field for user annotations.
+- **Search:** Index these fields so I can search for "Project X" and find all related tabs, even if the page titles don't mention "Project X".
+
+## 6. The One-Way Archive (Data Black Hole)
+
+**The Problem:**
+The application treats the "Archive" action as a one-way trip to oblivion. Once a tab enters the "Archived Tabs" list, there is no button, gesture, or command to restore it to the "Open Tabs" view. It is stuck there until I either delete it permanently or... well, that's it.
+
+**Why this matters:**
+This fundamentally misunderstands the concept of an "Archive." An archive is storage for *later retrieval*, not a trash can with a fancy name. If I archive a project's tabs to clear my workspace, and then want to resume that project next week, I expect to be able to "Unarchive" them back to my active workspace.
+Currently, I have to manually open the URL in a new browser tab, which creates a *duplicate* entry, and then delete the old archived one? This is user-hostile friction. It makes me afraid to use the Archive feature.
+
+**The Demand:**
+Implement "Restore" / "Unarchive" functionality immediately.
+- **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
+- **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
+- **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Mobile "Lite" Experience (Feature Gap)
+
+**The Problem:**
+Mobile users are treated as second-class citizens. Key functionality—specifically the **Stats Dashboard** and **Theme Selector**—is completely inaccessible on screens smaller than 768px. These features are locked away in the `HomeSidebar`, which is hidden on mobile, and are not exposed in the `HomeAppBar` or `AccountSettings`.
+
+**Why this matters:**
+This is an arbitrary restriction. I use this app primarily on my phone to organize my digital life while commuting. Being unable to see my usage insights or customize the interface (especially Dark Mode preferences) makes the mobile app feel like a stripped-down "Lite" version rather than a full product. It forces me to open my laptop just to change a color.
+
+**The Demand:**
+Achieve feature parity across platforms immediately.
+- **Move Global Actions:** Place "Stats" and "Theme" in the `AccountSettings` menu or a new "More" drawer in the `HomeAppBar`.
+- **Responsive Design:** Ensure the `StatsDialog` and `ThemeSelector` are fully responsive (which they appear to be internally) and accessible via touch targets on mobile.
+Don't punish me for using a smaller screen.
