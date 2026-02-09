@@ -87,3 +87,19 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Zombie Device Apocalypse (Device Management Void)
+
+**The Problem:**
+The application automatically creates device categories based on the `deviceName` provided by the browser. However, there is no way to manage these devices. If I rename my computer, reinstall my OS, or use a temporary device, a new "Device Section" is permanently created in my list.
+I cannot rename a device (e.g., "Chrome on Mac" -> "Work Laptop"). I cannot merge two devices (e.g., "Old Phone" and "New Phone"). I cannot delete a device (and its associated tabs) in one go without manually clearing every single tab. I cannot hide offline/old devices.
+
+**Why this matters:**
+Over time, the "Home" view becomes a graveyard of old sessions. My "Active Tabs" list is cluttered with 5 different versions of "Chrome on Windows" from 2023. It degrades the signal-to-noise ratio. I can't quickly find my *current* phone's tabs because I have to scroll past three dead phones. It turns the "Sync" feature into a "Hoarding" feature.
+
+**The Demand:**
+Implement a "Device Manager" immediately.
+- **List View:** See all known devices.
+- **Rename:** Allow user aliases for devices.
+- **Merge:** Allow dragging/dropping one device into another to merge their history.
+- **Delete/Hide:** Allow removing a device from the view (either by deleting all its data or just hiding it).
