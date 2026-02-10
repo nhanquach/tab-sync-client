@@ -12,6 +12,7 @@ import {
   AppsTwoTone,
   Check,
   KeyboardArrowDownTwoTone,
+  AutoAwesomeTwoTone,
 } from "@mui/icons-material";
 
 import { Layout } from "../interfaces/Layout";
@@ -54,6 +55,8 @@ interface IToolbarProps {
   isSelectionMode?: boolean;
   toggleSelectionMode?: () => void;
   isMobile?: boolean;
+  isAISearch?: boolean;
+  toggleAISearch?: () => void;
 }
 
 const Toolbar: React.FC<IToolbarProps> = ({
@@ -72,6 +75,8 @@ const Toolbar: React.FC<IToolbarProps> = ({
   isSelectionMode,
   toggleSelectionMode,
   isMobile = false,
+  isAISearch = false,
+  toggleAISearch,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
 
@@ -279,14 +284,33 @@ const Toolbar: React.FC<IToolbarProps> = ({
                   ref={searchBoxRef}
                   value={searchString}
                   onChange={handleSearch}
-                  placeholder="Search..."
+                  placeholder={isAISearch ? "Describe what you're looking for..." : "Search..."}
                   className={cn(
-                    "pl-9 pr-4 transition-all duration-200 border-none",
+                    "pl-9 pr-10 transition-all duration-200 border-none",
                     isScrolled
                       ? "h-10 rounded-full bg-md-sys-color-surface-container-high/40 placeholder:text-md-sys-color-on-surface-variant/40 text-sm"
-                      : "h-10 rounded-full bg-md-sys-color-surface-container-high/60 text-sm shadow-sm focus:shadow-md focus:bg-md-sys-color-surface-container-high"
+                      : "h-10 rounded-full bg-md-sys-color-surface-container-high/60 text-sm shadow-sm focus:shadow-md focus:bg-md-sys-color-surface-container-high",
+                    isAISearch && "ring-2 ring-md-sys-color-primary bg-md-sys-color-primary/5 placeholder:text-md-sys-color-primary/60"
                   )}
                 />
+                {toggleAISearch && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={toggleAISearch}
+                        className={cn(
+                          "absolute right-1.5 top-1/2 -translate-y-1/2 h-7 w-7 flex items-center justify-center rounded-full transition-all duration-200 hover:bg-md-sys-color-surface-variant/20 active:scale-90",
+                          isAISearch ? "text-md-sys-color-primary" : "text-md-sys-color-on-surface-variant/40 hover:text-md-sys-color-primary/80"
+                        )}
+                      >
+                        <AutoAwesomeTwoTone className={cn("h-4 w-4", isAISearch && "animate-pulse")} />
+                      </button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      {isAISearch ? "Disable AI Search" : "Enable AI Search"}
+                    </TooltipContent>
+                  </Tooltip>
+                )}
              </div>
 
           </div>

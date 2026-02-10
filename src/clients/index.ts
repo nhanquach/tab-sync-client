@@ -53,19 +53,25 @@ export const deleteAccount = async () => {
   return (await getClient()).deleteAccount();
 }
 
+export const getAIKeywords = async (query: string) => {
+  return (await getClient()).getAIKeywords(query);
+};
+
 export const getOpenTabs = async (
   page?: number,
   limit?: number,
   searchString?: string,
   deviceName?: string,
-  orderBy?: string
+  orderBy?: string,
+  keywords?: string[]
 ) => {
   return (await getClient()).getOpenTabs(
     page,
     limit,
     searchString,
     deviceName,
-    orderBy
+    orderBy,
+    keywords
   );
 };
 
@@ -74,14 +80,16 @@ export const getArchivedTabs = async (
   limit?: number,
   searchString?: string,
   deviceName?: string,
-  orderBy?: string
+  orderBy?: string,
+  keywords?: string[]
 ) => {
   return (await getClient()).getArchivedTabs(
     page,
     limit,
     searchString,
     deviceName,
-    orderBy
+    orderBy,
+    keywords
   );
 };
 

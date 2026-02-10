@@ -10,6 +10,7 @@ import {
   sendTab,
   archiveTab,
   removeTab,
+  getAIKeywords,
 } from "../clients";
 import UrlList from "../components/UrlList";
 import { ITab } from "../interfaces/iTab";
@@ -55,6 +56,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+
+  const [isAISearch, setIsAISearch] = useState(false);
+  const [aiKeywords, setAiKeywords] = useState<string[]>([]);
+  const [isFetchingAI, setIsFetchingAI] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -193,6 +198,29 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [isMobile, setIsMobile] = useState(false);
 
+  // Debounced AI Search
+  useEffect(() => {
+    if (!isAISearch || !searchString) {
+      setAiKeywords([]);
+      setIsFetchingAI(false);
+      return;
+    }
+
+    setIsFetchingAI(true);
+    const timer = setTimeout(async () => {
+      try {
+        const keywords = await getAIKeywords(searchString);
+        setAiKeywords(keywords);
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setIsFetchingAI(false);
+      }
+    }, 800);
+
+    return () => clearTimeout(timer);
+  }, [searchString, isAISearch]);
+
   useEffect(() => {
     setIsMobile(window.innerWidth < 768 || isMobileApp());
     const handleResize = () => setIsMobile(window.innerWidth < 768 || isMobileApp());
@@ -230,9 +258,12 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   // Reset page when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchString, selectedDevice, currentView, orderBy]);
+  }, [searchString, selectedDevice, currentView, orderBy, isAISearch, aiKeywords]);
 
   const handleGetTabs = useCallback(async () => {
+    // If AI search is enabled but still fetching keywords, wait (unless searchString is empty)
+    if (isAISearch && isFetchingAI && searchString) return;
+
     setIsLoading(true);
     const fetchFunction = isOpenTabsView ? getOpenTabs : getArchivedTabs;
     const setTabsFunction = isOpenTabsView ? setTabs : setArchivedTabs;
@@ -242,7 +273,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       ITEMS_PER_PAGE,
       searchString,
       selectedDevice,
-      orderBy === ORDER.TIME ? "TIME" : "TITLE"
+      orderBy === ORDER.TIME ? "TIME" : "TITLE",
+      isAISearch ? aiKeywords : []
     );
 
     if (error) {
@@ -264,6 +296,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     searchString,
     selectedDevice,
     orderBy,
+    isAISearch,
+    aiKeywords,
+    isFetchingAI
   ]);
 
   const toggleLayout = () => {
@@ -283,6 +318,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       saveItem(LAST_SAVED_ORDER_BY_KEY, order.toString());
       return order;
     });
+  };
+
+  const toggleAISearch = () => {
+    setIsAISearch(!isAISearch);
   };
 
   useEffect(() => {
@@ -513,14 +552,28 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                 isSelectionMode={isSelectionMode}
                 toggleSelectionMode={toggleSelectionMode}
                 isMobile={isMobile}
+                isAISearch={isAISearch}
+                toggleAISearch={toggleAISearch}
             />
 
             <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">
               <div className="flex-1 min-w-0">
+                  {isFetchingAI && isAISearch && (
+                    <div className="flex items-center justify-center py-2 mb-4 animate-in fade-in slide-in-from-top-2">
+                        <span className="text-sm text-md-sys-color-primary font-medium flex items-center gap-2">
+                           <span className="relative flex h-3 w-3">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-md-sys-color-primary opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-3 w-3 bg-md-sys-color-primary"></span>
+                            </span>
+                           Thinking...
+                        </span>
+                    </div>
+                  )}
+
                   {isLoading ? (
                     <div className="flex h-64 items-center justify-center">
                         <span className="text-lg text-md-sys-color-on-surface-variant font-medium animate-pulse">
-                            Getting your tabs...
+                            {isAISearch ? "Smart searching..." : "Getting your tabs..."}
                         </span>
                     </div>
                   ) : (

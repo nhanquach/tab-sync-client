@@ -156,12 +156,29 @@ export const deleteAccount = async () => {
   await removeArchivedTabs();
 };
 
+export const getAIKeywords = async (query: string): Promise<string[]> => {
+  const { client } = await getClient();
+  if (!client) return [];
+
+  const { data, error } = await client.functions.invoke('ask-ai', {
+    body: { query },
+  });
+
+  if (error || !data) {
+    console.error('Error fetching AI keywords:', error);
+    return [];
+  }
+
+  return data.keywords || [];
+};
+
 export const getOpenTabs = async (
   page = 1,
   limit = 20,
   searchString = "",
   deviceName?: string,
-  orderBy = "TIME"
+  orderBy = "TIME",
+  keywords: string[] = []
 ): Promise<{
   data: ITab[];
   count: number;
@@ -178,7 +195,10 @@ export const getOpenTabs = async (
       query = query.eq("deviceName", deviceName);
     }
 
-    if (searchString) {
+    if (keywords.length > 0) {
+      const orQuery = keywords.map(k => `title.ilike.%${k}%,url.ilike.%${k}%`).join(',');
+      query = query.or(orQuery);
+    } else if (searchString) {
       query = query.or(
         `title.ilike.%${searchString}%,url.ilike.%${searchString}%`
       );
@@ -210,7 +230,8 @@ export const getArchivedTabs = async (
   limit = 20,
   searchString = "",
   deviceName?: string,
-  orderBy = "TIME"
+  orderBy = "TIME",
+  keywords: string[] = []
 ): Promise<{
   data: ITab[];
   count: number;
@@ -227,7 +248,10 @@ export const getArchivedTabs = async (
       query = query.eq("deviceName", deviceName);
     }
 
-    if (searchString) {
+    if (keywords.length > 0) {
+      const orQuery = keywords.map(k => `title.ilike.%${k}%,url.ilike.%${k}%`).join(',');
+      query = query.or(orQuery);
+    } else if (searchString) {
       query = query.or(
         `title.ilike.%${searchString}%,url.ilike.%${searchString}%`
       );
