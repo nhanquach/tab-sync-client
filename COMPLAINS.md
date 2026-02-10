@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Device Graveyard (Management Missing)
+
+**The Problem:**
+Devices are treated as ephemeral labels attached to tabs, rather than first-class citizens. There is no "Device Manager." If I rename my laptop, the app sees a new device and orphans the old one. My list becomes cluttered with "Chrome on Windows", "Chrome on Windows (1)", "Work Mac", "Old Phone" with no way to merge, rename, or delete these device containers.
+
+**Why this matters:**
+This creates a chaotic, fragmented view of my digital life. I can't look at "My Laptop" history if half of it is under an old name. It prevents me from auditing which devices have access or cleaning up old sessions. It turns the "Sync" feature into a "Dump" feature.
+
+**The Demand:**
+Implement a `Devices` management view.
+- **Rename:** Allow me to alias "Linux x86_64" to "Steam Deck".
+- **Merge:** Allow me to merge "Desktop-A" and "Desktop-B" into one logical device.
+- **Delete:** Allow me to delete a device and *all* its associated tabs in one click.
