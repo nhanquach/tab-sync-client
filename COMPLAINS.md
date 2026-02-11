@@ -87,3 +87,18 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Device Graveyard (Zombie Devices)
+
+**The Problem:**
+Devices are treated as immutable strings attached to tabs, not as manageable entities. I cannot rename a device (e.g., fixing a typo or updating "iPhone 12" to "My Phone"), nor can I merge duplicate device entries. To remove a device from the filter list, I must manually find and delete every single tab associated with it.
+
+**Why this matters:**
+Over time, the device filter becomes a cluttered history of every browser user agent string I've ever used. "Chrome on Windows", "Chrome on Mac", "Safari on iPhone"... half of these might be the same physical machine or devices I no longer own. Without a way to manage this list, the "Filter by Device" feature degrades into usability noise. It prevents me from maintaining a clean, organized digital workspace.
+
+**The Demand:**
+Implement a centralized "Device Manager".
+- **Rename:** Allow me to alias "Mozilla/5.0..." to "Work Laptop".
+- **Merge:** Allow me to combine "Old Phone" and "New Phone" into a single device view.
+- **Delete:** Allow me to delete a device entry and choose whether to delete its tabs or reassign them.
+Stop deriving the device list purely from distinct string values in the tab database.
