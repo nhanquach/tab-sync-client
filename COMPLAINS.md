@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Phantom Device Graveyard (Zombie Data)
+
+**The Problem:**
+The application automatically captures device names ("MacBook Pro", "iPhone 12") but provides absolutely no way to manage this list. If I upgrade my laptop or rename my PC, the old device name persists forever in the dropdown, haunting me like a digital ghost. There is no "Device Manager" interface to delete old devices, merge duplicates (e.g., "Jules's iPhone" and "Jules's iPhone (2)"), or rename them for clarity.
+
+**Why this matters:**
+Over time, the "Filter by Device" dropdown becomes a cluttered history of every piece of hardware I've ever owned, rather than a useful tool for my current workflow. It degrades the signal-to-noise ratio. A sync tool that doesn't let me manage the *sources* of the sync is fundamentally broken. It feels sloppy and ignores the reality of hardware lifecycles.
+
+**The Demand:**
+Introduce a "Device Management" settings section.
+- **Delete:** Allow me to remove a device (and optionally purge or archive its associated tabs).
+- **Rename:** Let me alias "Desktop-8374" to "Work Station".
+- **Merge:** Allow combining records from two device names into one.
