@@ -87,3 +87,20 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Schrodinger's Device Filter (Logic Failure)
+
+**The Problem:**
+The "Filter by Device" dropdown is powered by a logic loop so circular it makes me dizzy. The list of available devices is derived *only from the currently visible page of 20 tabs*.
+
+**Why this matters:**
+This is a catastrophic UX failure.
+1. **Invisibility:** If I have 1,000 tabs from "My iPhone", but the current page (Page 1) happens to only contain tabs from "Desktop", the "My iPhone" option *does not exist* in the dropdown. I cannot filter by a device unless I'm already looking at it.
+2. **The Trap:** If I *do* successfully filter by "Desktop", the current view updates to show only "Desktop" tabs. Because the dropdown is derived from the view, the "My iPhone" option now disappears completely. To switch devices, I must first select "All", wait for a reload, hope "My iPhone" appears on the new mixed page, and then select it.
+3. **Amnesia:** The app has no permanent memory of my devices. It rediscovers them every time I click "Next Page".
+
+**The Demand:**
+Decouple the Device List from the paginated view immediately.
+- **Fetch Global:** Implement a `getDevices()` query that fetches all unique `deviceName` values from the database, distinct from the tab data.
+- **Static List:** Populate the dropdown with this global list. "My iPhone" should be selectable even if I'm looking at Page 10 of "Desktop" tabs.
+- **Consistency:** Stop gaslighting the user about which devices they own based on the randomness of pagination.
