@@ -87,3 +87,18 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Device List (Ephemeral Filtering)
+
+**The Problem:**
+The device list used for filtering is calculated on the client-side using `useMemo` on the *currently visible page* of tabs (default 20 items). This means the list of available devices fluctuates wildly as I navigate through pages.
+
+**Why this matters:**
+This renders the "Filter by Device" feature functionally broken and misleading. If I have tabs synced from "Work Mac" on Page 2, but none on Page 1, "Work Mac" does not appear in the filter dropdown. I literally cannot filter for a device unless I can already see one of its tabs.
+Furthermore, there is no centralized device registry. "Device names" are just random strings attached to tab records. I cannot rename "iPhone 12" to "My iPhone", nor can I delete obsolete devices or merge duplicates. It's a messy free-for-all.
+
+**The Demand:**
+Implement a proper Device Management system immediately.
+- **Backend Registry:** Create a distinct query or table to fetch *all* unique device names from the database, regardless of pagination.
+- **Management Interface:** A settings panel to list all devices, allowing me to Rename (bulk update tabs) and Delete (cascade delete or reassign tabs) them.
+- **Consistent Filtering:** The filter dropdown must always show *all* devices that have at least one tab in the system.
