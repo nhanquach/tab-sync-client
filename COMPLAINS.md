@@ -87,3 +87,25 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Disappearing Device Filter (Scope Amnesia)
+
+**The Problem:**
+The "Filter by Device" dropdown is suffering from severe amnesia. It populates its list based *only* on the tabs currently visible on the screen (the current page of 20). It does not represent the actual devices in my account.
+
+**Why this matters:**
+This renders the filter feature functionally useless for anything other than immediate history.
+Scenario: I want to find tabs from my "Old MacBook" that I used last month.
+1. I open the app.
+2. The first page shows 20 tabs from my "iPhone" (most recent).
+3. I open the Device Dropdown.
+4. "Old MacBook" is missing.
+5. I cannot filter by it.
+6. I cannot find my data.
+I am trapped in a Catch-22: I can't see the device because it's not on the current page, and I can't get it on the current page because I can't filter by it.
+
+**The Demand:**
+Decouple the filter list from the view list.
+- **Backend:** Create a `getDevices()` endpoint (or efficient query) that returns *all* distinct `deviceName` entries from the database.
+- **Frontend:** Populate the dropdown with this global list.
+- **UX:** Do not hide options just because they aren't currently rendered. That is the opposite of what a filter is for.
