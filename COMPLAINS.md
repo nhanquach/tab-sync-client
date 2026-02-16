@@ -87,3 +87,19 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Device Ghost Town (Broken Filtering & Management)
+
+**The Problem:**
+The application's concept of a "Device" is a hallucination. It has no central registry of devices; it merely scrapes the `deviceName` string from the *currently loaded* page of tabs (the 20 visible items).
+
+**Why this matters:**
+This creates a "Schrödinger's Filter": devices exist and don't exist simultaneously.
+1. **Broken Filtering:** If I have 100 tabs from "Work Laptop" on pages 1-5, and 1 tab from "Phone" on page 6, the "Phone" option *does not exist* in the filter dropdown until I manually navigate to Page 6. I literally cannot filter for my phone's tabs because the UI hides the option.
+2. **Zombie Data:** I cannot rename, merge, or delete devices. If I reinstall my OS and the hostname changes, I now have two fragmented histories ("MacBook-Old" and "MacBook-New"). I can't say "This old device is gone, hide it." The dropdown becomes a graveyard of old hostnames.
+
+**The Demand:**
+Treat Devices as first-class citizens, not transient strings.
+1. **Global Device Index:** Fetch the distinct list of `deviceName`s from the *entire* database, regardless of pagination.
+2. **Device Management:** Give me a settings page to Rename (batch update), Merge, or Hide devices.
+3. **Stable Filters:** The Device Dropdown must show *all* my active devices, all the time.
