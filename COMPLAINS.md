@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device List)
+
+**The Problem:**
+The "Device" filter dropdown is populated dynamically based on the *currently visible page* of tabs (the 20 loaded items). It does not represent the actual list of devices in the database.
+
+**Why this matters:**
+This renders the filter feature useless for discovery. If I want to find tabs from my "Work Laptop", but none of its tabs are in the most recent 20 items (Page 1), the "Work Laptop" option simply *doesn't exist* in the dropdown. I cannot filter for it. To find it, I would have to manually page through history until a relevant tab appears, at which point the filter becomes available—precisely when I no longer need it to find that tab. It is a circular dependency of failure.
+
+**The Demand:**
+Decouple the Filter List from the View List. Implement a dedicated API call (e.g., `getDevices`) to fetch the distinct list of `deviceNames` from the backend globally. The dropdown must show *all* available devices, regardless of what is currently paginated on screen.
