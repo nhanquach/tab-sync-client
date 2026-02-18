@@ -87,3 +87,19 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device filter dropdown acts like it has short-term memory loss. It populates its options based *only* on the tabs currently visible on the screen (the current page of 20 items).
+
+**Why this matters:**
+This is a logical paradox that renders the filter useless.
+I use filters to find things I *can't* currently see. If I'm looking for a tab from my "iPhone", but Page 1 is filled with "MacBook" tabs, the "iPhone" option doesn't even appear in the dropdown. I am forced to manually doom-scroll through pages until I spot an iPhone tab, at which point the filter finally decides to show up—when I no longer need it.
+It's like searching for a book in a library, but the catalog only lists the books on the shelf you're currently standing in front of.
+
+**The Demand:**
+Fix the data scope. The filter list must be decoupled from the paginated view.
+- **Backend:** Create an endpoint or query to fetch `SELECT DISTINCT deviceName` from the entire dataset.
+- **Frontend:** Populate the dropdown with *all* known devices, regardless of what page I'm on.
+- **Result:** Let me filter for "iPhone" even if the first iPhone tab is on Page 50.
