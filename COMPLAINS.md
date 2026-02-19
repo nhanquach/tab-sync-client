@@ -87,3 +87,19 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Logic)
+
+The device filter dropdown suffers from short-term memory loss. It builds its list of available devices *only* from the 20 tabs currently visible on the screen.
+
+**The Problem:**
+If I have 500 tabs from "Work Laptop" and "iPhone", but the first page of 20 results happens to only contain "Work Laptop" tabs, the "iPhone" option vanishes from the filter menu.
+
+**Why this matters:**
+This renders the filter feature functionally useless for its intended purpose: finding content from specific sources. I cannot say "Show me tabs from my Phone" unless I am already looking at a tab from my Phone. It's a catch-22. It forces me to manually hunt through pages to "unlock" the filter option. A filter tool should guide discovery, not require pre-discovery.
+
+**The Demand:**
+Fix the data source for the filter list immediately.
+- **Fetch Unique Devices:** Create a dedicated API endpoint or query to fetch the *complete* list of distinct `deviceName` values from the database, regardless of pagination.
+- **Persistent Options:** The filter menu must show all devices that have ever contributed data, even if they aren't represented on Page 1.
+- **Stop Lazy Loading:** Do not derive global navigation state from local page state.
