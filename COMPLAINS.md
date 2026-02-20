@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device filter list in the application is dynamically generated from the *currently visible* page of tabs (the local 20 items), not the global dataset.
+
+**Why this matters:**
+This renders the filter useless for finding content from specific devices if that content isn't already on the first page. If I'm looking for a tab from "MyWorkLaptop" but all its tabs are on Page 3, "MyWorkLaptop" won't even appear in the dropdown menu on Page 1. I have to manually hunt through pages to "unlock" the filter. This is fundamentally broken logic; filters are supposed to help me *find* data, not hide until I find the data myself.
+
+**The Demand:**
+Decouple device discovery from tab pagination.
+- **Backend:** Fetch the distinct list of `device_names` from the backend globally (e.g., `SELECT DISTINCT deviceName FROM tabs`).
+- **Frontend:** Populate the dropdown with the *complete* list of sources, regardless of what page I'm on.
+Do not make me play hide-and-seek with my own devices.
