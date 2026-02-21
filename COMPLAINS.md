@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device filter list is calculated client-side based on the *currently loaded page* of tabs (the visible 20 items). It ignores the other 98% of the dataset.
+
+**Why this matters:**
+This is a logic error that breaks the core functionality of a filter. If my first page of results happens to contain only tabs from "Desktop", the "Mobile" option disappears from the dropdown. I literally cannot filter for my mobile tabs unless I manually paginate until I stumble upon one. A filter tool should help me find data, not require me to find the data first to unlock the filter.
+
+**The Demand:**
+Decouple device discovery from pagination.
+- **Backend:** Create a distinct endpoint or query to fetch all unique `device_name` values from the database (global scope).
+- **Frontend:** Populate the device dropdown from this global list, not the local `tabs` state.
+- **Result:** I must be able to select "iPhone" from page 1, even if the first 20 results are all from "MacBook".
