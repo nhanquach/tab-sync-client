@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The "Device" filter dropdown suffers from severe short-term memory loss. It only lists devices that happen to have tabs on the *currently visible page* (the first 20 items).
+
+**Why this matters:**
+This makes the filter useless for its primary purpose: finding tabs from a specific device.
+If I have 100 tabs, and "My iPhone" only has tabs on Page 5, "My iPhone" will not appear in the filter dropdown when I am on Page 1. I cannot filter by "My iPhone" because the UI doesn't know it exists yet.
+To find my phone's tabs, I have to manually click through every page until I spot one, *then* the filter option magically appears? This is completely backwards.
+
+**The Demand:**
+Decouple device discovery from pagination.
+The application must fetch a distinct list of `device_names` from the *entire* database at startup, regardless of which tabs are currently displayed. The filter list should be static and complete, not dynamic and fragmentary.
