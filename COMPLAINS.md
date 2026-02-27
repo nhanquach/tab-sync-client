@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device filter dropdown is fundamentally broken. It populates its list of available devices based *only* on the 20 tabs currently visible on the screen.
+
+**Why this matters:**
+This is a logic error that masquerades as a feature. If I want to find a tab I opened on my "MacBook Pro", but my current page of results only contains tabs from "iPhone" and "Windows Desktop", the "MacBook Pro" option simply vanishes from the dropdown.
+To find my device, I have to randomly click through pagination, hoping to stumble upon a page that *happens* to have a "MacBook Pro" tab, just so the filter option will appear. This is completely backward. A filter should help me find data, not require me to find the data first to enable the filter.
+
+**The Demand:**
+Decouple device discovery from pagination.
+- **Backend:** Create a dedicated API endpoint or query to fetch a distinct list of all `device_names` from the database (both `open_tabs` and `archived_tabs`).
+- **Frontend:** Load this global device list on initialization. The filter dropdown should always show *every* device that has ever synced a tab, regardless of what is on the current page.
