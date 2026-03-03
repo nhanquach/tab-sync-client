@@ -87,3 +87,47 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Ephemeral Device List)
+
+**The Problem:**
+The device list used for filtering tabs is calculated dynamically based *only* on the currently visible page of tabs (the 20 items currently loaded).
+
+**Why this matters:**
+This is an absolute joke of a filtering system. As I paginate through my tabs, the available devices in the dropdown randomly appear and disappear. If I have a "MacBook Pro" tab on page 2 but none on page 1, I literally cannot filter by "MacBook Pro" while on page 1. The filters suffer from short-term memory loss. I can't trust the filter list because it's lying to me about what devices actually exist in my database.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- **Backend:** Fetch a distinct, global list of `device_names` from the database.
+- **Frontend:** Populate the device dropdown with this comprehensive list, regardless of which page I am currently viewing.
+Stop making the UI guess based on incomplete data.
+
+## 8. Phantom Devices (No Central Device Management)
+
+**The Problem:**
+Devices are not treated as true entities in this application; they are merely raw strings attached to individual tab records. There is no centralized "Device Management" dashboard where I can view, rename, merge, or delete the devices associated with my account.
+
+**Why this matters:**
+This creates a cluttered, fragile, and messy experience over time. If I change my computer's name from "Johns-MacBook" to "Johns-MacBook-Pro" in my browser or OS, the app treats it as a completely new device. The old "Johns-MacBook" lingers in the system indefinitely as long as one archived tab contains that string. I cannot merge the two. I cannot delete an obsolete device without manually hunting down and deleting every single tab associated with it. Over months of use, the device list will inevitably become an unmanageable graveyard of typos, duplicate names, and retired phones, making filtering an absolute nightmare.
+
+**The Demand:**
+Implement a proper, relational Device Management system.
+- **Data Model:** Create a distinct `devices` table or entity linked to the user profile, rather than relying on loose strings on every tab.
+- **Management UI:** Provide a settings view where I can see all my registered devices, edit their display names, and delete them.
+- **Consolidation:** Allow me to merge two devices (e.g., migrating all tabs from "Phone-old" to "Phone-new").
+Stop treating core organizational dimensions as an afterthought.
+
+## 9. The Cloud Dependency Anchor (No Offline Capability)
+
+**The Problem:**
+The application functions as a thin terminal to a remote database (Supabase), making it entirely dependent on an active, stable internet connection. There is no local caching of data, meaning if the connection drops, the app becomes a dead, blank slate. I cannot view my existing tabs, and more importantly, I cannot save new tabs offline to be synced later.
+
+**Why this matters:**
+This is a fatal flaw for a productivity tool. As someone who frequently travels, works on trains, or deals with spotty coffee-shop Wi-Fi, my context switching doesn't stop just because my connection drops. If I find a link while reading an article on a plane, I should be able to "save" it to the app, knowing it will sync when I reconnect. Instead, the application essentially tells me to hold my thought until the Wi-Fi icon comes back on. It transforms a tool meant to *capture* my workflow into a tool that *dictates* when I'm allowed to work.
+
+**The Demand:**
+Implement a robust "Local-First" architecture immediately.
+- **Local Storage:** Use IndexedDB or a local cache to store a replica of the user's tab data, ensuring the app is instantly usable and readable, even completely offline.
+- **Offline Writes:** Allow the creation of new tabs and the modification/archiving of existing tabs while offline. Queue these mutations locally.
+- **Background Sync:** Automatically process the mutation queue and sync with the Supabase backend the moment connectivity is restored, resolving any conflicts gracefully.
+Do not force me to rely on the cloud just to remember a URL.
