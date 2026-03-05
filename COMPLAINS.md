@@ -87,3 +87,30 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Filtering)
+
+**The Problem:**
+The device filtering in the main tab view only populates its list of available devices based on the *currently loaded page* of tabs. If I have tabs from a specific device on page 2, but none on page 1, that device does not appear in the filter dropdown when I'm on page 1.
+
+**Why this matters:**
+This fundamentally breaks the purpose of a filter. A filter is supposed to help me find data across my entire dataset. By tying the available filters to the paginated view, the application effectively hides devices from me. I have to manually click through pages hoping to "discover" a device so I can filter by it. It's a completely unpredictable and frustrating user experience that undermines the core navigation of the app.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- **Backend Sync:** Fetch a distinct list of all `device_names` from the backend global dataset, independent of the currently paginated tabs.
+- **Persistent Filters:** Ensure the device filter dropdown always displays all available devices, regardless of which page of tabs the user is currently viewing.
+
+## 8. The Phantom Sync (False Disconnects)
+
+**The Problem:**
+The application frequently displays a "Disconnected" state in the UI when the network is momentarily unstable, and it requires a full page refresh to re-establish the connection. It doesn't attempt to automatically reconnect or buffer actions while offline.
+
+**Why this matters:**
+This makes the app feel incredibly fragile. It operates strictly as a thin terminal dependent on a perfect Supabase connection. If I'm on a train or a spotty connection, my workflow is interrupted by false alarms. If I try to archive a tab while it briefly says "Disconnected," the action silently fails without queuing.
+
+**The Demand:**
+Implement robust offline capabilities and local data caching immediately.
+- **Auto-Reconnect:** Implement exponential backoff for re-establishing WebSocket/SSE connections automatically.
+- **Action Queuing:** Queue user actions (Archive, Delete, Tagging) locally if offline, and sync them automatically when the connection is restored.
+- **Local Cache:** Cache the recent tabs locally (e.g., using IndexedDB) so the UI doesn't look broken during momentary disconnects.
