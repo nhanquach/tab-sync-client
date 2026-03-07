@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Phantom Sync (Dependent Terminal)
+
+**The Problem:**
+The application functions strictly as a thin terminal dependent on an active Supabase connection. There are no offline capabilities, and local data caching is non-existent. The moment I lose my internet connection, the application is completely useless.
+
+**Why this matters:**
+This is completely unacceptable for a productivity tool that is supposed to manage my tabs across devices. I travel often, work on planes, and commute through areas with spotty cell service. A tool that claims to "sync" should maintain a robust local state that works flawlessly offline, and then syncs in the background when a connection is restored. Being entirely reliant on the network makes the app fragile, slow, and fundamentally untrustworthy for serious work. If the server is slow, the app is slow. If the server is down, my data is inaccessible.
+
+**The Demand:**
+Implement offline capabilities and local data caching immediately.
+- **Local First Architecture:** The application must read from and write to a local database (e.g., IndexedDB) first.
+- **Background Sync:** Changes made offline should be synced with the Supabase backend in the background as soon as a network connection is available.
+- **Offline Reliability:** The application must be fully functional for reading, searching, and managing tabs even when offline.
