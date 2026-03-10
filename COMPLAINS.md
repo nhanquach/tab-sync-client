@@ -87,3 +87,44 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device filtering mechanism is completely broken. The list of devices shown in the dropdown or filter sidebar only includes devices present in the *currently visible page* of tabs. If I change the page, the list of available devices changes.
+
+**Why this matters:**
+This renders the entire device filtering feature practically useless. If I have a specific device (e.g., "Work Laptop") but none of its tabs happen to be in the first 20 items (Page 1), I literally cannot filter by "Work Laptop" without guessing which page it might appear on. The app suffers from short-term memory loss on every pagination click. It creates a confusing, unpredictable UI where filter options magically appear and disappear. This is a fundamental architectural flaw in how data is aggregated.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- **Global Discovery:** The backend must provide a distinct list of all `device_names` across the entire dataset (or at least for the user's active/archived tabs), regardless of the current pagination state.
+- **Stable UI:** The device filter dropdown must remain consistent and comprehensive, allowing me to select a device *before* filtering the paginated results, not forcing me to hunt for the device first.
+
+## 8. The Phantom Sync (Offline Inability)
+
+**The Problem:**
+The application is entirely dependent on an active internet connection to function. It acts as a thin client for the Supabase backend. If my connection drops, I cannot access my tabs, manage my workspace, or even view my data. It's a completely useless brick when offline.
+
+**Why this matters:**
+This is an unacceptable architectural decision for a tool meant to manage my workspace state. I expect to be able to view my tabs and organize my work while on a flight, commuting, or simply when experiencing network issues. By tying the fundamental functionality of the app exclusively to the cloud, the developers have stripped me of control and reliability. The phrase "TabSync" implies synchronization between a local state and a remote state, not a complete surrender of local capability.
+
+**The Demand:**
+Implement offline capabilities immediately.
+- **Local Caching:** Store my data locally (e.g., IndexedDB, LocalStorage) so I can read and manage my tabs offline.
+- **Offline Writes:** Allow me to queue changes (archive, delete, organize) locally when disconnected, and automatically sync these changes to the backend when the connection is restored.
+- **Resilience:** Stop making the UI crash or become unresponsive when the network drops. Treat the local state as a first-class citizen.
+
+## 9. The Ghost of Devices Past (Device Management Void)
+
+**The Problem:**
+There is no centralized device management system. Device categories in the UI are derived dynamically from the `deviceName` string in tab records. This means there is absolutely no way to rename a device, merge two devices (e.g., if a device name changes after an OS update), or delete an obsolete device that is no longer in use but still has old tabs associated with it.
+
+**Why this matters:**
+As a user upgrades hardware or reinstalls browsers, the device list becomes an ever-growing graveyard of obsolete and duplicate names like "MacBook Pro", "MacBook Pro (1)", "Desktop-XYZ", etc. Since I can't clean this up or merge them, the device filter becomes a cluttered, unusable mess over time. It punishes long-term users by making their workspace progressively messier without any tools to maintain it.
+
+**The Demand:**
+Implement a dedicated Device Management interface immediately.
+- **Centralized Registry:** Manage devices as distinct entities, not just stray strings on tab records.
+- **CRUD Operations:** Allow renaming devices (updating all associated tabs) and hiding/deleting obsolete devices.
+- **Merging:** Provide a way to merge the tabs of "Old Laptop" into "New Laptop" to consolidate the workspace.
