@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Typography Anomaly (Inconsistent Text Scaling)
+
+**The Problem:**
+The application demonstrates poor typographic hierarchy and inconsistent scaling across different screen sizes. The text sizes do not scale fluidly, leading to unreadable microscopic text on mobile devices and obnoxiously large headers on ultrawide monitors.
+
+**Why this matters:**
+This is a basic accessibility and usability failure. A modern application must employ responsive typography. Forcing users to squint on their phones or endure aggressively large text on desktop breaks the user experience and strains the eyes. The app feels like a static poster rather than an adaptive digital interface. The lack of standard typographic scales makes the UI look amateurish and unpolished.
+
+**The Demand:**
+Overhaul the typography system immediately.
+- **Fluid Typography:** Implement a fluid typography scale (e.g., using `clamp()`) that adjusts smoothly between viewport breakpoints.
+- **Hierarchy:** Establish a clear, consistent typographic hierarchy across all components, ensuring headers, body text, and captions remain proportional and readable on any device.
+- **Accessibility:** Respect the user's system font size preferences and ensure a minimum readable size for all essential text elements.
