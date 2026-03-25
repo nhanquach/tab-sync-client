@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Filtering)
+
+**The Problem:**
+The device list used for filtering is calculated on the *current page* of tabs (e.g., the 20 visible items), resulting in an incomplete list of devices that fluctuates with pagination.
+
+**Why this matters:**
+This is deeply frustrating. The device dropdown promises to let me filter my workspace by the machine I used (e.g., "Show me tabs from my Mac"). However, because it only looks at the currently visible tabs, if the device I want to filter by isn't represented on this exact page, it simply doesn't exist in the dropdown! This defeats the entire purpose of a global filter, turning it into a localized, unreliable guessing game.
+
+**The Demand:**
+Decouple device discovery from pagination immediately. Fetch a distinct list of `device_names` from the backend global dataset to populate the device filter, regardless of which page the user is viewing. Stop hiding my devices based on random pagination bounds.
