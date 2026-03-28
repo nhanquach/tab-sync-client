@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Incomplete Device Filtering)
+
+**The Problem:**
+The device list used for filtering the tabs in the main interface is populated exclusively from the *currently loaded page* of tabs. If I have a device that only has tabs saved on "Page 3" of my paginated view, that device will completely vanish from the filter dropdown until I manually paginate to that page.
+
+**Why this matters:**
+This renders the filtering system fundamentally useless as a discovery or navigation tool. A filter should allow me to narrow down a global dataset. Instead, the application's filter can only narrow down the 20 items I am already looking at. It forces the user to memorize which devices have tabs on which page, completely defeating the purpose of a cross-device syncing application. It is a structural failure disguised as a minor UI bug.
+
+**The Demand:**
+Decouple device discovery from pagination. The device dropdown must always display the full, distinct list of all devices associated with my account, regardless of which page of tabs I am currently viewing. The frontend needs to fetch this distinct list from the backend global dataset, not derive it dynamically from local state.
