@@ -87,3 +87,16 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Incomplete Device Discovery)
+
+**The Problem:**
+The device filtering list is generated dynamically based only on the current visible page of tabs (the default 20). If I have tabs from a device on page 2 but not on page 1, that device simply doesn't exist in the filter list. The app suffers from short-term memory loss.
+
+**Why this matters:**
+This renders the filtering system functionally broken and completely unreliable. When I want to find a tab from "MacBook Pro," I look at the device dropdown. If "MacBook Pro" isn't there, I naturally assume there are no tabs from it. But no, the app is just hiding them on page 2. This is deeply confusing, gaslights the user, and forces me to manually click through pagination just to see if a device *might* appear in the filter list. It defeats the entire purpose of having a global filter in the first place.
+
+**The Demand:**
+Decouple the device filter list from the current page's pagination immediately.
+- Fetch a distinct, global list of all `device_names` directly from the backend.
+- The device dropdown must consistently show every device I've synced tabs from, regardless of which page of tabs I'm currently viewing.
