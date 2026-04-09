@@ -87,3 +87,18 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Blind Tab Grid (No Visual Preview)
+
+**The Problem:**
+The application relies entirely on text to represent tabs. A saved tab is nothing more than a title string and a URL string. There are no favicons, no thumbnail previews, and no visual cues of any kind.
+
+**Why this matters:**
+Human beings are visual creatures. When scanning a list of 50 saved tabs, reading 50 titles is exhausting and slow. A favicon acts as an immediate, recognizable anchor (e.g., instantly spotting the GitHub icon vs. the StackOverflow icon). A thumbnail preview provides crucial context about the state of the page when it was saved.
+By stripping away all visual identity, the app reduces the rich experience of web browsing to a sterile, terminal-like spreadsheet. It makes finding a specific tab significantly harder than it should be, increasing cognitive load for the user. It is literally "The Blind Tab Grid".
+
+**The Demand:**
+Integrate visual cues into the tab representation immediately.
+- **Favicons:** Fetch and display the favicon for the saved URL. This is the bare minimum for modern bookmarking/tab management.
+- **Thumbnails (Optional but highly desired):** Implement a service or proxy to capture and display a small visual preview of the page content.
+- **UI Update:** Redesign the Tab Card component to prominently feature these visual elements alongside the text.
