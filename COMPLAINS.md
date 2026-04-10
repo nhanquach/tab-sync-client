@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Blind Tab Grid (Missing Visual Cues)
+
+**The Problem:**
+The application's tab list does not currently display visual previews, thumbnails, or favicons. Saved tabs are rendered strictly as dense text blocks containing only titles and URLs.
+
+**Why this matters:**
+Humans are visual creatures. When scanning a list of 50 saved tabs, reading every single title is cognitively exhausting and slow. We rely on recognizable logos (favicons) and site snapshots (thumbnails) to rapidly identify context at a glance. Without visual anchors, the tab grid is a daunting wall of text that makes finding a specific page feel like looking at raw code. It completely ignores modern UI standards where visual hierarchy is paramount.
+
+**The Demand:**
+Implement visual indicators for all saved tabs immediately.
+- **Favicons:** Extract and consistently display the site's favicon next to every tab title. This is bare-minimum table stakes.
+- **Visual Previews:** Offer a card/grid view that captures and displays a thumbnail image of the webpage content at the time it was saved.
+- **Graceful Fallbacks:** If an image fails to load, provide a clean, visually distinct fallback (like the site's initial or a categorized icon) instead of a broken image link. Stop forcing me to read when a single icon communicates the same information instantly.
