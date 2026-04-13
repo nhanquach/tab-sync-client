@@ -87,3 +87,29 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Device Filter Inconsistency)
+
+**The Problem:**
+The device selection dropdown (used for filtering tabs by device) only populates its list of devices based on the *currently visible page* of tabs (the first 20 items by default). It is completely unaware of any devices that might only appear on subsequent pages.
+
+**Why this matters:**
+This creates a baffling, broken, and gaslighting user experience. If I have tabs from my "Work Laptop" on page 2, but none on page 1, "Work Laptop" simply does not exist in the filter dropdown. As I paginate through my data, the available filters randomly appear and disappear. A filter is supposed to help me find data across my entire dataset, not just filter what's already visible on my screen. This implementation makes the device filter completely untrustworthy and effectively useless for users with multiple devices and many tabs. It screams of a lazy, client-side hack rather than a proper architectural decision.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- Fetch a distinct, comprehensive list of `device_names` directly from the backend global dataset upon application load or authentication.
+- Populate the device filter dropdown with this absolute global list, ensuring it remains stable, complete, and reliable regardless of the current pagination state.
+
+## 8. The Blind Tab Grid (No Visual Previews)
+
+**The Problem:**
+The application's tab list does not currently display any visual previews, thumbnails, or even basic favicons for saved tabs. It renders the entire dataset strictly as dense, repetitive text blocks (Titles and URLs).
+
+**Why this matters:**
+This is an incredibly poor cognitive experience. Humans process images exponentially faster than text. When I am scanning through dozens of tabs, reading every single title is exhausting and slow. Without favicons to anchor my eye to a specific domain (like GitHub, YouTube, or Wikipedia) or thumbnails to remind me of the page's layout, the interface feels like an uninspired spreadsheet from the 1990s. A "modern" workspace tool that ignores visual hierarchy is simply incomplete and shows a lack of empathy for the user's cognitive load.
+
+**The Demand:**
+Implement visual identifiers for all tabs immediately.
+- **Favicons:** Fetch and display high-resolution favicons next to every tab title. This is the absolute bare minimum.
+- **Thumbnails (Optional but Expected):** For a truly modern experience, generate and display visual previews/thumbnails of the saved pages, at least as an optional view mode (e.g., a "Grid View" vs "List View").
