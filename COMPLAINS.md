@@ -87,3 +87,29 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Pagination-Bound Device Discovery)
+
+**The Problem:**
+The device filtering mechanism in the main view is entirely broken. The dropdown list of available devices to filter by is populated *only* based on the tabs currently visible on the active page (usually just 20 items).
+
+**Why this matters:**
+This makes the filter practically useless for its intended purpose. If I have a tab saved from my "Work Laptop", but that tab happens to be on Page 2, "Work Laptop" will not even appear as an option in the device filter dropdown while I am on Page 1. The application essentially "forgets" that other devices exist simply because their tabs aren't currently rendered. This forces me to blindly click through pages hoping the device filter will magically appear. It is a fundamental architectural flaw that betrays a complete misunderstanding of how filtering should work.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- Fetch a distinct, comprehensive list of all `device_names` directly from the backend global dataset, regardless of pagination state.
+- Populate the device filter dropdown with this global list so users can filter their entire repository reliably from any page.
+
+## 8. The Blind Tab Grid (No Visual Previews)
+
+**The Problem:**
+The application's tab list currently displays saved tabs strictly as text (Titles and URLs), completely lacking visual previews, thumbnails, or favicons.
+
+**Why this matters:**
+This forces users to rely entirely on reading text to identify tabs, which is slow and cognitively demanding. It completely ignores the visual nature of web browsing. A wall of text is not a usable interface for quickly finding a specific visual reference or website. It feels like navigating the web via a terminal window.
+
+**The Demand:**
+Implement visual previews for tabs immediately.
+- **Favicons:** Display the site's favicon next to the title as an absolute minimum.
+- **Thumbnails:** Generate or fetch thumbnail previews for saved tabs to provide immediate visual context.
