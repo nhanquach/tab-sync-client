@@ -87,3 +87,16 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Pagination vs. Discovery)
+
+**The Problem:**
+The device list used for filtering in the Home page is calculated using `useMemo` on the *current page* of tabs (default 20). This results in an incomplete list of devices that fluctuates with pagination.
+
+**Why this matters:**
+This makes filtering completely unreliable. If I have a tab from "Desktop-Mac" on page 2, but I am currently on page 1, "Desktop-Mac" won't even show up in the device filter dropdown! I can only filter by devices present on my current page, which defeats the purpose of global filtering entirely.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- Fetch a distinct list of `device_names` from the backend global dataset instead of relying on the local paginated state.
+- Create a dedicated API client function in `src/clients/index.ts` to retrieve this list so the frontend doesn't have to guess.
