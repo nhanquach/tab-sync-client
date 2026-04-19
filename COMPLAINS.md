@@ -87,3 +87,42 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The application populates the device list dropdown used for filtering by extracting `deviceName` from the currently loaded page of tabs (the visible 20 items).
+
+**Why this matters:**
+This is completely broken. If I have a device "Work Laptop" and its latest tabs are on page 2, the filter dropdown won't even show "Work Laptop" as an option until I manually navigate to page 2. I cannot filter my tabs by a device because the application "forgets" the device exists unless its tabs are currently on-screen. This renders device-based filtering unreliable and useless unless you have very few tabs.
+
+**The Demand:**
+Decouple device discovery from pagination immediately.
+- Fetch a distinct list of `device_names` from the backend global dataset, not just the local DOM.
+- Display all known devices in the filter dropdown at all times, regardless of which page of tabs the user is currently viewing.
+
+## 8. The Blind Tab Grid (No Visual Previews)
+
+**The Problem:**
+The application's tab list does not display visual previews, thumbnails, or favicons. Saved tabs are rendered strictly as text (Titles and URLs).
+
+**Why this matters:**
+This makes visually scanning tabs incredibly difficult. Users rely on favicons and page thumbnails to quickly identify websites, especially when titles are vague or truncated. A text-only list feels archaic and less usable than a standard browser history view. It forces users to read every title instead of relying on rapid visual recognition.
+
+**The Demand:**
+Implement visual previews immediately.
+- Display the `favIconUrl` for each tab prominently.
+- Ideally, provide an option to show a small thumbnail preview of the page content if possible, or at least a high-quality favicon.
+
+## 9. The Typography Anomaly (Inconsistent Text Scaling)
+
+**The Problem:**
+The application suffers from poor responsive typography and inconsistent text scaling across different screen sizes.
+
+**Why this matters:**
+This degrades readability and accessibility. Text that looks fine on a desktop monitor becomes illegibly small or awkwardly large on mobile devices. There's no systematic approach to typography, making the interface feel unpolished and frustrating to read on smaller screens. This inconsistency forces users to constantly zoom in or out, ruining the mobile experience.
+
+**The Demand:**
+Implement a consistent, responsive typography system immediately.
+- Use fluid typography or clear breakpoints for text scaling.
+- Ensure all text, including buttons and form fields, remains readable on all supported devices without manual zooming.
