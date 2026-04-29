@@ -87,3 +87,30 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Capability)
+
+**The Problem:**
+The application functions strictly as a thin client completely dependent on an active, continuous connection to Supabase. There is zero local data caching or offline capability.
+
+**Why this matters:**
+This is a fatal flaw for a productivity application. If my internet connection drops, or if I am working on a plane, on a train, or in a cafe with spotty Wi-Fi, the app becomes a useless brick. I cannot view my saved tabs, I cannot search them, and I cannot even queue new saves for later synchronization. I am tethered to the cloud, making my workflow incredibly fragile. A "save for later" tool that doesn't work when I'm disconnected from the internet is profoundly ironic.
+
+**The Demand:**
+Implement Service Workers and local caching (IndexedDB/localStorage) for offline mode.
+- **Read-Only Mode:** At the very least, allow me to view and search my previously loaded tabs while offline.
+- **Offline Queue:** Allow me to save, archive, or delete tabs while offline, and sync those actions to the server when the connection is restored.
+
+## 8. The Blind Tab Grid (Zero Visual Cues)
+
+**The Problem:**
+The application presents saved tabs purely as text (Title and URL), omitting any form of visual identification such as favicons, website logos, or page thumbnails.
+
+**Why this matters:**
+Human beings are visual creatures. Scanning a list of 50 purely text-based links is cognitively exhausting. When I am looking for a GitHub repo, a YouTube video, or a specific Jira ticket, my brain looks for the logo first, not the text string. By stripping away these universally recognized visual cues, the application forces me to read every single title instead of glancing at familiar icons. It makes finding a specific tab unnecessarily slow and tedious. It looks like a terminal output, not a modern web app.
+
+**The Demand:**
+Integrate visual indicators into the tab list immediately.
+- **Favicons:** At the absolute minimum, fetch and display the favicon for each URL next to its title.
+- **Thumbnails (Optional but expected):** For a more premium experience, generate or fetch OpenGraph image previews for the tabs.
+Stop making me read when I could just look.
