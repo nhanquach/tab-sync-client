@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. Ghost Devices (No Device Management)
+
+**The Problem:**
+The application lacks a centralized device management system. Device categories in the UI are derived dynamically from the `deviceName` string in tab records, preventing renaming, merging, or deletion of obsolete devices.
+
+**Why this matters:**
+This is extremely frustrating. Over time, as I upgrade devices, change browsers, or if a sync glitch happens, my device list gets clogged with phantom entries like "My-MacBook-Pro-2", "Chrome-Windows", or devices I no longer own. Because the list is just generated from the tabs, I can't clean this up. It makes filtering a nightmare and clutters the UI permanently unless I manually delete or rename every single tab associated with that old device.
+
+**The Demand:**
+Implement a proper Device Management settings panel.
+- **Manage Devices:** Allow me to view a list of all known devices.
+- **Rename/Merge:** Let me rename "My-MacBook-Pro-2" to "Work Laptop" and have it update all associated tabs. Let me merge two device entries into one.
+- **Delete/Hide:** Allow me to hide obsolete devices from the main filter list without having to delete the archived tabs associated with them.
