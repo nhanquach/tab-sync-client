@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Devices (Unmanageable Device Clutter)
+
+**The Problem:**
+The application completely lacks a dedicated device management system. Device names in the UI filters are dynamically scraped from the `deviceName` strings attached to individual tab records. If I rename my laptop, sell a phone, or make a typo when syncing, that "device" lives in the UI forever as long as one old tab references it. There is absolutely no way to rename, merge, or delete these phantom devices.
+
+**Why this matters:**
+It creates a polluted, unmanageable interface. As a power user syncing across multiple machines over time, my device list inevitably fills up with obsolete entries like "MacBook-Pro-2", "Old-iPhone", or "Desktp". I cannot clean this up without hunting down and manually modifying or deleting every single tab associated with the ghost device. This is a hacky data model bleeding directly into the user experience, treating transient strings as immutable system entities.
+
+**The Demand:**
+Implement a proper device registry and management interface.
+- **Central Registry:** Decouple device entities from individual tab strings by creating a dedicated `devices` table or global management system.
+- **Management UI:** Provide a settings view where I can view, rename, merge, and delete registered devices.
+- **Cascade Updates:** If I rename or delete a device, those changes should correctly cascade to all associated tabs.
