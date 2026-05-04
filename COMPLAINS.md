@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Always-Online Dependency)
+
+**The Problem:**
+The application functions strictly as a thin terminal tethered to the Supabase backend. It entirely lacks offline capabilities, local data caching, or graceful network degradation. If the internet connection drops, the app becomes a useless brick.
+
+**Why this matters:**
+This is fundamentally unacceptable for a productivity tool meant to "sync" and store reading material. Users frequently need to reference saved tabs while commuting, on flights, or in areas with spotty Wi-Fi. A tool that demands an uninterrupted umbilical cord to a cloud server to merely *view* already-saved text is a liability, not a feature. Relying on "always-on" connectivity is lazy engineering and shows disregard for real-world user conditions.
+
+**The Demand:**
+Implement local caching and offline capabilities immediately.
+- **Service Workers:** fully utilize `vite-plugin-pwa` to cache the application shell.
+- **Local Persistence:** Sync `open_tabs` and `archived_tabs` to IndexedDB so the UI populates instantly, online or offline.
+- **Optimistic UI:** Allow users to queue "Archive" or "Delete" actions locally while disconnected, silently syncing them to the server once the connection is restored. Stop treating the user's device like a dumb terminal.
