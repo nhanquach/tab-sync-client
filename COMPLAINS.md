@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (No Offline Capabilities)
+
+**The Problem:**
+The application functions as a thin terminal dependent on an active Supabase connection. It lacks offline capabilities and local data caching.
+
+**Why this matters:**
+This makes the app extremely fragile. If I lose connection on a flight, in a tunnel, or if Supabase has an outage, I am completely locked out of my tabs and data. Despite having Vite PWA generation enabled, there is no real offline mode.
+
+**The Demand:**
+Implement local caching and offline capabilities immediately. Let me view my tabs and interact with basic functionalities without requiring a persistent server connection. Sync the data when the connection returns.
