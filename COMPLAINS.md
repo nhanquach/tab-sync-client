@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Offline Incapability)
+
+**The Problem:**
+The application lacks offline capabilities and local data caching, functioning strictly as a thin terminal dependent on an active Supabase connection.
+
+**Why this matters:**
+In situations with spotty or no internet connection, the app becomes completely useless. Users cannot view their saved tabs, search through them, or manage their data offline. This is a critical flaw for a tool meant to manage and organize important information that users might need to access anywhere.
+
+**The Demand:**
+Implement proper offline support using local storage or IndexedDB. Cache the most recent data locally so users can at least view and search their tabs offline. Any changes made offline should be synced back to the server once the connection is restored.
