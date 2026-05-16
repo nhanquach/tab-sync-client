@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Tolerance)
+
+**The Problem:**
+The application assumes I am eternally blessed with gigabit fiber. The moment I enter a tunnel, board a plane, or experience a transient network drop, the app becomes a lifeless husk. I can't browse my previously saved tabs. I can't even view the list of titles. It functions strictly as a thin terminal totally dependent on an active Supabase connection.
+
+**Why this matters:**
+This is a fundamental architectural failure for a modern web application, especially one meant to act as a "read later" or personal knowledge base. A core tenet of modern PWAs is offline resilience. If I save 50 tabs to read on my commute, and the app refuses to display the cached list of URLs because it can't ping the database, the tool has failed its primary purpose. The fact that `vite-plugin-pwa` is somewhat present makes this even more infuriating, as it teases offline support without delivering data caching.
+
+**The Demand:**
+Implement true offline resilience and local data caching immediately.
+- **Local Caching:** Utilize IndexedDB or LocalStorage to cache the most recently fetched lists of Open and Archived tabs.
+- **Offline Browsing:** When network fails, the app must gracefully degrade to displaying the cached lists, allowing me to view and click on my saved URLs (even if the destination pages themselves are offline, I at least have my list).
+- **Optimistic UI / Queueing:** If I try to save or archive a tab while offline, queue the mutation locally and sync it automatically when the connection is restored.
