@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Capability)
+
+**The Problem:**
+The application functions strictly as a thin terminal heavily dependent on an active Supabase connection. It completely lacks offline capabilities and local data caching. If the network drops, the app becomes utterly useless, displaying loading screens forever or throwing connection errors.
+
+**Why this matters:**
+I don't always work from a gigabit office connection. When I'm on a plane, commuting on a train, or in a cafe with spotty Wi-Fi, my context and tabs are held hostage. An app designed to store and sync my crucial links shouldn't lock me out of my own data the second the internet blinks. The build process already uses `vite-plugin-pwa` to generate Service Workers (`build/sw.js` and `workbox-*.js`), yet we reap none of the offline benefits. This is a massive missed opportunity for reliability.
+
+**The Demand:**
+Implement robust offline capabilities and local data caching immediately.
+- **Local Cache:** Store at least the most recently accessed tabs and data locally using IndexedDB.
+- **Offline Mode:** Allow viewing of cached tabs when offline.
+- **Sync Queue:** Allow users to queue actions (like archiving or deleting tabs) while offline, and sync them automatically once the connection is restored.
