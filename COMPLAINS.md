@@ -87,3 +87,18 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Tolerance)
+
+**The Problem:**
+The application instantly breaks and becomes entirely useless the moment the user loses their internet connection. It is effectively a thin terminal that completely relies on an uninterrupted connection to the Supabase backend. Even basic viewing of already loaded data is unavailable or unreliable.
+
+**Why this matters:**
+This is completely unacceptable for a tool meant to manage my workspace and bookmarks. Users travel, encounter poor Wi-Fi, or simply experience momentary drops. If I'm on a train trying to review my saved tabs or organize my workspace, a "Network Error" or endless loading spinner completely halts my productivity. The fact that the application generates a Service Worker (`sw.js`) during the build process strongly suggests offline capabilities *should* be present, but they are clearly non-functional or severely underutilized. It feels like the infrastructure for offline support was started and then abandoned.
+
+**The Demand:**
+Implement robust offline capabilities and local data caching immediately.
+- **Local First:** Cache the tab data locally so I can at least *view* my open and archived tabs without an active connection.
+- **Queue Actions:** If I archive, delete, or modify a tab while offline, queue the action and synchronize it automatically once the connection is restored.
+- **UX Indication:** Provide clear, non-intrusive visual feedback when the application is operating in "Offline Mode" and when it is syncing.
+- **Leverage Existing PWA Tech:** Actually utilize the generated Service Workers to make this a reliable Progressive Web App. Stop pretending to be a native app while failing at the most basic native feature: working without Wi-Fi.
