@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Tolerance)
+
+**The Problem:**
+The application lacks offline capabilities and local data caching, functioning strictly as a thin terminal dependent on an active connection.
+
+**Why this matters:**
+This is an unacceptable architecture for a modern web application designed to manage my browsing state. A temporary loss of internet connectivity shouldn't render my workspace inaccessible or cause data loss. Although Service Workers are generated during build (`vite-plugin-pwa`), they are fundamentally underutilized for true offline mode, resulting in a false promise of a resilient PWA.
+
+**The Demand:**
+Implement robust offline capabilities immediately.
+- **Local Caching:** Utilize IndexedDB or localStorage to cache open and archived tabs.
+- **Offline Writes:** Queue user actions while disconnected and seamlessly synchronize once the connection is restored.
+- **True PWA:** Properly implement offline fallback using the existing Service Worker infrastructure.
