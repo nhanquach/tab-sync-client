@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Tolerance)
+
+**The Problem:**
+The application lacks offline capabilities and local data caching, functioning strictly as a thin terminal dependent on an active Supabase connection. If my internet drops, the app becomes entirely useless.
+
+**Why this matters:**
+This is unacceptable for a productivity tool designed to capture and sync tabs. A mobile device frequently transitions between network states. Without offline support, I risk losing data or being unable to access my previously synced tabs when commuting or working from a cafe with spotty Wi-Fi. It feels incredibly brittle.
+
+**The Demand:**
+Implement local data caching and an offline sync queue immediately.
+- Use local storage or IndexedDB to cache the current state.
+- Allow me to queue "save tab" actions while offline, and sync them automatically when the connection is restored.
+- Give me a clear visual indicator of the sync status.
