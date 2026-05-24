@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Pagination Problem)
+
+**The Problem:**
+The application's device filter dynamically builds its list of "Devices" based on the tabs in the *current page* of tabs.
+
+**Why this matters:**
+This means that if you are viewing a page of tabs that doesn't contain a tab from a specific device, that device will disappear from the filter list entirely.
+
+**The Demand:**
+The list of devices should be calculated independently from pagination, derived from the full global dataset.
