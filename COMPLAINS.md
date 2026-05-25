@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Context-Blind Navigation)
+
+**The Problem:**
+The device filtering system is fundamentally broken. The list of available devices in the filter dropdown is derived exclusively from the tabs visible on the *current page*, rather than the global dataset.
+
+**Why this matters:**
+This creates a baffling, unpredictable user experience. If I have a "MacBook Pro" tab saved on page 3, the "MacBook Pro" option will completely vanish from the filter dropdown while I am on page 1. The available filters dynamically appear and disappear as I paginate. It makes the filtering feature entirely useless for discovering or finding content. I cannot reliably say "Show me all tabs from my Phone" unless one happens to be visible right now.
+
+**The Demand:**
+Decouple device discovery from pagination immediately. Fetch a distinct, global list of `device_names` from the backend to populate the filter dropdown, ensuring a consistent and reliable filtering experience regardless of the current page view.
