@@ -87,3 +87,14 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Amnesiac Filters (Broken Device Discovery)
+
+**The Problem:**
+The device list used for filtering tabs is calculated dynamically based only on the *currently loaded page* of tabs.
+
+**Why this matters:**
+This creates an inconsistent user experience. If a user wants to filter by a device that doesn't happen to have a tab on the current page, that device simply does not appear in the filter dropdown. The filters suffer from "amnesia" as the user paginates, appearing and disappearing randomly. This makes the filtering system fundamentally unreliable.
+
+**The Demand:**
+Decouple device discovery from pagination. Fetch a distinct, comprehensive list of `device_names` from the backend global dataset to populate the filter dropdown, ensuring all devices are always available for filtering.
