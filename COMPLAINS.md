@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (No Offline Support)
+
+**The Problem:**
+The application functions strictly as a thin terminal that is completely dependent on an active Supabase connection. There are no offline capabilities or local data caching mechanisms in place.
+
+**Why this matters:**
+This is an unacceptable oversight for a modern web application, especially one managing a user's workspace and browsing history. If my internet connection drops, or if I'm on a plane, or if the backend experiences downtime, the application becomes an unusable blank slate. Even though there are service workers generated (`build/sw.js`), they are seemingly just for show. A productivity tool that dies without Wi-Fi is a toy, not a reliable tool. I need access to my saved tabs and their metadata regardless of my network status.
+
+**The Demand:**
+Implement offline functionality immediately using Service Workers and IndexedDB (or similar local storage).
+- **Read-Only Mode:** At a bare minimum, I should be able to view my existing open and archived tabs while offline.
+- **Queue Actions:** Any actions taken while offline (archiving, deleting, tagging) should be queued locally and synchronized automatically when the connection is restored.
+- **PWA Capabilities:** Fully realize the PWA potential that is currently half-baked in the build process.
