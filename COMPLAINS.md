@@ -87,3 +87,21 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. Lack of Input Validation (Security & UX Hazard)
+
+**The Problem:**
+The application does not properly validate user input across several critical forms and input fields.
+
+**Why this matters:**
+This is a basic security and user experience failure. Without input validation:
+- I can create tags that are 10,000 characters long, breaking the UI.
+- I can potentially inject malicious scripts (XSS) if input isn't sanitized before rendering.
+- I can submit empty forms or forms with invalid data types, leading to backend errors that are not gracefully handled on the frontend.
+- It provides a poor user experience as errors only surface after a round-trip to the server, rather than providing immediate, helpful feedback.
+
+**The Demand:**
+Implement robust, client-side input validation immediately.
+- Use a library like Zod or Yup to define strict schemas for all user inputs.
+- Provide clear, immediate visual feedback (error messages, red borders) when validation fails.
+- Ensure that validation logic is duplicated on the backend (Supabase) to prevent malicious bypasses.
