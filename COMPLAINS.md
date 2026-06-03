@@ -87,3 +87,16 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Devices (Immutable Device Categories)
+
+**The Problem:**
+The application lacks a centralized device management system. Device categories in the UI are derived dynamically from the `deviceName` string in tab records. This prevents renaming, merging, or deletion of obsolete devices.
+
+**Why this matters:**
+This creates a cluttered and confusing experience. If a user mistypes a device name, or if a device is retired, its ghost remains in the system indefinitely as long as it has associated tabs. The inability to manage these entities directly makes the application feel unpolished and rigid.
+
+**The Demand:**
+Implement centralized device management immediately.
+- Create a dedicated system or interface to manage, rename, merge, and delete devices globally.
+- Decouple device discovery from pagination.
