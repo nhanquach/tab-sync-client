@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Devices (Phantom Device Sprawl)
+
+**The Problem:**
+The application lacks a centralized device management system. Device categories in the UI are derived dynamically from the `deviceName` string attached to individual tab records. This means there is no way to manage devices directly.
+
+**Why this matters:**
+Because devices are derived from tab records, users cannot rename, merge, or delete obsolete devices. If I rename my phone or mistype a device name when syncing tabs, I end up with duplicate or orphaned "Ghost Devices" cluttering the UI forever. If I want to completely remove an old phone from the list, I have to manually track down and delete or reassign every single tab associated with that old name. This creates a messy, unmanageable device list over time.
+
+**The Demand:**
+Implement a proper device management system.
+- **Centralized Device Registry:** Create a database table specifically for devices that tab records reference by ID, rather than relying on raw strings.
+- **Device Management UI:** Provide a settings page where users can view, rename, merge, and delete devices.
+- **Cascade Updates:** When a device is renamed or merged, all associated tabs should reflect the change seamlessly without leaving ghost categories behind.
