@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (The Thin Client Fallacy)
+
+**The Problem:**
+The application lacks offline capabilities and local data caching, functioning strictly as a thin terminal dependent on an active Supabase connection. If the connection drops, I cannot view my saved tabs or interact with the app.
+
+**Why this matters:**
+Productivity tools need to work reliably regardless of network status. Relying entirely on a live connection means my data is inaccessible when commuting, traveling, or experiencing poor Wi-Fi. I should be able to read my saved items and queue updates locally.
+
+**The Demand:**
+Implement offline mode and local data caching.
+- **Local Storage:** Use IndexedDB (via a library like Dexie or similar) to cache tab lists locally.
+- **Offline Rendering:** Allow the application to render the tab list from local cache when the network is offline.
+- **Sync Queue:** Queue up changes (adding/deleting tabs) made while offline and sync them back to Supabase when the connection is restored.
