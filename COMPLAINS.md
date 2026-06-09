@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Fragile Tether (Zero Offline Resilience)
+
+**The Problem:**
+The application functions strictly as a thin client tethered to its backend. It lacks any meaningful offline capabilities or local data caching. If the network connection drops, the app becomes completely paralyzed.
+
+**Why this matters:**
+A tool designed to manage tabs and bookmarks—which are fundamentally personal productivity assets—must be reliable regardless of network conditions. If I am commuting, on a flight, or simply dealing with flaky Wi-Fi, my productivity grinds to a halt. The fact that the build system already generates Service Workers (`build/sw.js`) suggests that someone started building a PWA but abandoned the effort halfway. Providing a web app without basic offline read access makes the application feel brittle and unreliable.
+
+**The Demand:**
+Implement robust offline support immediately.
+- **Read Access:** Cache the most recent tab data locally (e.g., using IndexedDB) so the application loads instantly and remains readable without a connection.
+- **Write Queuing:** Allow users to queue "Save Tab" and "Archive" actions while offline, and sync them automatically when the connection is restored.
+- **Service Worker:** Utilize the generated Service Worker to serve the application shell and static assets completely offline.
