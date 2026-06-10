@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Ghost Devices (Zombie Device Clutter)
+
+**The Problem:**
+The application lacks a centralized device management system. Device categories in the UI are derived dynamically on the fly from the `deviceName` string found in individual tab records. Because there is no central registry, I cannot rename, merge, or delete devices. If I replace my "MacBook Pro" with a new laptop and change its name slightly, the old device name remains permanently etched into the UI as a ghost category as long as even a single archived tab references it.
+
+**Why this matters:**
+This creates a permanent, ever-growing graveyard of obsolete devices in the dropdown menus and filters. A minor typo in a device name ("iPone" instead of "iPhone") creates a permanent new device category. It clutters the UI, causes confusion, and makes filtering by device a frustrating, messy experience. I want to manage *my devices*, not be held hostage by typos and old hardware from years ago.
+
+**The Demand:**
+Implement a proper Device Management interface and data model immediately.
+- **Centralized Registry:** Devices must have their own database table and unique IDs, separate from the tab records.
+- **Management UI:** Provide a dedicated settings page where I can rename devices, merge duplicate/typo entries, and hard-delete obsolete devices (which should update or orphan their associated tabs).
+- **Decoupled Dropdowns:** The UI dropdowns should populate from the master device registry, not by scraping historical strings from tab data.
