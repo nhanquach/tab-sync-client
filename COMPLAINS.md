@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (No Context Resumption)
+
+**The Problem:**
+The application treats tabs as isolated entities rather than parts of a cohesive browsing session. When I save multiple tabs from a single window, they are dumped into the "Open Tabs" list as a disorganized cluster, completely losing the relationship they had when they were open in my browser. There's no way to see which tabs were saved together or to restore an entire "session" with a single click.
+
+**Why this matters:**
+Browsing is inherently task-oriented. I open 5 tabs to research a bug, or 3 tabs to plan a trip. The *grouping* of those tabs is critical metadata. By stripping away that session context upon saving, the application forces me to manually hunt down and reopen each tab individually when I want to resume that specific task. This turns a "tab manager" into a simple bookmark list, ignoring the core reason users need to save tabs in the first place: context preservation.
+
+**The Demand:**
+Implement session awareness and group restoration immediately.
+- **Session Grouping:** Automatically group tabs saved simultaneously (or within a short time window) into a "Session" entity.
+- **Visual Representation:** Display these sessions as grouped blocks in the UI, not just a flat list.
+- **Bulk Restore:** Add a single "Restore Session" button that opens all tabs in that group simultaneously in the browser.
