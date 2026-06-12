@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (Context Obliteration)
+
+**The Problem:**
+The application ingests tabs as isolated, atomic units. If I use the extension to save 15 tabs related to researching a specific bug (my "Session"), TabSync dutifully saves them as 15 separate rows. The context that these tabs were opened and saved *together* is completely destroyed.
+
+**Why this matters:**
+This is a fundamental failure of workflow preservation. I don't just use tabs individually; I use them in groups to accomplish tasks. When I switch to my laptop later, I have to hunt down those 15 tabs one by one in a flat list and reopen them individually. It defeats the entire purpose of a cross-device syncing tool. It is effectively a glorified bookmark manager, not a workspace synchronizer.
+
+**The Demand:**
+Implement session awareness and group restoration immediately.
+- **Data Model:** Group tabs saved within a narrow time window (or via a "Save Session" action) into a discrete "Session" entity.
+- **UI Presentation:** Display these sessions as grouped blocks in the feed, not just a stream of individual links.
+- **Action:** Provide a single "Restore Entire Session" button that opens all tabs in that group simultaneously.
