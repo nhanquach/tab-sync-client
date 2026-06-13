@@ -87,3 +87,16 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (Loss of Context)
+
+**The Problem:**
+The application saves tabs individually and completely ignores the concept of a browsing "session" or "window." When I save 15 tabs from a specific research project simultaneously, they are dumped into the system as 15 disconnected items.
+
+**Why this matters:**
+This destroys the context of my workflow. If I am researching a complex topic, those 15 tabs are related. I opened them together for a reason. Because the app strips away the window/session grouping, I have to manually hunt down and select all 15 tabs again if I want to resume that specific task. It turns a cohesive workspace into a scattered pile of links, forcing me to do the mental work of re-assembling my context every time.
+
+**The Demand:**
+Implement session awareness and group restoration immediately.
+- **Automatic Grouping:** When multiple tabs are saved simultaneously from a single browser window, group them together as a "Session".
+- **Bulk Restoration:** Allow me to click a single "Restore Session" button to open all those related tabs at once, preserving my original workspace structure.
