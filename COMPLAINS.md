@@ -87,3 +87,18 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (No Context Grouping)
+
+**The Problem:**
+The application treats every saved tab as an isolated island, completely ignoring the *context* in which it was saved. When I research a topic, I usually have 5-10 tabs open related to that specific task (e.g., "React 19 Server Components Research"). If I save them all at once, they just dump into a massive, unstructured list ordered only by time.
+
+**Why this matters:**
+This is a massive cognitive load issue. The app forces me to mentally reconstruct my research sessions every time I look at the dashboard. If I want to resume my React 19 research, I have to hunt and peck through the list to find the relevant tabs among my unrelated saves for "dinner recipes" and "funny cat videos" from the same day.
+A true "tab sync" tool isn't just about preserving URLs; it's about preserving *workspace context*. The current design utterly fails at this. I'm essentially using a glorified, unorganized text file of URLs.
+
+**The Demand:**
+Implement "Session Awareness" and "Group Restoration" immediately.
+- **Session Grouping:** When multiple tabs are saved simultaneously (or within a very tight time window), automatically group them into a "Session" or "Window" block.
+- **Bulk Restore:** Give me a single "Restore Session" button that opens all tabs from that block in my browser simultaneously.
+- **Organization:** Visually group these tabs in the UI, rather than just displaying a flat list.
