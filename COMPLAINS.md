@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (Lost Group Context)
+
+**The Problem:**
+When I use a "sync all tabs" extension or save multiple tabs at once, they represent a specific session or task (e.g., "Tax Research 2024"). Yet, the application completely strips away this grouping. It dumps all tabs into a flat list as individual, disconnected URLs. There is no concept of a "Session" or a "Tab Group".
+
+**Why this matters:**
+This destroys the mental context of my workflow. If I save 15 tabs related to a specific project, I want to be able to recall and reopen all 15 of them together as a cohesive group. Right now, I have to hunt through a chronologically flat list and manually pick them out one by one. The application is acting like a dumb bookmark list, not an intelligent workspace manager.
+
+**The Demand:**
+Implement "Session Awareness" and group restoration immediately.
+- **Grouping:** Automatically group tabs that are saved simultaneously or within a very tight timeframe into a "Session".
+- **Naming:** Allow me to rename a Session.
+- **Bulk Restore:** Give me a single "Open All Tabs in Browser" button for the entire group.
