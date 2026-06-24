@@ -87,3 +87,17 @@ Implement "Restore" / "Unarchive" functionality immediately.
 - **Tab Details:** Add a "Restore to Open Tabs" button for archived items.
 - **Bulk Actions:** Allow selecting multiple archived tabs and clicking "Restore".
 - **Logic:** Move the record back to the `open_tabs` table (or update its status) and remove it from the `archived_tabs` view.
+
+## 7. The Session Blindspot (Loss of Group Context)
+
+**The Problem:**
+The application fundamentally misunderstands how humans browse the web. Tabs are saved as individual, isolated entities. When I sync tabs from a specific device at a specific time, they likely belong to a single "Session" or train of thought (e.g., researching "Playwright Testing" or "Dinner Recipes"). However, the app throws all these tabs into a single, flat bucket.
+
+**Why this matters:**
+By stripping away the "Session" grouping, the application destroys crucial context. If I save 15 tabs from my laptop on Tuesday afternoon, it's almost certain those 15 tabs are related. But in the current UI, they are just scattered among hundreds of other entries. I have no way to say "Restore the session I saved from my laptop on Tuesday." I must manually hunt down and reopen each tab one by one, which is tedious, error-prone, and frustrating. It makes the app feel like a disorganized hoarder's drawer rather than a structured workflow tool.
+
+**The Demand:**
+Implement Session Awareness and Group Restoration immediately.
+- **Data Structure:** Automatically assign a "Session ID" or "Sync Batch" identifier to tabs saved concurrently from the same device.
+- **UI Grouping:** Group tabs visually by their sync session or timestamp in the main view.
+- **Bulk Restoration:** Provide a single "Restore Session" or "Open All in Browser" button for these generated groups.
