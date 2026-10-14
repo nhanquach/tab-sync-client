@@ -23,12 +23,12 @@ interface IUrlListProps {
   onClear: (deviceName: string) => void;
   urls: ITab[];
   onSelect?: (tab: ITab) => void;
-  selectedId?: number;
+  selectedId?: string;
   isSelectionMode?: boolean;
-  selectedTabIds?: Set<number>;
-  onToggleTabSelection?: (id: number) => void;
+  selectedTabIds?: Set<string>;
+  onToggleTabSelection?: (id: string) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
-  exitingTabIds?: Set<number>;
+  exitingTabIds?: Set<string>;
 }
 
 const UrlList: React.FC<IUrlListProps> = ({
@@ -61,7 +61,7 @@ const UrlList: React.FC<IUrlListProps> = ({
     <div className="space-y-8 my-4">
       {browsers.map((name) => {
         const tabs: ITab[] = groupByBrowser[name];
-        const allSelected = tabs.every(t => selectedTabIds?.has(t.id));
+        const allSelected = tabs.every(t => selectedTabIds?.has(t.uid));
 
         return (
           <div key={name} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
@@ -126,18 +126,18 @@ const UrlList: React.FC<IUrlListProps> = ({
                   return (
                     <UrlListItem 
                       tab={tab} 
-                      key={tab.id} 
+                      key={tab.uid} 
                       onSelect={() => {
                         if (isSelectionMode) {
-                            onToggleTabSelection?.(tab.id);
+                            onToggleTabSelection?.(tab.uid);
                         } else {
                             onSelect?.(tab);
                         }
                       }}
-                      isSelected={tab.id === selectedId}
+                      isSelected={tab.uid === selectedId}
                       isSelectionMode={isSelectionMode}
-                      isChecked={selectedTabIds?.has(tab.id)}
-                      isExiting={exitingTabIds?.has(tab.id)}
+                      isChecked={selectedTabIds?.has(tab.uid)}
+                      isExiting={exitingTabIds?.has(tab.uid)}
                     />
                   );
                 })}
