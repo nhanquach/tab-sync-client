@@ -77,8 +77,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   // Bulk Actions State
   const [isSelectionMode, setIsSelectionMode] = useState(false);
-  const [selectedTabIds, setSelectedTabIds] = useState<Set<number>>(new Set());
-  const [exitingTabIds, setExitingTabIds] = useState<Set<number>>(new Set());
+  const [selectedTabIds, setSelectedTabIds] = useState<Set<string>>(new Set());
+  const [exitingTabIds, setExitingTabIds] = useState<Set<string>>(new Set());
 
   const toggleSelectionMode = () => {
     setIsSelectionMode((prev) => {
@@ -89,7 +89,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
-  const handleToggleTabSelection = (id: number) => {
+  const handleToggleTabSelection = (id: string) => {
     setSelectedTabIds((prev) => {
       const newSet = new Set(prev);
       if (newSet.has(id)) {
@@ -108,8 +108,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     setSelectedTabIds((prev) => {
         const newSet = new Set(prev);
         deviceTabs.forEach(t => {
-            if (select) newSet.add(t.id);
-            else newSet.delete(t.id);
+            if (select) newSet.add(t.uid);
+            else newSet.delete(t.uid);
         });
         return newSet;
     });
@@ -117,7 +117,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleBulkArchive = async () => {
     if (selectedTabIds.size === 0) return;
-    const tabsToArchive = tabs.filter(t => selectedTabIds.has(t.id));
+    const tabsToArchive = tabs.filter(t => selectedTabIds.has(t.uid));
 
     // Optimistic animation start
     setExitingTabIds(new Set(selectedTabIds));
@@ -126,13 +126,13 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
     setTimeout(async () => {
         // Optimistic update after animation
-        setTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+        setTabs(prev => prev.filter(t => !selectedTabIds.has(t.uid)));
         setExitingTabIds(new Set());
         showToast(`${tabsToArchive.length} tabs archived.`);
 
         try {
           await archiveTab(tabsToArchive);
-          await removeTab(Array.from(selectedTabIds.keys() as unknown as number[]));
+          await removeTab(Array.from(selectedTabIds));
         } catch (error) {
           console.error(error);
           showToast("Error archiving tabs. Refreshing...");
@@ -151,7 +151,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
     setTimeout(async () => {
         // Optimistic update after animation
-        setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.id)));
+        setArchivedTabs(prev => prev.filter(t => !selectedTabIds.has(t.uid)));
         setExitingTabIds(new Set());
         showToast(`${selectedTabIds.size} tabs deleted permanently.`);
 
@@ -169,7 +169,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   useEffect(() => {
     const allTabs = [...tabs, ...archivedTabs];
     if (tabId) {
-      const tab = allTabs.find((t) => t.id.toString() === tabId);
+      const tab = allTabs.find((t) => t.uid === tabId);
       if (tab) {
         setSelectedTab(tab);
       }
@@ -180,7 +180,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleSelectTab = (tab: ITab | null) => {
     if (tab) {
-      navigate(`${ROUTES.HOME}/${currentView}/${tab.id}`);
+      navigate(`${ROUTES.HOME}/${currentView}/${tab.uid}`);
     } else {
       navigate(`${ROUTES.HOME}/${currentView}`);
     }
@@ -351,7 +351,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (tabsToArchive.length === 0) return;
 
     // Optimistic animation start
-    const ids = tabsToArchive.map((t) => t.id);
+    const ids = tabsToArchive.map((t) => t.uid);
     setExitingTabIds(new Set(ids));
 
     setTimeout(async () => {
@@ -376,7 +376,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     if (tabsToDelete.length === 0) return;
 
     // Optimistic animation start
-    const ids = tabsToDelete.map((t) => t.id);
+    const ids = tabsToDelete.map((t) => t.uid);
     setExitingTabIds(new Set(ids));
 
     setTimeout(async () => {
@@ -411,17 +411,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     handleSelectTab(nextTab);
 
     // Optimistic animation start
-    setExitingTabIds(new Set([tab.id]));
+    setExitingTabIds(new Set([tab.uid]));
 
     setTimeout(async () => {
         // Optimistic update after animation
-        setTabs((prev) => prev.filter((t) => t.id !== tab.id));
+        setTabs((prev) => prev.filter((t) => t.uid !== tab.uid));
         setExitingTabIds(new Set());
         showToast("Tab archived.");
 
         try {
           await archiveTab([tab]);
-          await removeTab([tab.id]);
+          await removeTab([tab.uid]);
         } catch (error) {
           console.error(error);
           showToast("Error archiving tab. Restoring...");
@@ -435,16 +435,16 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     handleSelectTab(nextTab);
 
     // Optimistic animation start
-    setExitingTabIds(new Set([tab.id]));
+    setExitingTabIds(new Set([tab.uid]));
 
     setTimeout(async () => {
         // Optimistic update after animation
-        setArchivedTabs((prev) => prev.filter((t) => t.id !== tab.id));
+        setArchivedTabs((prev) => prev.filter((t) => t.uid !== tab.uid));
         setExitingTabIds(new Set());
         showToast("Tab deleted permanently.");
 
         try {
-          await removeTab([tab.id], TABLES.ARCHIVED_TABS);
+          await removeTab([tab.uid], TABLES.ARCHIVED_TABS);
         } catch (error) {
           console.error(error);
           showToast("Error deleting tab. Restoring...");
@@ -536,7 +536,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
-                            selectedId={selectedTab?.id}
+                            selectedId={selectedTab?.uid}
                             isSelectionMode={isSelectionMode}
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}
@@ -551,7 +551,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
                             urls={urls}
                             onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
                             onSelect={handleSelectTab}
-                            selectedId={selectedTab?.id}
+                            selectedId={selectedTab?.uid}
                             isSelectionMode={isSelectionMode}
                             selectedTabIds={selectedTabIds}
                             onToggleTabSelection={handleToggleTabSelection}

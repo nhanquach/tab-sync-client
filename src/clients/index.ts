@@ -86,17 +86,17 @@ export const getArchivedTabs = async (
 };
 
 export const sendTab = async (
-  tab: ITab
+  tab: Omit<ITab, "uid"> & { uid?: string }
 ): Promise<{ data: ITab; error?: { message: string } }> => {
   return (await getClient()).sendTab(tab);
 };
 
-export const removeTab = async (tabIds: number[], table?: string) => {
-  (await getClient()).removeTab(tabIds, table);
+export const removeTab = async (uids: string[], table?: string) => {
+  return (await getClient()).removeTab(uids, table);
 };
 
 export const archiveTab = async (tab: ITab[]) => {
-  (await getClient()).archiveTab(tab);
+  return (await getClient()).archiveTab(tab);
 };
 
 export const onOpenTabChange = async (

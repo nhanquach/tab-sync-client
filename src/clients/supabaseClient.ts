@@ -254,52 +254,86 @@ export const getArchivedTabs = async (
   return { data: [], count: 0, error: "No user id" };
 };
 
+/** Supabase resolves with `{ error }` instead of throwing; turn it into a throw so callers can react. */
+const assertOk = (result: { error: { message: string } | null }, action: string) => {
+  if (result.error) {
+    throw new Error(`${action}: ${result.error.message}`);
+  }
+};
+
+const newUid = () =>
+  typeof crypto !== "undefined" && "randomUUID" in crypto
+    ? crypto.randomUUID()
+    : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+        const r = (Math.random() * 16) | 0;
+        return (c === "x" ? r : (r & 0x3) | 0x8).toString(16);
+      });
+
 export const sendTab = async (
-  tab: ITab
+  tab: Omit<ITab, "uid"> & { uid?: string }
 ): Promise<{ data: ITab; error?: { message: string } }> => {
   checkTokenExpired();
 
   const { id, url, favIconUrl = "", title, index, windowId } = tab;
+  const uid = tab.uid ?? newUid();
   const { client, deviceName, userId } = await getClient();
 
   if (!userId) {
-    return { data: tab, error: { message: "No user id" } };
+    return { data: { ...tab, uid }, error: { message: "No user id" } };
   }
 
   if (client) {
-    await client.from(TABLES.OPEN_TABS).upsert({
-      id,
-      url,
-      favIconUrl,
-      title,
-      index,
-      windowId,
-      deviceName: deviceName || tab.deviceName,
-      userId,
-    });
+    const result = await client.from(TABLES.OPEN_TABS).upsert(
+      {
+        uid,
+        id,
+        url,
+        favIconUrl,
+        title,
+        index,
+        windowId,
+        deviceName: deviceName || tab.deviceName,
+        userId,
+      },
+      { onConflict: "uid" }
+    );
+    assertOk(result, "sendTab");
   }
 
-  return { data: tab, error: undefined };
+  return { data: { ...tab, uid }, error: undefined };
 };
 
-export const removeTab = async (tabIds: number[], table = TABLES.OPEN_TABS) => {
+/** Delete rows by their stable uid. */
+export const removeTab = async (uids: string[], table = TABLES.OPEN_TABS) => {
   checkTokenExpired();
 
   const { client } = await getClient();
 
-  if (client) {
-    await client.from(table).delete().in("id", tabIds);
+  if (client && uids.length) {
+    // Chunk to keep the request URL short.
+    for (let i = 0; i < uids.length; i += 100) {
+      const result = await client
+        .from(table)
+        .delete()
+        .in("uid", uids.slice(i, i + 100));
+      assertOk(result, "removeTab");
+    }
   }
 };
 
+/**
+ * Copy tabs into archived_tabs. The archive row keeps the tab's uid and device,
+ * so archiving twice (e.g. a retry) doesn't create duplicates.
+ */
 export const archiveTab = async (tabs: ITab[]) => {
   checkTokenExpired();
 
   const { client, userId } = await getClient();
 
   const tabsWillBeArchived = tabs.map(
-    ({ id, url, favIconUrl, title, index, windowId, deviceName }) => {
+    ({ uid, id, url, favIconUrl, title, index, windowId, deviceName, device_id }) => {
       return {
+        uid,
         id,
         url,
         favIconUrl,
@@ -307,6 +341,7 @@ export const archiveTab = async (tabs: ITab[]) => {
         index,
         windowId,
         deviceName,
+        device_id: device_id ?? null,
         userId,
       };
     }
@@ -316,8 +351,11 @@ export const archiveTab = async (tabs: ITab[]) => {
     return { data: [], error: { message: "No user id" } };
   }
 
-  if (client) {
-    await client.from(TABLES.ARCHIVED_TABS).upsert(tabsWillBeArchived);
+  if (client && tabsWillBeArchived.length) {
+    const result = await client
+      .from(TABLES.ARCHIVED_TABS)
+      .upsert(tabsWillBeArchived, { onConflict: "uid" });
+    assertOk(result, "archiveTab");
   }
 };
 
@@ -381,15 +419,15 @@ export const archiveOpenTabs = async (deviceName?: string) => {
 
   if (openTabs) {
     await archiveTab(openTabs);
-    await removeTab(openTabs.map<number>((t) => t.id!));
+    await removeTab(openTabs.map((t) => t.uid));
   }
 };
 
 export const removeArchivedTabs = async (deviceName?: string) => {
   const archivedTabs = await getArchivedTabs(1, 1000, "", deviceName);
 
-  const tabIds = archivedTabs.data.map<number>((t) => t.id);
-  await removeTab(tabIds, TABLES.ARCHIVED_TABS);
+  const uids = archivedTabs.data.map((t) => t.uid);
+  await removeTab(uids, TABLES.ARCHIVED_TABS);
 };
 
 export const sendFeedback = async (type: string, description: string) => {

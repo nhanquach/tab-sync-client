@@ -180,7 +180,7 @@ const CommandPalette: React.FC<ICommandPaletteProps> = ({
         <CommandGroup heading="Tabs">
             {tabs.map((tab) => (
                 <TabItem
-                    key={tab.id}
+                    key={tab.uid}
                     tab={tab}
                     onSelect={() => runCommand(() => onSelectTab(tab))}
                 />
