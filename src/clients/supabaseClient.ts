@@ -44,6 +44,9 @@ export const getClient = async () => {
         global: {
           headers: {
             Authorization: `Bearer ${tabSyncSettings.token.access_token}`,
+            // Marks this as a current client so the database trigger that emulates
+            // old extension versions' upserts leaves our writes alone.
+            "x-tabsync-client": "web",
           },
         },
         auth: {
