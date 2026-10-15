@@ -2,132 +2,67 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Quiet utility palette, shared with the browser extension:
+ * neutral greys plus one blue accent. Light and dark follow the system
+ * unless the user picks a mode in Settings (toggles the `dark` class).
+ */
 @layer base {
   :root {
     --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --foreground: 240 6% 10%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 240 6% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    /* Dynamic Theme Mapping (Light Mode) */
-    --primary: var(--md-sys-color-primary);
-    --primary-foreground: var(--md-sys-color-on-primary);
-
-    --secondary: var(--md-sys-color-secondary-container);
-    --secondary-foreground: var(--md-sys-color-on-secondary-container);
-
-    --muted: var(--md-sys-color-surface-container-high);
-    --muted-foreground: var(--md-sys-color-outline);
-
-    --accent: var(--md-sys-color-tertiary-container);
-    --accent-foreground: var(--md-sys-color-on-tertiary-container);
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: var(--md-sys-color-outline-variant);
-    --input: var(--md-sys-color-outline);
-    --ring: var(--md-sys-color-primary);
-
+    --popover-foreground: 240 6% 10%;
+    --primary: 221 83% 53%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 5% 96%;
+    --secondary-foreground: 240 6% 10%;
+    --muted: 240 5% 96%;
+    --muted-foreground: 240 4% 46%;
+    --accent: 240 5% 94%;
+    --accent-foreground: 240 6% 10%;
+    --destructive: 0 72% 51%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 6% 90%;
+    --input: 240 6% 88%;
+    --ring: 221 83% 53%;
     --radius: 0.5rem;
-
-    /* Branding Colors (Injected by src/theme/injectTheme.ts from palette.ts) */
-    /* Defaults are provided here as fallback */
-    --branding-primary: #8f94fb;
-    --branding-primary-dark: #4e54c8;
-    --branding-secondary: #696969;
-
-    /* Theme Seed Hues (Default: Indigo/Violet) */
-    --seed-primary-hue: 265;
-    --seed-secondary-hue: 260;
-    --seed-tertiary-hue: 330;
-
-    /* MD3 Colors - Light */
-    --md-sys-color-primary: var(--seed-primary-hue) 60% 50%;
-    --md-sys-color-on-primary: 0 0% 100%;
-    --md-sys-color-primary-container: var(--seed-primary-hue) 80% 94%;
-    --md-sys-color-on-primary-container: var(--seed-primary-hue) 60% 20%;
-
-    --md-sys-color-secondary: var(--seed-secondary-hue) 15% 45%;
-    --md-sys-color-on-secondary: 0 0% 100%;
-    --md-sys-color-secondary-container: var(--seed-secondary-hue) 25% 90%;
-    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 15% 15%;
-
-    /* Tertiary - Pink/Raspberry for "Quacky" contrast */
-    --md-sys-color-tertiary: var(--seed-tertiary-hue) 60% 50%;
-    --md-sys-color-on-tertiary: 0 0% 100%;
-    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 80% 94%;
-    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 60% 20%;
-
-    --md-sys-color-surface: 260 20% 98%;
-    --md-sys-color-on-surface: 260 10% 10%;
-    --md-sys-color-surface-container: 260 20% 94%;
-    --md-sys-color-surface-container-low: 260 30% 96%;
-    --md-sys-color-surface-container-high: 260 20% 92%;
-
-    --md-sys-color-outline: 260 10% 50%;
-    --md-sys-color-outline-variant: 260 10% 80%;
+    color-scheme: light;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 240 6% 8%;
+    --foreground: 0 0% 95%;
+    --card: 240 5% 10%;
+    --card-foreground: 0 0% 95%;
+    --popover: 240 5% 12%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 217 91% 62%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 240 4% 16%;
+    --secondary-foreground: 0 0% 95%;
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 62%;
+    --accent: 240 4% 18%;
+    --accent-foreground: 0 0% 95%;
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 240 4% 18%;
+    --input: 240 4% 22%;
+    --ring: 217 91% 62%;
+    color-scheme: dark;
+  }
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    /* Dynamic Theme Mapping (Dark Mode) */
-    --primary: var(--md-sys-color-primary);
-    --primary-foreground: var(--md-sys-color-on-primary);
-
-    --secondary: var(--md-sys-color-secondary-container);
-    --secondary-foreground: var(--md-sys-color-on-secondary-container);
-
-    --muted: var(--md-sys-color-surface-container-high);
-    --muted-foreground: var(--md-sys-color-outline);
-
-    --accent: var(--md-sys-color-tertiary-container);
-    --accent-foreground: var(--md-sys-color-on-tertiary-container);
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: var(--md-sys-color-outline-variant);
-    --input: var(--md-sys-color-outline);
-    --ring: var(--md-sys-color-primary);
-
-    /* MD3 Colors - Dark */
-    --md-sys-color-primary: var(--seed-primary-hue) 90% 80%;
-    --md-sys-color-on-primary: var(--seed-primary-hue) 60% 20%;
-    --md-sys-color-primary-container: var(--seed-primary-hue) 60% 35%;
-    --md-sys-color-on-primary-container: var(--seed-primary-hue) 90% 95%;
-
-    --md-sys-color-secondary: var(--seed-secondary-hue) 20% 75%;
-    --md-sys-color-on-secondary: var(--seed-secondary-hue) 20% 20%;
-    --md-sys-color-secondary-container: var(--seed-secondary-hue) 20% 35%;
-    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 20% 90%;
-
-    /* Tertiary - Pink/Raspberry Dark */
-    --md-sys-color-tertiary: var(--seed-tertiary-hue) 90% 80%;
-    --md-sys-color-on-tertiary: var(--seed-tertiary-hue) 60% 20%;
-    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 60% 35%;
-    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 90% 95%;
-
-    --md-sys-color-surface: 260 20% 8%;
-    --md-sys-color-on-surface: 260 10% 90%;
-    --md-sys-color-surface-container: 260 20% 12%;
-    --md-sys-color-surface-container-low: 260 20% 10%;
-    --md-sys-color-surface-container-high: 260 20% 17%;
-
-    --md-sys-color-outline: 260 10% 60%;
-    --md-sys-color-outline-variant: 260 10% 30%;
+  /* Optional accent picked in Settings > Appearance. Blue (the default) sets no attribute. */
+  :root[data-accent] {
+    --primary: var(--accent-hue) 70% 48%;
+    --ring: var(--accent-hue) 70% 48%;
+  }
+  :root.dark[data-accent] {
+    --primary: var(--accent-hue) 75% 62%;
+    --ring: var(--accent-hue) 75% 62%;
   }
 }
 
@@ -135,152 +70,95 @@
   * {
     @apply border-border;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.2);
   }
 }
 
-.area {
-  width: 100%;
-  height: 100px;
-}
-
-.circles {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-}
-
-.circles li {
-  position: absolute;
-  display: block;
-  list-style: none;
-  width: 20px;
-  height: 20px;
-  /* Use both the transparent logo AND the gradient. The logo sits on top. */
-  background-image: url("./logo-nobg.svg"), linear-gradient(to left, var(--branding-primary), var(--branding-primary-dark));
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 20%;
-  animation: animate 15s linear infinite;
-  bottom: -150px;
-}
-
-.circles li:nth-child(1) {
-  left: 25%;
-  width: 80px;
-  height: 80px;
-  animation-delay: 0s;
-}
-
-.circles li:nth-child(2) {
-  left: 10%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 2s;
-  animation-duration: 12s;
-}
-
-.circles li:nth-child(3) {
-  left: 70%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 4s;
-}
-
-.circles li:nth-child(4) {
-  left: 40%;
-  width: 60px;
-  height: 60px;
-  animation-delay: 0s;
-  animation-duration: 18s;
-}
-
-.circles li:nth-child(5) {
-  left: 65%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 0s;
-  animation-duration: 18s;
-}
-
-.circles li:nth-child(6) {
-  left: 75%;
-  width: 110px;
-  height: 110px;
-  animation-delay: 3s;
-}
-
-.circles li:nth-child(7) {
-  left: 35%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 7s;
-}
-
-.circles li:nth-child(8) {
-  left: 50%;
-  width: 25px;
-  height: 25px;
-  animation-delay: 15s;
-  animation-duration: 45s;
-}
-
-.circles li:nth-child(9) {
-  left: 20%;
-  width: 15px;
-  height: 15px;
-  animation-delay: 2s;
-  animation-duration: 35s;
-}
-
-.circles li:nth-child(10) {
-  left: 85%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 0s;
-  animation-duration: 11s;
-}
-
-@keyframes animate {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-    border-radius: 0;
+@layer components {
+  /* 32px square icon button used in headers and toolbars. */
+  .icon-btn {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
   }
-
-  100% {
-    transform: translateY(-1000px) rotate(720deg);
-    opacity: 0;
-    border-radius: 50%;
+  .icon-btn-active {
+    @apply bg-accent text-foreground;
+  }
+  /* A dense list row: device header or tab. */
+  .row {
+    @apply flex h-9 w-full items-center gap-2 rounded-md px-2 text-foreground outline-none transition-colors hover:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  .row-active {
+    @apply bg-accent;
+  }
+  /* Settings-style section label. */
+  .section-label {
+    @apply px-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground;
+  }
+  /* A bordered group of settings rows. */
+  .settings-group {
+    @apply divide-y divide-border overflow-hidden rounded-lg border border-border bg-card;
+  }
+  .settings-row {
+    @apply flex min-h-[44px] w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors;
+  }
+  button.settings-row:hover,
+  a.settings-row:hover {
+    @apply bg-accent/50;
+  }
+  /* Left sidebar navigation item. */
+  .nav-item {
+    @apply flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  .nav-item-active {
+    @apply bg-accent font-medium text-foreground;
+  }
+  .kbd {
+    @apply inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-border bg-muted px-1 font-sans text-[11px] font-medium text-muted-foreground;
   }
 }
 
-.MuiDrawer-paper .Mui-selected,
-.MuiDrawer-paper .Mui-selected .MuiListItemIcon-root {
-  background-color: transparent !important;
-  color: var(--branding-primary) !important;
-  font-weight: 700;
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
-.bottom-navigation .circles {
-  filter: blur(2px);
+/* Quiet scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
 }
 
-/* Remove the line for the Accordion */
-.what-is-tabsync-accordion:before {
-  height: 0 !important;
+/* Share buttons stay quiet until hovered. */
+.share-card .react-share__ShareButton {
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 150ms, opacity 150ms;
 }
-
-.share-card.small .react-share__ShareButton {
-  filter: grayscale(0.8);
-  transition: all 1000ms;
-}
-
-.share-card.small .react-share__ShareButton:hover {
+.share-card .react-share__ShareButton:hover {
   filter: none;
+  opacity: 1;
 }

@@ -17,6 +17,9 @@ module.exports = {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Inter", "system-ui", "-apple-system", "Segoe UI", "Roboto", "sans-serif"],
+      },
       screens: {
         xs: "480px",
       },
@@ -54,35 +57,6 @@ module.exports = {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        // MD3 Extended Colors
-        "md-sys-color-primary": "hsl(var(--md-sys-color-primary))",
-        "md-sys-color-on-primary": "hsl(var(--md-sys-color-on-primary))",
-        "md-sys-color-primary-container": "hsl(var(--md-sys-color-primary-container))",
-        "md-sys-color-on-primary-container": "hsl(var(--md-sys-color-on-primary-container))",
-
-        "md-sys-color-secondary": "hsl(var(--md-sys-color-secondary))",
-        "md-sys-color-on-secondary": "hsl(var(--md-sys-color-on-secondary))",
-        "md-sys-color-secondary-container": "hsl(var(--md-sys-color-secondary-container))",
-        "md-sys-color-on-secondary-container": "hsl(var(--md-sys-color-on-secondary-container))",
-
-        "md-sys-color-tertiary": "hsl(var(--md-sys-color-tertiary))",
-        "md-sys-color-on-tertiary": "hsl(var(--md-sys-color-on-tertiary))",
-        "md-sys-color-tertiary-container": "hsl(var(--md-sys-color-tertiary-container))",
-        "md-sys-color-on-tertiary-container": "hsl(var(--md-sys-color-on-tertiary-container))",
-
-        "md-sys-color-surface": "hsl(var(--md-sys-color-surface))",
-        "md-sys-color-on-surface": "hsl(var(--md-sys-color-on-surface))",
-        "md-sys-color-surface-container": "hsl(var(--md-sys-color-surface-container))",
-        "md-sys-color-surface-container-low": "hsl(var(--md-sys-color-surface-container-low))",
-        "md-sys-color-surface-container-high": "hsl(var(--md-sys-color-surface-container-high))",
-
-        "md-sys-color-outline": "hsl(var(--md-sys-color-outline))",
-        "md-sys-color-outline-variant": "hsl(var(--md-sys-color-outline-variant))",
-
-        // Branding Colors
-        "branding-primary": "var(--branding-primary)",
-        "branding-primary-dark": "var(--branding-primary-dark)",
-        "branding-secondary": "var(--branding-secondary)",
       },
       borderRadius: {
         lg: "var(--radius)",

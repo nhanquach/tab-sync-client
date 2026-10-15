@@ -1,6 +1,5 @@
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { ChevronLeft, ChevronRight } from "@mui/icons-material";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface IPaginationControlsProps {
@@ -19,32 +18,30 @@ const PaginationControls: React.FC<IPaginationControlsProps> = ({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={cn("flex items-center justify-center gap-4 py-4", className)}>
-      <Button
-        variant="outline"
-        size="sm"
+    <div className={cn("flex items-center justify-center gap-2 py-3", className)}>
+      <button
+        type="button"
+        className="icon-btn border border-border"
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage <= 1}
-        className="h-9 w-9 p-0 rounded-full"
+        aria-label="Previous page"
       >
         <ChevronLeft className="h-4 w-4" />
-        <span className="sr-only">Previous Page</span>
-      </Button>
+      </button>
 
-      <span className="text-sm font-medium text-muted-foreground">
+      <span className="min-w-[96px] text-center text-xs tabular-nums text-muted-foreground">
         Page {currentPage} of {totalPages}
       </span>
 
-      <Button
-        variant="outline"
-        size="sm"
+      <button
+        type="button"
+        className="icon-btn border border-border"
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage >= totalPages}
-        className="h-9 w-9 p-0 rounded-full"
+        aria-label="Next page"
       >
         <ChevronRight className="h-4 w-4" />
-        <span className="sr-only">Next Page</span>
-      </Button>
+      </button>
     </div>
   );
 };

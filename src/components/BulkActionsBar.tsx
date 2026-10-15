@@ -1,11 +1,7 @@
 import React from "react";
-import {
-  ArchiveTwoTone,
-  DeleteForeverTwoTone,
-  CloseTwoTone
-} from "@mui/icons-material";
+import { Archive, Trash2, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
 
 interface IBulkActionsBarProps {
@@ -26,55 +22,28 @@ const BulkActionsBar: React.FC<IBulkActionsBarProps> = ({
   if (selectedCount === 0) return null;
 
   return (
-    <div className={cn(
-      "fixed bottom-24 md:bottom-12 left-1/2 -translate-x-1/2 z-50",
-      "animate-in slide-in-from-bottom-24 fade-in duration-300"
-    )}>
-      <div className={cn(
-        "flex items-center gap-2 p-2 pr-4 pl-4",
-        "bg-md-sys-color-surface-container-high/80 backdrop-blur-xl",
-        "border border-md-sys-color-outline-variant/20 shadow-2xl",
-        "rounded-full"
-      )}>
-        <div className="flex items-center gap-2 mr-2">
-            <div className="bg-md-sys-color-primary/10 text-md-sys-color-primary px-3 py-1 rounded-full text-xs font-bold">
-                {selectedCount}
-            </div>
-            <span className="text-sm font-medium text-md-sys-color-on-surface hidden xs:inline">Selected</span>
-        </div>
-
-        <div className="h-6 w-px bg-md-sys-color-outline-variant/30 mx-1" />
+    <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 duration-200 animate-in fade-in slide-in-from-bottom-2 md:bottom-8">
+      <div className="flex items-center gap-1 rounded-lg border border-border bg-popover py-1 pl-3 pr-1 text-popover-foreground shadow-md">
+        <span className="mr-2 text-sm">
+          <span className="font-semibold tabular-nums">{selectedCount}</span>
+          <span className="text-muted-foreground"> selected</span>
+        </span>
 
         {view === TABS_VIEWS.OPEN_TABS ? (
-          <Button
-            onClick={onArchiveSelected}
-            variant="ghost"
-            size="sm"
-            className="rounded-full hover:bg-md-sys-color-primary/10 hover:text-md-sys-color-primary gap-2"
-          >
-            <ArchiveTwoTone fontSize="small" />
-            <span className="hidden sm:inline">Archive</span>
+          <Button onClick={onArchiveSelected} size="sm" className="gap-1.5">
+            <Archive className="h-3.5 w-3.5" />
+            Archive
           </Button>
         ) : (
-             <Button
-            onClick={onDeleteSelected}
-            variant="ghost"
-            size="sm"
-            className="rounded-full hover:bg-md-sys-color-error/10 hover:text-md-sys-color-error gap-2"
-          >
-            <DeleteForeverTwoTone fontSize="small" />
-            <span className="hidden sm:inline">Delete</span>
+          <Button onClick={onDeleteSelected} size="sm" variant="destructive" className="gap-1.5">
+            <Trash2 className="h-3.5 w-3.5" />
+            Delete
           </Button>
         )}
 
-        <Button
-            onClick={onClearSelection}
-            variant="ghost"
-            size="icon"
-            className="rounded-full hover:bg-md-sys-color-surface-container-highest ml-1 h-8 w-8"
-        >
-            <CloseTwoTone fontSize="small" />
-        </Button>
+        <button type="button" onClick={onClearSelection} className="icon-btn" aria-label="Clear selection" title="Clear selection">
+          <X className="h-4 w-4" />
+        </button>
       </div>
     </div>
   );

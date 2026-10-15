@@ -62,8 +62,8 @@ const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="grid w-full items-center gap-4">
+    <div className="flex flex-col gap-3">
+      <div className="grid w-full items-center gap-3">
         <div className="flex flex-col space-y-1.5">
           <Label htmlFor="new-password">New password</Label>
           <Input
@@ -98,9 +98,9 @@ const ChangePasswordForm: React.FC<IChangePasswordFormProps> = ({
         )}
       </div>
 
-      <div className="flex flex-col gap-2 mt-2 md:flex-row md:justify-end">
+      <div className="flex justify-end">
         <Button
-            className="w-full md:w-auto rounded-full"
+            size="sm"
             onClick={handleChangePassword}
             disabled={isLoading}
         >

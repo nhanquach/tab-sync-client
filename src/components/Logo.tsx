@@ -7,9 +7,9 @@ const Logo = (props: SVGProps<SVGSVGElement>) => {
       width="1.5em"
       height="1.5em"
       viewBox="0 0 132.813 120"
-      className={`bg-branding-primary rounded-xl ${props.className || ""}`}
-      style={{ backgroundColor: "var(--branding-primary)", ...props.style }}
       {...props}
+      className={`rounded-md ${props.className || ""}`}
+      style={{ backgroundColor: "hsl(var(--primary))", ...props.style }}
     >
       <path
         fill="#fff"

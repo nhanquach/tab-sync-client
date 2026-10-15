@@ -17,9 +17,8 @@ import {
   ViberIcon,
   WhatsappIcon,
 } from "react-share";
-import { CheckCircleTwoTone, ContentCopyTwoTone } from "@mui/icons-material";
+import { Check, Copy } from "lucide-react";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { HOME_PAGE } from "../utils/constants";
 
@@ -47,97 +46,54 @@ const CardShare: React.FC<ICardShareProps> = ({
     }, 1000);
   };
 
+  const size = small ? 28 : 32;
+  const shareTitle = "TabSync - Sync your tabs across devices";
+
   return (
-    <Card
-      className={cn(
-        "share-card bg-transparent shadow-none backdrop-blur-sm",
-        small && "small",
-        borderless ? "border-0" : "border",
-        small ? "mx-0 my-0" : "my-1"
-      )}
-    >
-      <CardContent className={cn("p-4", small && "p-2")}>
-        {!textless && (
-          <h5
-            className={cn(
-              "flex gap-2 mb-4 font-normal text-foreground",
-              small ? "text-lg" : "text-xl"
-            )}
-          >
-            {small ? "Share TabSync" : "If you like TabSync, share it:"}
-          </h5>
+    <section className={cn("share-card space-y-2", small && "small")}>
+      {!textless && <h3 className="section-label">Share TabSync</h3>}
+      <div
+        className={cn(
+          "flex flex-wrap items-center gap-2",
+          !borderless && "rounded-lg border border-border p-3"
         )}
-        <div
-          className="flex gap-2 flex-wrap justify-evenly content-center"
+      >
+        <button
+          type="button"
+          onClick={handleCopyLink}
+          aria-label="Copy link"
+          title="Copy link"
+          className="inline-flex items-center justify-center rounded-md border border-border text-muted-foreground transition-colors hover:bg-accent hover:text-foreground"
+          style={{ width: size, height: size }}
         >
-          <div
-            className={cn(
-              "cursor-pointer flex items-center justify-center rounded-xl text-white transition-colors",
-              isCopied ? "bg-green-500" : "bg-primary"
-            )}
-            style={{
-                width: small ? 45 : 50,
-                height: small ? 45 : 50,
-            }}
-            onClick={handleCopyLink}
-          >
-            {isCopied ? (
-              <CheckCircleTwoTone fontSize="medium" />
-            ) : (
-              <ContentCopyTwoTone fontSize="medium" />
-            )}
-          </div>
-          <EmailShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <EmailIcon borderRadius={12} size={small ? 45 : 50} />
-          </EmailShareButton>
-          <FacebookShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <FacebookIcon borderRadius={12} size={small ? 45 : 50} />
-          </FacebookShareButton>
-          <LinkedinShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <LinkedinIcon borderRadius={12} size={small ? 45 : 50} />
-          </LinkedinShareButton>
-          <RedditShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <RedditIcon borderRadius={12} size={small ? 45 : 50} />
-          </RedditShareButton>
-          <TelegramShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <TelegramIcon borderRadius={12} size={small ? 45 : 50} />
-          </TelegramShareButton>
-          <TwitterShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <TwitterIcon borderRadius={12} size={small ? 45 : 50} />
-          </TwitterShareButton>
-          <ViberShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <ViberIcon borderRadius={12} size={small ? 45 : 50} />
-          </ViberShareButton>
-          <WhatsappShareButton
-            url={HOME_PAGE}
-            title="TabSync - Sync your tabs across devices"
-          >
-            <WhatsappIcon borderRadius={12} size={small ? 45 : 50} />
-          </WhatsappShareButton>
-        </div>
-      </CardContent>
-    </Card>
+          {isCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+        </button>
+        <EmailShareButton url={HOME_PAGE} title={shareTitle}>
+          <EmailIcon borderRadius={6} size={size} />
+        </EmailShareButton>
+        <FacebookShareButton url={HOME_PAGE} title={shareTitle}>
+          <FacebookIcon borderRadius={6} size={size} />
+        </FacebookShareButton>
+        <LinkedinShareButton url={HOME_PAGE} title={shareTitle}>
+          <LinkedinIcon borderRadius={6} size={size} />
+        </LinkedinShareButton>
+        <RedditShareButton url={HOME_PAGE} title={shareTitle}>
+          <RedditIcon borderRadius={6} size={size} />
+        </RedditShareButton>
+        <TelegramShareButton url={HOME_PAGE} title={shareTitle}>
+          <TelegramIcon borderRadius={6} size={size} />
+        </TelegramShareButton>
+        <TwitterShareButton url={HOME_PAGE} title={shareTitle}>
+          <TwitterIcon borderRadius={6} size={size} />
+        </TwitterShareButton>
+        <ViberShareButton url={HOME_PAGE} title={shareTitle}>
+          <ViberIcon borderRadius={6} size={size} />
+        </ViberShareButton>
+        <WhatsappShareButton url={HOME_PAGE} title={shareTitle}>
+          <WhatsappIcon borderRadius={6} size={size} />
+        </WhatsappShareButton>
+      </div>
+    </section>
   );
 };
 

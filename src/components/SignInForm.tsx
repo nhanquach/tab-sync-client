@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import type { AlertColor } from "@mui/material";
 import { Link } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { ROUTES } from "../routes";
 
@@ -38,18 +37,17 @@ const SignInForm: React.FC<ISignInFormProps> = ({
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="flex flex-col space-y-2 text-center">
-        {/* Professional: Bold typography, but not 'Black' */}
-        <h1 className="text-3xl font-bold tracking-tight text-foreground">Sign in</h1>
+    <div className="w-full space-y-5">
+      <div className="flex flex-col space-y-1">
+        <h1 className="text-lg font-semibold text-foreground">Sign in</h1>
         <p className="text-sm text-muted-foreground">
-          Enter your email below to login to your account
+          Use the same account as the TabSync extension.
         </p>
       </div>
 
-      <form onSubmit={handleSignIn} className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email" className="text-foreground">Email</Label>
+      <form onSubmit={handleSignIn} className="grid gap-3">
+        <div className="grid gap-1.5">
+          <Label htmlFor="email">Email</Label>
           <Input
             id="email"
             type="email"
@@ -58,12 +56,12 @@ const SignInForm: React.FC<ISignInFormProps> = ({
             onChange={(e) => setEmail(e.target.value)}
             required
             disabled={isLoading}
-            className="text-foreground bg-background/50 backdrop-blur-sm"
+            
           />
         </div>
-        <div className="grid gap-2">
+        <div className="grid gap-1.5">
           <div className="flex items-center justify-between">
-            <Label htmlFor="password" className="text-foreground">Password</Label>
+            <Label htmlFor="password">Password</Label>
              <Button
                 variant="link"
                 className="px-0 font-normal h-auto text-xs text-primary"
@@ -83,7 +81,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
               onChange={(e) => setPassword(e.target.value)}
               required
               disabled={isLoading}
-              className="text-foreground bg-background/50 backdrop-blur-sm pr-10"
+              className="pr-10"
             />
             <Button
               type="button"
@@ -94,9 +92,9 @@ const SignInForm: React.FC<ISignInFormProps> = ({
               aria-label={showPassword ? "Hide password" : "Show password"}
             >
               {showPassword ? (
-                <VisibilityOff className="h-4 w-4" />
+                <EyeOff className="h-4 w-4" />
               ) : (
-                <Visibility className="h-4 w-4" />
+                <Eye className="h-4 w-4" />
               )}
             </Button>
           </div>
@@ -104,29 +102,28 @@ const SignInForm: React.FC<ISignInFormProps> = ({
 
         {!!message.text && (
           <div
-            className={`p-3 text-sm rounded-md ${
+            className={`rounded-md px-3 py-2 text-sm ${
               message.type === "error"
-                ? "bg-destructive/15 text-destructive"
-                : "bg-blue-100 text-blue-800"
+                ? "border border-destructive/30 bg-destructive/5 text-destructive"
+                : "border border-primary/30 bg-primary/5 text-foreground"
             }`}
           >
             {message.text}
           </div>
         )}
 
-        {/* MD3 Expressive: Pill shaped button */}
-        <Button className="w-full rounded-full" type="submit" disabled={isLoading}>
+        <Button className="w-full" type="submit" disabled={isLoading}>
           {isLoading ? (
-            <CircularProgress size={20} color="inherit" />
+            <Loader2 className="h-4 w-4 animate-spin" aria-label="Loading" />
           ) : (
-            "Sign In"
+            "Sign in"
           )}
         </Button>
       </form>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground">
           Don't have an account?{" "}
-          <Link to={ROUTES.SIGN_UP} className="underline hover:text-primary underline-offset-4 font-semibold">
+          <Link to={ROUTES.SIGN_UP} className="font-medium text-foreground underline-offset-4 hover:underline">
               Sign up
           </Link>
       </div>

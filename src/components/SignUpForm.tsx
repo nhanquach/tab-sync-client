@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { CircularProgress } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Eye, EyeOff, Loader2 } from "lucide-react";
 
 import { ROUTES } from "../routes";
 
@@ -41,20 +40,17 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
   };
 
   return (
-    <div className="w-full space-y-6">
-      <div className="flex flex-col space-y-2 text-center">
-         {/* Professional: Bold typography */}
-         <h1 className="text-3xl font-bold tracking-tight text-foreground">Create an account</h1>
+    <div className="w-full space-y-5">
+      <div className="flex flex-col space-y-1">
+         <h1 className="text-lg font-semibold text-foreground">Create an account</h1>
          <p className="text-sm text-muted-foreground">
-            <b>Hi, thank you for joining us.</b>
-            <br />
-            We only use your account in order to save your tabs.
+            We only use your account to save your tabs.
          </p>
       </div>
 
-      <form onSubmit={handleSignUp} className="grid gap-4">
-        <div className="grid gap-2">
-            <Label htmlFor="email" className="text-foreground">Email</Label>
+      <form onSubmit={handleSignUp} className="grid gap-3">
+        <div className="grid gap-1.5">
+            <Label htmlFor="email">Email</Label>
             <Input
               id="email"
               type="email"
@@ -63,11 +59,11 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
               onChange={(e) => setEmail(e.target.value)}
               required
               disabled={isLoading}
-              className="text-foreground bg-background/50 backdrop-blur-sm"
+              
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password" className="text-foreground">Password</Label>
+          <div className="grid gap-1.5">
+            <Label htmlFor="password">Password</Label>
             <div className="relative">
               <Input
                 id="password"
@@ -77,7 +73,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 onChange={(e) => setPassword(e.target.value)}
                 required
                 disabled={isLoading}
-                className="text-foreground bg-background/50 backdrop-blur-sm pr-10"
+                className="pr-10"
               />
               <Button
                 type="button"
@@ -88,15 +84,15 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 aria-label={showPassword ? "Hide password" : "Show password"}
               >
                 {showPassword ? (
-                  <VisibilityOff className="h-4 w-4" />
+                  <EyeOff className="h-4 w-4" />
                 ) : (
-                  <Visibility className="h-4 w-4" />
+                  <Eye className="h-4 w-4" />
                 )}
               </Button>
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="repeatPassword" className="text-foreground">Confirm Password</Label>
+          <div className="grid gap-1.5">
+            <Label htmlFor="repeatPassword">Confirm Password</Label>
             <div className="relative">
               <Input
                 id="repeatPassword"
@@ -109,7 +105,7 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 }}
                 required
                 disabled={isLoading}
-                className="text-foreground bg-background/50 backdrop-blur-sm pr-10"
+                className="pr-10"
               />
               <Button
                 type="button"
@@ -120,38 +116,37 @@ const SignUpForm: React.FC<ISignUpFormProps> = ({
                 aria-label={showRepeatPassword ? "Hide password" : "Show password"}
               >
                 {showRepeatPassword ? (
-                  <VisibilityOff className="h-4 w-4" />
+                  <EyeOff className="h-4 w-4" />
                 ) : (
-                  <Visibility className="h-4 w-4" />
+                  <Eye className="h-4 w-4" />
                 )}
               </Button>
             </div>
           </div>
 
           {passwordsMatch && (
-             <div className="p-3 text-sm rounded-md bg-destructive/15 text-destructive">
+             <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
                 Passwords do not match
              </div>
           )}
           {!!message && (
-             <div className="p-3 text-sm rounded-md bg-destructive/15 text-destructive">
+             <div className="rounded-md border border-destructive/30 bg-destructive/5 px-3 py-2 text-sm text-destructive">
                 {message}
              </div>
           )}
 
-          {/* MD3 Expressive: Pill shaped button */}
-          <Button className="w-full rounded-full" type="submit" disabled={isLoading}>
+            <Button className="w-full" type="submit" disabled={isLoading}>
             {isLoading ? (
-              <CircularProgress size={20} color="inherit" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-label="Loading" />
             ) : (
-              "Sign Up"
+              "Sign up"
             )}
           </Button>
       </form>
 
-      <div className="text-center text-sm text-muted-foreground">
+      <div className="text-sm text-muted-foreground">
             Already have an account?{" "}
-            <Link to={ROUTES.SIGN_IN} className="underline hover:text-primary underline-offset-4 font-semibold">
+            <Link to={ROUTES.SIGN_IN} className="font-medium text-foreground underline-offset-4 hover:underline">
                 Sign in
             </Link>
       </div>
