@@ -23,7 +23,7 @@ const BulkActionsBar: React.FC<IBulkActionsBarProps> = ({
 
   return (
     <div className="fixed bottom-20 left-1/2 z-50 -translate-x-1/2 duration-200 animate-in fade-in slide-in-from-bottom-2 md:bottom-8">
-      <div className="flex items-center gap-1 rounded-lg border border-border bg-popover py-1 pl-3 pr-1 text-popover-foreground shadow-md">
+      <div className="flex items-center gap-1 glass-strong rounded-xl py-1 pl-3 pr-1 text-popover-foreground shadow-md">
         <span className="mr-2 text-sm">
           <span className="font-semibold tabular-nums">{selectedCount}</span>
           <span className="text-muted-foreground"> selected</span>

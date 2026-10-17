@@ -4,6 +4,7 @@ import { EXTENSION_PAGE } from "../utils/constants";
 import LogoWithTabSync from "./LogoWithTabSync";
 import InstallPwaDialog from "./InstallPwaDialog";
 import QRCodeDialog from "./QRCodeDialog";
+import Backdrop from "./Backdrop";
 
 interface IAuthLayoutProps {
   /** Hide the "open on your phone" link (already on a phone). */
@@ -16,10 +17,11 @@ const linkCls = "text-xs text-muted-foreground underline-offset-4 hover:text-for
 /** Centered card used by sign in / sign up. */
 const AuthLayout: React.FC<IAuthLayoutProps> = ({ isMobile, children }) => {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-background px-4 py-10">
+    <div className="relative isolate flex min-h-screen flex-col items-center justify-center px-4 py-10">
+      <Backdrop />
       <div className="w-full max-w-sm">
-        <LogoWithTabSync className="mb-6 justify-center" />
-        <div className="rounded-lg border border-border bg-card p-6">{children}</div>
+        <LogoWithTabSync className="mb-6 justify-center text-base" markClassName="h-9 w-9 rounded-[11px]" />
+        <div className="glass-strong rounded-2xl p-6">{children}</div>
         <p className="mt-3 text-center text-xs text-muted-foreground">Sync your open tabs across browsers and devices.</p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
           <a href={EXTENSION_PAGE} target="_blank" rel="noopener noreferrer" className={linkCls}>

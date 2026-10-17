@@ -42,10 +42,10 @@ const UrlListItem: React.FC<IUrlListItem> = ({
       data-row={rowIndex}
       onMouseMove={onHover}
       className={cn(
-        "row group cursor-pointer pl-8",
+        "row group cursor-pointer pl-[42px]",
         isActive && "row-active",
-        isSelected && !isSelectionMode && "bg-primary/10 hover:bg-primary/10",
-        isChecked && isSelectionMode && "bg-primary/10 hover:bg-primary/10",
+        isSelected && !isSelectionMode && "row-selected",
+        isChecked && isSelectionMode && "row-selected",
         isExiting && "pointer-events-none duration-300 animate-out fade-out slide-out-to-left-2 fill-mode-forwards"
       )}
       onClick={() => !isExiting && onSelect?.(tab)}
@@ -55,7 +55,7 @@ const UrlListItem: React.FC<IUrlListItem> = ({
         <span
           className={cn(
             "flex h-4 w-4 shrink-0 items-center justify-center rounded border",
-            isChecked ? "border-primary bg-primary text-primary-foreground" : "border-input bg-background"
+            isChecked ? "border-primary-ink bg-primary text-primary-foreground" : "border-input bg-background"
           )}
           aria-hidden
         >
@@ -83,7 +83,7 @@ const UrlListItem: React.FC<IUrlListItem> = ({
       </a>
       <span className="min-w-[16px] flex-1" aria-hidden />
 
-      <span className="max-w-[35%] shrink-0 truncate text-xs text-muted-foreground">{host}</span>
+      <span className="max-w-[30%] shrink-0 truncate text-xs text-muted-foreground sm:max-w-[35%]">{host}</span>
     </div>
   );
 };

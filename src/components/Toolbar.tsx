@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   ArrowDownAZ,
   Check,
@@ -17,7 +17,7 @@ import { Layout } from "../interfaces/Layout";
 import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
-import DeviceIcon from "./DeviceIcon";
+import { DeviceChip } from "./DeviceIcon";
 
 import {
   DropdownMenu,
@@ -70,6 +70,15 @@ const Toolbar: React.FC<IToolbarProps> = ({
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
 
+  // The sticky bar only frosts once the list scrolls under it; at rest it is part of the page.
+  const [isStuck, setIsStuck] = useState(false);
+  useEffect(() => {
+    const onScroll = () => setIsStuck(window.scrollY > 4);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
   useKeyPress({
     keys: ["/"],
     callback: () => {
@@ -111,7 +120,11 @@ const Toolbar: React.FC<IToolbarProps> = ({
   const deviceLabel = selectedDevice === "All" ? "All devices" : selectedDevice;
 
   return (
-    <div className="sticky top-12 z-30 -mx-4 bg-background px-4 pb-3 pt-4 md:top-0 md:-mx-8 md:px-8 md:pt-6">
+    <div className={cn(
+        "sticky top-12 z-30 -mx-4 px-4 pb-3 pt-4 transition-[background-color,border-color] duration-150 md:top-0 md:-mx-8 md:px-8 md:pt-6",
+        "border-b border-transparent",
+        isStuck && "page-bar border-[color:var(--glass-border)]"
+      )}>
       <div className="flex items-center gap-1">
         <div className="min-w-0 flex-1">
           <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">TabSync</p>
@@ -131,7 +144,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
           <DropdownMenuTrigger asChild>
             <button
               type="button"
-              className="mr-1 flex h-8 max-w-[132px] items-center gap-1 rounded-md border border-border px-2 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
+              className="mr-1 flex h-8 max-w-[132px] items-center gap-1 glass rounded-lg px-2 text-xs font-medium text-muted-foreground hover:bg-accent hover:text-foreground md:hidden"
               aria-label="Filter by device"
             >
               <span className="truncate">{deviceLabel}</span>
@@ -141,7 +154,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
           <DropdownMenuContent align="end" className="w-52">
             {["All", ...devices].map((device) => (
               <DropdownMenuItem key={device} onClick={() => onSelectDevice(device)}>
-                {device === "All" ? <span className="h-4 w-4" /> : <DeviceIcon name={device} />}
+                {device === "All" ? <span className="h-4 w-4" /> : <DeviceChip name={device} size="sm" />}
                 <span className="min-w-0 flex-1 truncate">{device === "All" ? "All devices" : device}</span>
                 {selectedDevice === device && <Check className="h-4 w-4" />}
               </DropdownMenuItem>
@@ -182,7 +195,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         {toggleSelectionMode && (
           <button
             type="button"
-            className={cn("icon-btn", isSelectionMode && "bg-primary/10 text-primary hover:bg-primary/15 hover:text-primary")}
+            className={cn("icon-btn", isSelectionMode && "bg-primary/40 text-primary-foreground hover:bg-primary/50 hover:text-primary-foreground dark:bg-primary/15 dark:text-primary-ink dark:hover:text-primary-ink")}
             onClick={toggleSelectionMode}
             aria-label={isSelectionMode ? "Exit selection mode" : "Enter selection mode"}
             aria-pressed={!!isSelectionMode}
@@ -204,7 +217,7 @@ const Toolbar: React.FC<IToolbarProps> = ({
         )}
       </div>
 
-      <label className="mt-3 flex h-10 items-center gap-2 rounded-md border border-input bg-muted/50 px-3 transition-colors focus-within:border-ring focus-within:bg-background">
+      <label className="glass-strong focus-ring mt-3 flex h-10 items-center gap-2 rounded-xl px-3">
         <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
         <input
           ref={searchBoxRef}

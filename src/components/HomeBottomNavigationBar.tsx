@@ -21,7 +21,7 @@ const items: { section: SidebarSection; to: string; label: string; Icon: typeof 
 const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({ active }) => {
   return (
     <nav
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background pb-[env(safe-area-inset-bottom)] md:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 glass-bar glass-bar-bottom pb-[env(safe-area-inset-bottom)] md:hidden"
       aria-label="Main"
     >
       <div className="grid h-14 grid-cols-3">
@@ -34,10 +34,17 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({ acti
               aria-current={isActive ? "page" : undefined}
               className={cn(
                 "flex flex-col items-center justify-center gap-0.5 text-[11px] font-medium transition-colors",
-                isActive ? "text-primary" : "text-muted-foreground hover:text-foreground"
+                isActive ? "text-primary-ink" : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Icon className="h-5 w-5" aria-hidden />
+              <span
+                className={cn(
+                  "flex h-7 w-12 items-center justify-center rounded-full transition-colors",
+                  isActive && "bg-primary/45 text-primary-foreground dark:bg-primary/20 dark:text-primary-ink"
+                )}
+              >
+                <Icon className="h-[18px] w-[18px]" aria-hidden />
+              </span>
               {label}
             </Link>
           );

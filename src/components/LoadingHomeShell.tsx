@@ -13,7 +13,7 @@ const LoadingHomeShell: React.FC = () => {
       </div>
       <div className="space-y-1" aria-label="Loading your tabs">
         {[0, 1, 2, 3, 4, 5].map((i) => (
-          <div key={i} className="h-9 animate-pulse rounded-md bg-muted/60" />
+          <div key={i} className="shimmer h-9 rounded-lg" />
         ))}
       </div>
     </AppShell>

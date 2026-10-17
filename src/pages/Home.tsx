@@ -468,8 +468,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const detailsPanel = (
     <aside
       className={cn(
-        "sticky top-0 hidden h-screen shrink-0 overflow-hidden border-border bg-background transition-[width] duration-200 md:block",
-        selectedTab ? "w-[360px] border-l" : "w-0"
+        "sticky top-0 hidden h-screen shrink-0 overflow-hidden glass-bar transition-[width] duration-200 md:block",
+        selectedTab ? "glass-bar-left w-[360px]" : "w-0"
       )}
       aria-hidden={!selectedTab}
     >
@@ -521,7 +521,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       {isLoading && urls.length === 0 ? (
         <div className="space-y-1" aria-hidden>
           {[0, 1, 2, 3, 4, 5].map((i) => (
-            <div key={i} className="h-9 animate-pulse rounded-md bg-muted/60" />
+            <div key={i} className="shimmer h-9 rounded-lg" />
           ))}
         </div>
       ) : (
@@ -582,7 +582,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           onClick={() => handleSelectTab(null)}
         >
           <div
-            className="h-[80vh] w-full overflow-hidden rounded-t-xl border-t border-border bg-background duration-300 animate-in slide-in-from-bottom"
+            className="h-[80vh] w-full overflow-hidden glass-strong rounded-t-2xl border-x-0 border-b-0 duration-300 animate-in slide-in-from-bottom"
             onClick={(e) => e.stopPropagation()}
           >
             <TabDetails

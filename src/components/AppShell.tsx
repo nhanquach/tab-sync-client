@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import HomeSidebar, { SidebarSection } from "./HomeSidebar";
 import HomeAppBar from "./HomeAppBar";
 import HomeBottomNavigationBar from "./HomeBottomNavigationBar";
+import Backdrop from "./Backdrop";
 
 interface IAppShellProps {
   active: SidebarSection;
@@ -22,7 +23,8 @@ interface IAppShellProps {
 /** Desktop: slim sidebar + centred content column. Mobile: top bar + bottom tabs. */
 const AppShell: React.FC<IAppShellProps> = ({ aside, children, ...sidebar }) => {
   return (
-    <div className="min-h-screen bg-background text-foreground md:flex">
+    <div className="relative isolate min-h-screen text-foreground md:flex">
+      <Backdrop />
       <HomeSidebar {...sidebar} />
       <HomeAppBar user={sidebar.user} isLoading={sidebar.isLoading} />
 

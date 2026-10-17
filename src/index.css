@@ -3,66 +3,108 @@
 @tailwind utilities;
 
 /*
- * Quiet utility palette, shared with the browser extension:
- * neutral greys plus one blue accent. Light and dark follow the system
- * unless the user picks a mode in Settings (toggles the `dark` class).
+ * Quiet glass palette, shared with the browser extension (src/ui/styles/tailwind.css there):
+ * near-neutral grey with a barely-there static tint (see Backdrop.tsx) under mostly opaque
+ * frosted surfaces, one pastel teal signature (#A3E0D2 light) with deep-teal ink text on it,
+ * and a soft hue per device (see utils/deviceColor.ts). No gradients, no glows, no coloured
+ * shadows. Light and dark follow the system unless the user picks a mode in Settings
+ * (toggles the `dark` class).
  */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 6% 10%;
+    --background: 228 14% 97.5%;
+    --foreground: 230 18% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 240 6% 10%;
+    --card-foreground: 230 18% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 6% 10%;
-    --primary: 221 83% 53%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 5% 96%;
-    --secondary-foreground: 240 6% 10%;
-    --muted: 240 5% 96%;
-    --muted-foreground: 240 4% 46%;
-    --accent: 240 5% 94%;
-    --accent-foreground: 240 6% 10%;
-    --destructive: 0 72% 51%;
+    --popover-foreground: 230 18% 11%;
+    /* Pastel teal fill (#A3E0D2) with deep-teal text on it (#0D3532, >= 7:1).
+       --primary-ink is the readable teal for links, focus and indicators (#167569, 5.4:1 on white). */
+    --primary: 166 50% 76%;
+    --primary-foreground: 174 60% 13%;
+    --primary-ink: 172 68% 27%;
+    --secondary: 228 12% 94%;
+    --secondary-foreground: 230 18% 11%;
+    --muted: 228 12% 94%;
+    --muted-foreground: 230 8% 42%;
+    --accent: 230 12% 93.5%;
+    --accent-foreground: 230 18% 11%;
+    --destructive: 354 66% 48%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 6% 90%;
-    --input: 240 6% 88%;
-    --ring: 221 83% 53%;
-    --radius: 0.5rem;
+    --border: 228 12% 89%;
+    --input: 228 11% 85%;
+    --ring: 172 68% 27%;
+    /* Device chips: saturation/lightness applied to a per-item --hue. */
+    --chip-bg-s: 45%;
+    --chip-bg-l: 55%;
+    --chip-bg-a: 0.12;
+    --chip-fg-s: 50%;
+    --chip-fg-l: 31%;
+    --shadow-color: 230 20% 10%;
+    /* Frosted surfaces: tint, alpha, border. Mostly opaque, quiet. */
+    --glass-tint: 0 0% 100%;
+    --glass-a: 0.78;
+    --glass-strong-a: 0.88;
+    --glass-bar-a: 0.94;
+    --glass-border: hsl(230 15% 15% / 0.08);
+    --glass-danger: 354 60% 98%;
+    /* Background tint blobs. */
+    --blob-a: 0.16;
+    --radius: 0.625rem;
     color-scheme: light;
   }
 
   .dark {
-    --background: 240 6% 8%;
-    --foreground: 0 0% 95%;
-    --card: 240 5% 10%;
-    --card-foreground: 0 0% 95%;
-    --popover: 240 5% 12%;
-    --popover-foreground: 0 0% 95%;
-    --primary: 217 91% 62%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 240 4% 16%;
-    --secondary-foreground: 0 0% 95%;
-    --muted: 240 4% 16%;
-    --muted-foreground: 240 5% 62%;
-    --accent: 240 4% 18%;
-    --accent-foreground: 0 0% 95%;
-    --destructive: 0 72% 60%;
+    --background: 235 10% 8%;
+    --foreground: 230 15% 94%;
+    --card: 235 9% 11%;
+    --card-foreground: 230 15% 94%;
+    --popover: 235 9% 12%;
+    --popover-foreground: 230 15% 94%;
+    /* Pastel teal fill with deep-teal text on it; the ink token is the pastel itself on dark. */
+    --primary: 166 46% 72%;
+    --primary-foreground: 174 60% 11%;
+    --primary-ink: 166 50% 72%;
+    --secondary: 235 8% 15%;
+    --secondary-foreground: 230 15% 94%;
+    --muted: 235 8% 14%;
+    --muted-foreground: 230 8% 64%;
+    --accent: 235 8% 16%;
+    --accent-foreground: 230 15% 94%;
+    --destructive: 354 70% 64%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 4% 18%;
-    --input: 240 4% 22%;
-    --ring: 217 91% 62%;
+    --border: 235 8% 17%;
+    --input: 235 8% 22%;
+    --ring: 166 50% 72%;
+    --chip-bg-s: 40%;
+    --chip-bg-l: 60%;
+    --chip-bg-a: 0.16;
+    --chip-fg-s: 55%;
+    --chip-fg-l: 74%;
+    --shadow-color: 235 30% 2%;
+    --glass-tint: 235 10% 11%;
+    --glass-a: 0.76;
+    --glass-strong-a: 0.86;
+    --glass-bar-a: 0.92;
+    --glass-border: hsl(0 0% 100% / 0.07);
+    --glass-danger: 354 30% 12%;
+    --blob-a: 0.14;
     color-scheme: dark;
   }
 
-  /* Optional accent picked in Settings > Appearance. Blue (the default) sets no attribute. */
+  /* Optional accent picked in Settings > Appearance. Teal (the default) sets no attribute.
+     Same recipe as the teal: a pastel fill, deep text on it, and a readable ink. */
   :root[data-accent] {
-    --primary: var(--accent-hue) 70% 48%;
-    --ring: var(--accent-hue) 70% 48%;
+    --primary: var(--accent-hue) 55% 80%;
+    --primary-foreground: var(--accent-hue) 55% 16%;
+    --primary-ink: var(--accent-hue) 60% 34%;
+    --ring: var(--accent-hue) 60% 34%;
   }
   :root.dark[data-accent] {
-    --primary: var(--accent-hue) 75% 62%;
-    --ring: var(--accent-hue) 75% 62%;
+    --primary: var(--accent-hue) 55% 76%;
+    --primary-foreground: var(--accent-hue) 55% 13%;
+    --primary-ink: var(--accent-hue) 60% 76%;
+    --ring: var(--accent-hue) 60% 76%;
   }
 }
 
@@ -80,49 +122,218 @@
     line-height: 1.5;
   }
   ::selection {
-    background: hsl(var(--primary) / 0.2);
+    background: hsl(var(--primary) / 0.45);
+    color: inherit;
   }
 }
 
 @layer components {
   /* 32px square icon button used in headers and toolbars. */
   .icon-btn {
-    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
   }
   .icon-btn-active {
-    @apply bg-accent text-foreground;
+    @apply bg-accent text-primary-ink;
   }
   /* A dense list row: device header or tab. */
   .row {
-    @apply flex h-9 w-full items-center gap-2 rounded-md px-2 text-foreground outline-none transition-colors hover:bg-accent/60 focus-visible:ring-2 focus-visible:ring-ring;
+    @apply relative flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-foreground outline-none transition-[background-color,box-shadow] duration-150 hover:bg-accent/70 focus-visible:ring-2 focus-visible:ring-ring;
   }
   .row-active {
     @apply bg-accent;
   }
+  /* Highlighted / selected row: a thin teal indicator on the left edge. */
+  .row-active::before,
+  .row-selected::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: hsl(var(--primary-ink));
+  }
+  .row-selected {
+    background-color: hsl(var(--primary) / 0.22);
+  }
+  .row-selected:hover {
+    background-color: hsl(var(--primary) / 0.3);
+  }
   /* Settings-style section label. */
   .section-label {
-    @apply px-1 text-[11px] font-medium uppercase tracking-wide text-muted-foreground;
+    @apply px-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground;
   }
-  /* A bordered group of settings rows. */
+  /* A frosted group of settings rows. */
   .settings-group {
-    @apply divide-y divide-border overflow-hidden rounded-lg border border-border bg-card;
+    @apply divide-y divide-border overflow-hidden rounded-xl;
+    background-color: hsl(var(--glass-tint) / var(--glass-a));
+    -webkit-backdrop-filter: blur(16px) saturate(115%);
+    backdrop-filter: blur(16px) saturate(115%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.04);
   }
   .settings-row {
     @apply flex min-h-[44px] w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors;
   }
   button.settings-row:hover,
   a.settings-row:hover {
-    @apply bg-accent/50;
+    @apply bg-accent/60;
   }
   /* Left sidebar navigation item. */
   .nav-item {
-    @apply flex h-8 w-full items-center gap-2 rounded-md px-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+    @apply relative flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
   }
   .nav-item-active {
     @apply bg-accent font-medium text-foreground;
   }
+  .nav-item-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: hsl(var(--primary-ink));
+  }
+  .nav-item-active > svg {
+    color: hsl(var(--primary-ink));
+  }
+
+  /* Signature pastel teal, flat and solid (logo mark, primary buttons). Only a faint neutral
+     top edge, no coloured shadow. */
+  .bg-signature {
+    background-color: hsl(var(--primary));
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.25);
+  }
+
+  /* Per-item colour: set --hue on the element (see utils/deviceColor.ts). */
+  .device-chip,
+  .icon-tile,
+  .device-pill {
+    background: hsl(var(--hue) var(--chip-bg-s) var(--chip-bg-l) / var(--chip-bg-a));
+    color: hsl(var(--hue) var(--chip-fg-s) var(--chip-fg-l));
+  }
+  .device-chip {
+    @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px];
+  }
+  .icon-tile {
+    @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg;
+  }
+  .device-pill {
+    @apply inline-flex h-[18px] min-w-[22px] shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums;
+  }
+
+  /* Frosted glass: mostly opaque tint + backdrop blur, hairline neutral border and a small,
+     faint neutral shadow. No glossy highlight. */
+  .glass,
+  .glass-strong,
+  .glass-bar {
+    background-color: hsl(var(--glass-tint) / var(--glass-a));
+    -webkit-backdrop-filter: blur(16px) saturate(115%);
+    backdrop-filter: blur(16px) saturate(115%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.04);
+  }
+  /* Popovers, dialogs and the search field: a touch more opaque. */
+  .glass-strong {
+    background-color: hsl(var(--glass-tint) / var(--glass-strong-a));
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  /* Sticky bars and the sidebar: full-bleed frosted, content blurs underneath. */
+  .glass-bar {
+    background-color: hsl(var(--glass-tint) / var(--glass-bar-a));
+    border-width: 0;
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  /* Sticky page toolbar inside the content column: the page colour, frosted, so it blends
+     with the backdrop instead of reading as a white block. */
+  .page-bar {
+    background-color: hsl(var(--background) / 0.86);
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  .glass-bar-top {
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .glass-bar-bottom {
+    border-top: 1px solid var(--glass-border);
+  }
+  .glass-bar-right {
+    border-right: 1px solid var(--glass-border);
+  }
+  .glass-bar-left {
+    border-left: 1px solid var(--glass-border);
+  }
+  /* Danger zone: still frosted, unmistakably red. */
+  .glass-danger {
+    background-color: hsl(var(--glass-danger) / 0.88);
+    border-color: hsl(var(--destructive) / 0.28);
+  }
+  /* Search focus: crisp 1px teal border + a thin low-opacity ring. No blur, no glow. */
+  .focus-ring {
+    @apply transition-[box-shadow,border-color] duration-150;
+  }
+  .focus-ring:focus-within {
+    border-color: hsl(var(--primary-ink));
+    box-shadow: 0 0 0 3px hsl(var(--primary-ink) / 0.14);
+  }
+
+  /* Background tint: large, blurred, static, low-opacity blobs (no gradient fills). */
+  .blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(96px);
+    opacity: var(--blob-a);
+    pointer-events: none;
+  }
+
   .kbd {
-    @apply inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-border bg-muted px-1 font-sans text-[11px] font-medium text-muted-foreground;
+    @apply inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[5px] border border-border bg-card px-1 font-sans text-[10.5px] font-semibold leading-none text-muted-foreground;
+    box-shadow: 0 1px 0 hsl(var(--border));
+  }
+
+  /* Skeleton placeholder: a soft pulse, no sweep gradient. */
+  .shimmer {
+    @apply bg-foreground/[0.07];
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* No backdrop-filter (older engines, some Linux GPU setups): go near-opaque so text stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-bar,
+  .settings-group {
+    background-color: hsl(var(--glass-tint) / 0.95);
+  }
+  .glass-strong {
+    background-color: hsl(var(--glass-tint) / 0.97);
+  }
+  .glass-danger {
+    background-color: hsl(var(--glass-danger) / 0.95);
+  }
+}
+
+/* Motion is decoration only: turn it off for people who ask. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
   }
 }
 

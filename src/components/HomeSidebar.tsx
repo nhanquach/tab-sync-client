@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
 import LogoWithTabSync from "./LogoWithTabSync";
-import DeviceIcon from "./DeviceIcon";
+import { DeviceChip } from "./DeviceIcon";
 import FeedbackDialog from "./FeedbackDialog";
 import QRCodeDialog from "./QRCodeDialog";
 import { StatsDialog } from "./StatsDialog";
@@ -59,13 +59,13 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
       {icon}
       <span className="min-w-0 flex-1 truncate">{label}</span>
       {active === section && activeCount !== undefined && !isLoading && (
-        <span className="shrink-0 text-xs tabular-nums text-muted-foreground">{activeCount}</span>
+        <span className="shrink-0 rounded-full bg-primary/40 px-1.5 text-[11px] font-semibold tabular-nums text-primary-foreground dark:bg-primary/15 dark:text-primary-ink">{activeCount}</span>
       )}
     </Link>
   );
 
   return (
-    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col border-r border-border bg-background md:flex">
+    <aside className="sticky top-0 hidden h-screen w-60 shrink-0 flex-col glass-bar glass-bar-right md:flex">
       <div className="px-4 pb-3 pt-5">
         <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="inline-flex rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
           <LogoWithTabSync />
@@ -91,9 +91,11 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
                   aria-pressed={selectedDevice === device}
                 >
                   {device === "All" ? (
-                    <span className="h-4 w-4 shrink-0" aria-hidden />
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-foreground/[0.06] text-muted-foreground" aria-hidden>
+                      <Layers className="h-3 w-3" />
+                    </span>
                   ) : (
-                    <DeviceIcon name={device} className="text-current" />
+                    <DeviceChip name={device} size="sm" />
                   )}
                   <span className="min-w-0 flex-1 truncate">{device === "All" ? "All devices" : device}</span>
                 </button>
@@ -103,7 +105,7 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
         )}
       </nav>
 
-      <div className="space-y-0.5 border-t border-border px-2 py-2">
+      <div className="space-y-0.5 border-t border-[color:var(--glass-border)] px-2 py-2">
         <StatsDialog>
           <NavButton icon={<BarChart3 className={iconCls} />}>Insights</NavButton>
         </StatsDialog>
@@ -121,10 +123,10 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
 
       <Link
         to={ROUTES.SETTINGS}
-        className="flex items-center gap-2 border-t border-border px-4 py-3 text-sm transition-colors hover:bg-accent/50"
+        className="flex items-center gap-2 border-t border-[color:var(--glass-border)] px-4 py-3 text-sm transition-colors hover:bg-accent/50"
         title="Account settings"
       >
-        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-muted text-[11px] font-semibold text-foreground">
+        <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
           {isLoading ? "" : initial}
         </span>
         <span className="min-w-0 flex-1 truncate text-muted-foreground">

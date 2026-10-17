@@ -30,10 +30,10 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, i
       tabIndex={isExiting ? -1 : 0}
       onKeyDown={handleKeyDown}
       className={cn(
-        "relative flex h-full cursor-pointer flex-col gap-1.5 rounded-lg border border-border bg-card p-3 transition-colors hover:bg-accent/60",
+        "relative flex h-full cursor-pointer flex-col gap-1.5 glass rounded-xl p-3 transition-colors hover:bg-accent/60",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-        isSelected && !isSelectionMode && "border-primary/50 bg-primary/5",
-        isChecked && isSelectionMode && "border-primary/50 bg-primary/5",
+        isSelected && !isSelectionMode && "border-primary-ink/50 bg-primary/20",
+        isChecked && isSelectionMode && "border-primary-ink/50 bg-primary/20",
         isExiting && "pointer-events-none duration-300 animate-out fade-out zoom-out-95 fill-mode-forwards"
       )}
       onClick={() => !isExiting && onSelect?.(tab)}

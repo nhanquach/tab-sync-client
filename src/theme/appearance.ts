@@ -2,6 +2,7 @@ import { useSyncExternalStore } from "react";
 
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import { DEFAULT_THEME_ID, THEMES } from "./definitions";
+import { THEME_COLOR } from "./palette";
 
 export type ColorMode = "system" | "light" | "dark";
 
@@ -55,7 +56,7 @@ const apply = () => {
   }
 
   const meta = document.querySelector('meta[name="theme-color"]');
-  meta?.setAttribute("content", state.isDark ? "#131316" : "#ffffff");
+  meta?.setAttribute("content", state.isDark ? THEME_COLOR.dark : THEME_COLOR.light);
 };
 
 const update = (next: Partial<AppearanceState>) => {

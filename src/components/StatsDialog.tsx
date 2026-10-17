@@ -135,7 +135,7 @@ export const StatsDialog: React.FC<IStatsDialogProps> = ({ children }) => {
                     </div>
                     <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                       <div
-                        className="h-full rounded-full bg-primary"
+                        className="h-full rounded-full bg-primary-ink"
                         style={{ width: `${(device.count / maxDeviceCount) * 100}%` }}
                       />
                     </div>

@@ -6,7 +6,7 @@ import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { Button } from "@/components/ui/button";
 import { hostOf } from "../utils/tabMeta";
-import DeviceIcon from "./DeviceIcon";
+import { DeviceChip } from "./DeviceIcon";
 import Favicon from "./Favicon";
 
 interface ITabDetailsProps {
@@ -34,7 +34,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <header className="flex h-12 shrink-0 items-center gap-2 border-b border-border px-4">
+      <header className="flex h-12 shrink-0 items-center gap-2 border-b border-[color:var(--glass-border)] px-4">
         <h2 className="flex-1 text-sm font-semibold">Tab details</h2>
         <button type="button" onClick={onClose} className="icon-btn" aria-label="Close details">
           <X className="h-4 w-4" />
@@ -58,7 +58,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
             <div className="settings-row min-h-[40px]">
               <span className="w-16 shrink-0 text-muted-foreground">Device</span>
               <span className="flex min-w-0 flex-1 items-center gap-1.5">
-                <DeviceIcon name={tab.deviceName} />
+                <DeviceChip name={tab.deviceName} size="sm" />
                 <span className="truncate">{tab.deviceName}</span>
               </span>
             </div>

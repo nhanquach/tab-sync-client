@@ -7,7 +7,7 @@ import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import UrlGridItem from "./UrlGridItem";
 
-import DeviceIcon from "./DeviceIcon";
+import { DeviceChip, DevicePill } from "./DeviceIcon";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 
 interface IUrlGridProps {
@@ -48,13 +48,13 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
           <section key={name}>
             {/* Section Header */}
             <div className="group mb-2 flex h-9 items-center gap-2 px-0">
-              <DeviceIcon name={name} />
+              <DeviceChip name={name} />
               <h3 className="min-w-0 flex-1 truncate text-sm font-medium">{name || "Unknown device"}</h3>
               {isSelectionMode ? (
                 <button
                   type="button"
                   onClick={() => onToggleDeviceSelection?.(name, !allSelected)}
-                  className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium text-primary hover:bg-primary/10"
+                  className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium text-primary-ink hover:bg-primary/20"
                 >
                   {allSelected ? "Deselect all" : "Select all"}
                 </button>
@@ -72,9 +72,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                   </button>
                 </>
               )}
-              <span className="shrink-0 rounded bg-muted px-1.5 text-[11px] font-medium tabular-nums text-muted-foreground">
-                {tabs.length}
-              </span>
+              <DevicePill name={name}>{tabs.length}</DevicePill>
             </div>
 
             {/* Grid Container */}

@@ -11,15 +11,18 @@ const MODES: { id: ColorMode; label: string; Icon: typeof Sun }[] = [
   { id: "dark", label: "Dark", Icon: Moon },
 ];
 
-/** Appearance rows for Settings: light/dark mode and accent colour. */
-export const ThemeSelector: React.FC = () => {
+/** Appearance rows for Settings: System/Light/Dark and the pastel accent. */
+export const ThemeSelector: React.FC<{ tile?: React.ReactNode }> = ({ tile }) => {
   const { mode, accentId } = useAppearance();
 
   return (
     <div className="settings-group">
-      <div className="settings-row flex-wrap justify-between">
-        <span>Theme</span>
-        <div className="flex rounded-md border border-border p-0.5" role="radiogroup" aria-label="Theme">
+      <div className="settings-row flex-wrap justify-between gap-y-2">
+        <span className="flex items-center gap-3">
+          {tile}
+          <span>Theme</span>
+        </span>
+        <div className="flex rounded-lg bg-foreground/[0.06] p-0.5" role="radiogroup" aria-label="Theme">
           {MODES.map(({ id, label, Icon }) => (
             <button
               key={id}
@@ -28,20 +31,22 @@ export const ThemeSelector: React.FC = () => {
               aria-checked={mode === id}
               onClick={() => setColorMode(id)}
               className={cn(
-                "flex h-7 items-center gap-1.5 rounded px-2.5 text-xs font-medium transition-colors",
-                mode === id ? "bg-accent text-foreground" : "text-muted-foreground hover:text-foreground"
+                "flex h-7 items-center gap-1.5 rounded-md px-2.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                mode === id
+                  ? "bg-card text-foreground shadow-[0_1px_2px_hsl(var(--shadow-color)/0.12)]"
+                  : "text-muted-foreground hover:text-foreground"
               )}
             >
-              <Icon className="h-3.5 w-3.5" aria-hidden />
+              <Icon className={cn("h-3.5 w-3.5", mode === id && "text-primary-ink")} aria-hidden />
               {label}
             </button>
           ))}
         </div>
       </div>
 
-      <div className="settings-row flex-wrap justify-between">
-        <span>Accent</span>
-        <div className="flex items-center gap-1.5" role="radiogroup" aria-label="Accent colour">
+      <div className="settings-row flex-wrap justify-between gap-y-2">
+        <span className="pl-10">Accent</span>
+        <div className="flex items-center gap-2" role="radiogroup" aria-label="Accent colour">
           {THEMES.map((theme) => {
             const isSelected = accentId === theme.id;
             return (
@@ -54,12 +59,13 @@ export const ThemeSelector: React.FC = () => {
                 title={theme.name}
                 onClick={() => setAccent(theme.id)}
                 className={cn(
-                  "flex h-6 w-6 items-center justify-center rounded-full ring-offset-2 ring-offset-background transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                  isSelected && "ring-2 ring-foreground/60"
+                  "flex h-6 w-6 items-center justify-center rounded-full ring-offset-2 ring-offset-card transition-shadow focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+                  "shadow-[inset_0_0_0_1px_hsl(var(--shadow-color)/0.1)]",
+                  isSelected && "ring-2 ring-primary-ink"
                 )}
                 style={{ backgroundColor: theme.swatch }}
               >
-                {isSelected && <Check className="h-3.5 w-3.5 text-white" strokeWidth={3} />}
+                {isSelected && <Check className="h-3.5 w-3.5 text-[hsl(220_30%_14%)]" strokeWidth={3} />}
               </button>
             );
           })}

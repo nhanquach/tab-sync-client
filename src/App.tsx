@@ -89,14 +89,14 @@ function AppContent() {
     return createTheme({
       palette: {
         mode: isDark ? "dark" : "light",
-        primary: { main: c.primary, contrastText: "#ffffff" },
+        primary: { main: c.primary, light: c.primaryFill, contrastText: c.primaryContrast },
         secondary: { main: c.muted },
         error: { main: c.error },
         background: { default: c.background, paper: c.paper },
         text: { primary: c.text, secondary: c.muted },
         divider: c.border,
       },
-      shape: { borderRadius: 8 },
+      shape: { borderRadius: 10 },
       shadows: Array(25).fill("none") as never,
       typography: {
         fontFamily: '"Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif',

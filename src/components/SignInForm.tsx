@@ -64,7 +64,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
             <Label htmlFor="password">Password</Label>
              <Button
                 variant="link"
-                className="px-0 font-normal h-auto text-xs text-primary"
+                className="px-0 font-normal h-auto text-xs text-primary-ink"
                 type="button"
                 onClick={handleResetPassword}
                 disabled={isLoading}
@@ -105,7 +105,7 @@ const SignInForm: React.FC<ISignInFormProps> = ({
             className={`rounded-md px-3 py-2 text-sm ${
               message.type === "error"
                 ? "border border-destructive/30 bg-destructive/5 text-destructive"
-                : "border border-primary/30 bg-primary/5 text-foreground"
+                : "border border-primary-ink/30 bg-primary/20 text-foreground"
             }`}
           >
             {message.text}

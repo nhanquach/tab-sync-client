@@ -6,7 +6,7 @@ import { TABS_VIEWS } from "../interfaces/iView";
 import { cn } from "@/lib/utils";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 import UrlListItem from "./UrlListItem";
-import DeviceIcon from "./DeviceIcon";
+import { DeviceChip, DevicePill } from "./DeviceIcon";
 
 interface IUrlListProps {
   view: TABS_VIEWS;
@@ -179,7 +179,7 @@ const UrlList: React.FC<IUrlListProps> = ({
                 className={cn("h-3.5 w-3.5 shrink-0 text-muted-foreground transition-transform", open && "rotate-90")}
                 aria-hidden
               />
-              <DeviceIcon name={group.name} />
+              <DeviceChip name={group.name} />
               <span className="min-w-0 flex-1 truncate text-left text-sm font-medium">{group.name}</span>
 
               {isSelectionMode ? (
@@ -189,7 +189,7 @@ const UrlList: React.FC<IUrlListProps> = ({
                     e.stopPropagation();
                     onToggleDeviceSelection?.(group.name, !allSelected);
                   }}
-                  className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium text-primary hover:bg-primary/10"
+                  className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium text-primary-ink hover:bg-primary/20"
                 >
                   {allSelected ? "Deselect all" : "Select all"}
                 </button>
@@ -210,9 +210,7 @@ const UrlList: React.FC<IUrlListProps> = ({
                   </button>
                 </>
               )}
-              <span className="shrink-0 rounded bg-muted px-1.5 text-[11px] font-medium tabular-nums text-muted-foreground">
-                {group.tabs.length}
-              </span>
+              <DevicePill name={group.name}>{group.tabs.length}</DevicePill>
             </div>
           );
         }
