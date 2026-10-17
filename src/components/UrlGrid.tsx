@@ -1,20 +1,14 @@
 import React from "react";
 // @ts-expect-error no types for this lib
 import groupBy from "lodash.groupby";
-import { ArchiveTwoTone, DeleteForeverTwoTone, LaptopMacTwoTone, PhoneIphoneTwoTone, DevicesOtherTwoTone, CheckBoxTwoTone, CheckBoxOutlineBlankTwoTone } from "@mui/icons-material";
+import { Archive, Trash2 } from "lucide-react";
 
 import { ITab } from "../interfaces/iTab";
 import { TABS_VIEWS } from "../interfaces/iView";
 import UrlGridItem from "./UrlGridItem";
 
-// Shadcn UI
-import { Button } from "@/components/ui/button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+import { DeviceChip, DevicePill } from "./DeviceIcon";
+import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 
 interface IUrlGridProps {
   view: TABS_VIEWS;
@@ -44,78 +38,45 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
 
-   // Helper to get icon for header (Duplicated from UrlList, could be extracted to util but fine here for now)
-  const getIcon = (name: string) => {
-    const lower = name.toLowerCase();
-    const className = "text-md-sys-color-primary mr-2";
-    if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
-      return <LaptopMacTwoTone className={className} />;
-    if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
-      return <PhoneIphoneTwoTone className={className} />;
-    return <DevicesOtherTwoTone className={className} />;
-  };
-
   return (
-    <div className="space-y-8 my-4">
+    <div className="space-y-6 pb-2">
       {browsers.map((name) => {
         const tabs: ITab[] = groupByBrowser[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.uid));
 
         return (
-          <div key={name} className="animate-in fade-in slide-in-from-bottom-2 duration-500">
-             {/* Section Header */}
-            <div className="flex items-center justify-between mb-3 px-1">
-                <div className="flex items-center min-w-0 flex-1 mr-2">
-                    {getIcon(name)}
-                    <h3 className="text-lg font-medium text-md-sys-color-on-surface truncate min-w-0">
-                        {name || "Unknown Device"}
-                    </h3>
-                    <span className="ml-3 text-xs font-medium text-md-sys-color-on-surface-variant bg-md-sys-color-surface-container-high px-2 py-0.5 rounded-full flex-shrink-0">
-                        {tabs.length} tabs
-                    </span>
-                </div>
-
-                {!isSelectionMode ? (
-                  <TooltipProvider>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => onClear(name)}
-                        className="h-8 w-8 text-md-sys-color-outline hover:text-md-sys-color-error hover:bg-md-sys-color-error-container/20 rounded-full"
-                      >
-                        {view === TABS_VIEWS.OPEN_TABS && <ArchiveTwoTone fontSize="small" />}
-                        {view === TABS_VIEWS.ARCHIVED_TABS && <DeleteForeverTwoTone fontSize="small" />}
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>{view === TABS_VIEWS.OPEN_TABS ? "Archive all" : "Delete all"}</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-                ) : (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => onToggleDeviceSelection?.(name, !allSelected)}
-                    className="text-md-sys-color-primary hover:bg-md-sys-color-primary/10 rounded-full px-3"
+          <section key={name}>
+            {/* Section Header */}
+            <div className="group mb-2 flex h-9 items-center gap-2 px-0">
+              <DeviceChip name={name} />
+              <h3 className="min-w-0 flex-1 truncate text-sm font-medium">{name || "Unknown device"}</h3>
+              {isSelectionMode ? (
+                <button
+                  type="button"
+                  onClick={() => onToggleDeviceSelection?.(name, !allSelected)}
+                  className="shrink-0 rounded px-1.5 py-0.5 text-xs font-medium text-primary-ink hover:bg-primary/20"
+                >
+                  {allSelected ? "Deselect all" : "Select all"}
+                </button>
+              ) : (
+                <>
+                  <span className="shrink-0 text-xs text-muted-foreground">{timeAgo(newestTimeStamp(tabs))}</span>
+                  <button
+                    type="button"
+                    onClick={() => onClear(name)}
+                    className="icon-btn h-6 w-6 hover:text-destructive md:opacity-0 md:focus-visible:opacity-100 md:group-hover:opacity-100"
+                    aria-label={view === TABS_VIEWS.OPEN_TABS ? `Archive all tabs from ${name}` : `Delete all archived tabs from ${name}`}
+                    title={view === TABS_VIEWS.OPEN_TABS ? "Archive all" : "Delete all"}
                   >
-                     {allSelected ? (
-                       <>
-                        <CheckBoxTwoTone fontSize="small" className="mr-2" /> Deselect All
-                       </>
-                     ) : (
-                       <>
-                        <CheckBoxOutlineBlankTwoTone fontSize="small" className="mr-2" /> Select All
-                       </>
-                     )}
-                  </Button>
-                )}
+                    {view === TABS_VIEWS.OPEN_TABS ? <Archive className="h-3.5 w-3.5" /> : <Trash2 className="h-3.5 w-3.5" />}
+                  </button>
+                </>
+              )}
+              <DevicePill name={name}>{tabs.length}</DevicePill>
             </div>
 
             {/* Grid Container */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {tabs.map((tab: ITab) => {
                   return (
                     <UrlGridItem 
@@ -136,7 +97,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                   );
                 })}
             </div>
-          </div>
+          </section>
         );
       })}
     </div>

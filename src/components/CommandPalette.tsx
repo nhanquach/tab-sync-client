@@ -1,18 +1,14 @@
 import React from "react";
 import {
-  FolderOpenTwoTone,
-  Inventory2TwoTone,
-  RefreshTwoTone,
-  Grid3x3TwoTone,
-  ListAltTwoTone,
-  SortByAlphaTwoTone,
-  TimelineTwoTone,
-  CheckCircleTwoTone,
-  LaptopMacTwoTone,
-  PhoneIphoneTwoTone,
-  DevicesOtherTwoTone,
-  PublicTwoTone,
-} from "@mui/icons-material";
+  Archive,
+  ArrowDownAZ,
+  Clock,
+  LayoutGrid,
+  Layers,
+  List,
+  ListChecks,
+  RefreshCw,
+} from "lucide-react";
 
 import {
   CommandDialog,
@@ -28,7 +24,8 @@ import { TABS_VIEWS } from "../interfaces/iView";
 import { ITab } from "../interfaces/iTab";
 import { Layout } from "../interfaces/Layout";
 import { ORDER } from "../utils/constants";
-import { useLoadFavIcon } from "../hooks/useLoadFavIcon";
+import { hostOf } from "../utils/tabMeta";
+import Favicon from "./Favicon";
 
 interface ICommandPaletteProps {
   isOpen: boolean;
@@ -53,45 +50,12 @@ interface ICommandPaletteProps {
 }
 
 const TabItem = ({ tab, onSelect }: { tab: ITab; onSelect: () => void }) => {
-  const [showFallback, handleOnErrorImage] = useLoadFavIcon();
-
-  const getDeviceIcon = (name: string) => {
-    const lower = name.toLowerCase();
-    if (lower.includes("mac") || lower.includes("windows") || lower.includes("laptop"))
-      return <LaptopMacTwoTone className="mr-2 h-4 w-4 opacity-50" />;
-    if (lower.includes("iphone") || lower.includes("android") || lower.includes("mobile"))
-      return <PhoneIphoneTwoTone className="mr-2 h-4 w-4 opacity-50" />;
-    return <DevicesOtherTwoTone className="mr-2 h-4 w-4 opacity-50" />;
-  };
-
   return (
-    <CommandItem
-      value={`${tab.title} ${tab.url} ${tab.deviceName}`}
-      onSelect={onSelect}
-      className="group"
-    >
-      <div className="flex items-center gap-3 w-full min-w-0">
-        <div className="flex-shrink-0 w-6 h-6 rounded bg-white p-0.5 flex items-center justify-center">
-            {!showFallback ? (
-                <img
-                    src={tab.favIconUrl}
-                    alt=""
-                    className="w-full h-full object-contain"
-                    onError={handleOnErrorImage}
-                />
-            ) : (
-                <PublicTwoTone className="text-md-sys-color-primary w-4 h-4" />
-            )}
-        </div>
-
-        <div className="flex flex-col min-w-0 flex-1">
-            <span className="truncate font-medium">{tab.title}</span>
-            <span className="truncate text-xs text-md-sys-color-on-surface-variant opacity-70 flex items-center gap-1">
-                {getDeviceIcon(tab.deviceName)}
-                {tab.url}
-            </span>
-        </div>
-      </div>
+    <CommandItem value={`${tab.title} ${tab.url} ${tab.deviceName}`} onSelect={onSelect}>
+      <Favicon src={tab.favIconUrl} />
+      <span className="min-w-0 flex-1 truncate">{tab.title}</span>
+      <span className="max-w-[30%] shrink-0 truncate text-xs text-muted-foreground">{hostOf(tab.url)}</span>
+      <span className="hidden max-w-[25%] shrink-0 truncate text-xs text-muted-foreground sm:inline">· {tab.deviceName}</span>
     </CommandItem>
   );
 };
@@ -130,30 +94,30 @@ const CommandPalette: React.FC<ICommandPaletteProps> = ({
 
   return (
     <CommandDialog open={isOpen} onOpenChange={setIsOpen}>
-      <CommandInput placeholder="Type a command or search..." />
+      <CommandInput placeholder="Type a command or search tabs…" />
       <CommandList>
         <CommandEmpty>No results found.</CommandEmpty>
 
         <CommandGroup heading="Actions">
             <CommandItem onSelect={() => runCommand(handleRefresh)}>
-                <RefreshTwoTone className="mr-2" />
-                <span>Refresh Tabs</span>
+                <RefreshCw />
+                <span>Refresh tabs</span>
                 <CommandShortcut>⌘R</CommandShortcut>
             </CommandItem>
 
             <CommandItem onSelect={() => runCommand(toggleLayout)}>
-                {layout === "grid" ? <ListAltTwoTone className="mr-2" /> : <Grid3x3TwoTone className="mr-2" />}
-                <span>Switch to {layout === "grid" ? "List" : "Grid"} View</span>
+                {layout === "grid" ? <List /> : <LayoutGrid />}
+                <span>Switch to {layout === "grid" ? "list" : "grid"} view</span>
             </CommandItem>
 
             <CommandItem onSelect={() => runCommand(toggleOrderBy)}>
-                {orderBy === ORDER.TIME ? <SortByAlphaTwoTone className="mr-2" /> : <TimelineTwoTone className="mr-2" />}
-                <span>Sort by {orderBy === ORDER.TIME ? "Title" : "Time"}</span>
+                {orderBy === ORDER.TIME ? <ArrowDownAZ /> : <Clock />}
+                <span>Sort by {orderBy === ORDER.TIME ? "title" : "time"}</span>
             </CommandItem>
 
             <CommandItem onSelect={() => runCommand(toggleSelectionMode)}>
-                <CheckCircleTwoTone className="mr-2" />
-                <span>{isSelectionMode ? "Exit" : "Enter"} Selection Mode</span>
+                <ListChecks />
+                <span>{isSelectionMode ? "Exit" : "Enter"} selection mode</span>
             </CommandItem>
         </CommandGroup>
 
@@ -162,15 +126,15 @@ const CommandPalette: React.FC<ICommandPaletteProps> = ({
         <CommandGroup heading="Navigation">
             {view !== TABS_VIEWS.OPEN_TABS && (
                 <CommandItem onSelect={() => runCommand(() => setView(TABS_VIEWS.OPEN_TABS))}>
-                    <FolderOpenTwoTone className="mr-2" />
-                    <span>Go to Open Tabs</span>
+                    <Layers />
+                    <span>Go to open tabs</span>
                 </CommandItem>
             )}
 
             {view !== TABS_VIEWS.ARCHIVED_TABS && (
                 <CommandItem onSelect={() => runCommand(() => setView(TABS_VIEWS.ARCHIVED_TABS))}>
-                    <Inventory2TwoTone className="mr-2" />
-                    <span>Go to Archived Tabs</span>
+                    <Archive />
+                    <span>Go to archived tabs</span>
                 </CommandItem>
             )}
         </CommandGroup>

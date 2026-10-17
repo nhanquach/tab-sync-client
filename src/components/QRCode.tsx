@@ -12,8 +12,8 @@ const SVGComponent: React.FC<IQRCodeProps> = ({
   text = "",
 }) => {
   return (
-    <div className="mt-2 backdrop-blur-sm rounded-lg flex flex-col content-center items-center">
-      <div className="bg-white/90 rounded-2xl p-2">
+    <div className="flex flex-col items-center">
+      <div className="rounded-lg border border-border bg-white p-1.5">
         <svg
           width={width}
           height={height}
@@ -357,7 +357,7 @@ const SVGComponent: React.FC<IQRCodeProps> = ({
         </svg>
       </div>
       {text && (
-        <span className="text-center italic mt-2 text-sm font-medium">
+        <span className="mt-2 text-center text-xs text-muted-foreground">
           {text}
         </span>
       )}

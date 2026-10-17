@@ -1,27 +1,35 @@
-import { SVGProps } from "react";
+import React from "react";
 
-const Logo = (props: SVGProps<SVGSVGElement>) => {
-  return (
+import { cn } from "@/lib/utils";
+
+/**
+ * The Loop mark: a cloud, a tab on its strip and the round trip between them, in deep teal
+ * on the pastel teal tile. Same glyph as the extension's LogoMark (see its docs/brand).
+ */
+const Logo: React.FC<{ className?: string }> = ({ className }) => (
+  <span
+    className={cn(
+      "bg-signature inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-[10px] text-primary-foreground",
+      className
+    )}
+    aria-hidden
+  >
     <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width="1.5em"
-      height="1.5em"
-      viewBox="0 0 132.813 120"
-      className={`bg-branding-primary rounded-xl ${props.className || ""}`}
-      style={{ backgroundColor: "var(--branding-primary)", ...props.style }}
-      {...props}
+      viewBox="0 -1 24 24"
+      className="h-[84%] w-[84%]"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.5}
+      strokeLinecap="round"
+      strokeLinejoin="round"
     >
-      <path
-        fill="#fff"
-        d="M107.55 90H75c-2.75 0 -5 -2.25 -5 -5s2.25 -5 5 -5h6.25v-1.25c0 -4.85 3.9 -8.75 8.75 -8.75s8.75 3.9 8.75 8.75V85h8.8c1.4 0 2.5 1.1 2.5 2.5 -0.05 1.35 -1.15 2.5 -2.5 2.5z"
-        opacity={0.3}
-      />
-      <path
-        fill="#fff"
-        d="M107.5 74.9c-0.1 0 -0.15 0 -0.25 0.05A17.45 17.45 0 0 0 90 60c-7 0 -13 4.15 -15.8 10.1A14.94 14.94 0 0 0 60 85c0 8.3 6.7 15 15 15l32.5 -0.1a12.5 12.5 0 0 0 0 -25zm0.05 15.1H75c-2.75 0 -5 -2.25 -5 -5s2.25 -5 5 -5h6.25v-1.25c0 -4.85 3.9 -8.75 8.75 -8.75s8.75 3.9 8.75 8.75V85h8.8c1.4 0 2.5 1.1 2.5 2.5 -0.05 1.35 -1.15 2.5 -2.5 2.5zM50 21.3v10.45C38.35 35.9 30 46.95 30 60c0 8.85 3.9 16.7 10 22.2V70h10v30H20v-10h13.65A39.71 39.71 0 0 1 20 60c0 -18.65 12.75 -34.25 30 -38.7zM100 30h-13.65a39.9 39.9 0 0 1 13.3 25h-10.1c-1.15 -6.8 -4.65 -12.75 -9.55 -17.2V50h-10V20h30v10z"
-      />
+      <path d="M7.68 9.28A2.48 2.48 0 0 1 8.48 4.56a3.68 3.68 0 0 1 6.48-.16A2.56 2.56 0 0 1 16 9.28Z" />
+      <path d="M6.6 19q1.8 0 1.8-1.8v-.6q0-2.2 2.2-2.2h2.8q2.2 0 2.2 2.2v.6q0 1.8 1.8 1.8Z" fill="currentColor" stroke="none" />
+      <rect x="5.2" y="18.65" width="13.6" height="1.4" rx="0.7" fill="currentColor" stroke="none" />
+      <path d="M4.6 17.2C2.4 14.6 2.4 11.4 4.2 9.2M2.4 9.6l2.2-.8.6 2.3" />
+      <path d="M19.4 6.8c2.2 2.6 2.2 5.8.4 8M21.6 14.4l-2.2.8-.6-2.3" />
     </svg>
-  );
-};
+  </span>
+);
 
 export default Logo;

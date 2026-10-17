@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
-import { Container, Snackbar } from "@mui/material";
+import { Snackbar } from "@mui/material";
 import { useParams, useNavigate } from "react-router-dom";
 
 import {
@@ -17,12 +17,10 @@ import { TABS_VIEWS } from "../interfaces/iView";
 import { sortByTimeStamp } from "../utils/sortByTimeStamp";
 import UrlGrid from "../components/UrlGrid";
 import { getNextTab } from "../utils/getNextTab";
-import HomeSidebar from "../components/HomeSidebar";
+import AppShell from "../components/AppShell";
 import Toolbar from "../components/Toolbar";
-import HomeAppBar, { headerHeight } from "../components/HomeAppBar";
 import NoData from "../components/NoData";
 import TipsFooter from "../components/TipsFooter";
-import HomeBottomNavigationBar from "../components/HomeBottomNavigationBar";
 import { isHistoryApiSupported } from "../utils/isHistoryAPISupported";
 import { getItem, saveItem } from "../utils/LocalStorageHelper";
 import {
@@ -53,16 +51,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   useEffect(() => {
     if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
@@ -204,9 +193,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     getItem(LAYOUT_KEY) || LAYOUT.LIST
   );
 
+  // Phones always use the dense list (same rows as the extension).
   useEffect(() => {
-    if (isMobile && layout !== LAYOUT.GRID) {
-        setLayout(LAYOUT.GRID);
+    if (isMobile && layout !== LAYOUT.LIST) {
+        setLayout(LAYOUT.LIST);
     }
   }, [isMobile, layout]);
 
@@ -475,196 +465,169 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       return null;
   }
 
-  return (
-    <div className="min-h-screen bg-md-sys-color-surface flex flex-col">
-      <HomeAppBar user={user} isLoading={isLoading} />
-
-      <div className="flex flex-1">
-          <HomeSidebar view={currentView} user={user} isLoading={isLoading} />
-
-          <Container
-            maxWidth="xl"
-            className={cn(
-                "flex-grow p-6 transition-all duration-300 min-w-0 relative mx-auto"
-            )}
-            sx={{
-              mt: 0,
-              paddingTop: { xs: `calc(${headerHeight}px + 24px)`, md: "24px" },
-            }}
-            component="main"
-          >
-            <div className="hidden md:flex items-center gap-3 mb-8 animate-in fade-in slide-in-from-left-4 duration-500">
-                <h1 className="text-4xl font-normal text-md-sys-color-on-surface tracking-tight">TabSync</h1>
-            </div>
-
-            <Toolbar
-                isLoading={isLoading}
-                handleRefresh={handleRefresh}
-                searchString={searchString}
-                handleSearch={handleSearch}
-                toggleLayout={toggleLayout}
-                layout={layout}
-                toggleOrderBy={toggleOrderBy}
-                orderBy={orderBy}
-                devices={browsers}
-                selectedDevice={selectedDevice}
-                onSelectDevice={setSelectedDevice}
-                isScrolled={isScrolled}
-                isSelectionMode={isSelectionMode}
-                toggleSelectionMode={toggleSelectionMode}
-                isMobile={isMobile}
-            />
-
-            <div className="flex flex-col gap-6 md:flex-row md:gap-0 items-start relative min-h-0">
-              <div className="flex-1 min-w-0">
-                  {isLoading ? (
-                    <div className="flex h-64 items-center justify-center">
-                        <span className="text-lg text-md-sys-color-on-surface-variant font-medium animate-pulse">
-                            Getting your tabs...
-                        </span>
-                    </div>
-                  ) : (
-                    <>
-                        {urls.length === 0 && (
-                            <NoData isEmptySearch={!!searchString} />
-                        )}
-
-                        <div key={currentView} className="animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            {(urls.length > 0 && layout === "list") && (
-                                <UrlList
-                            view={currentView}
-                            urls={urls}
-                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                            onSelect={handleSelectTab}
-                            selectedId={selectedTab?.uid}
-                            isSelectionMode={isSelectionMode}
-                            selectedTabIds={selectedTabIds}
-                            onToggleTabSelection={handleToggleTabSelection}
-                            onToggleDeviceSelection={handleToggleDeviceSelection}
-                            exitingTabIds={exitingTabIds}
-                          />
-                      )}
-
-                      {(urls.length > 0 && layout === "grid") && (
-                          <UrlGrid
-                            view={currentView}
-                            urls={urls}
-                            onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
-                            onSelect={handleSelectTab}
-                            selectedId={selectedTab?.uid}
-                            isSelectionMode={isSelectionMode}
-                            selectedTabIds={selectedTabIds}
-                            onToggleTabSelection={handleToggleTabSelection}
-                            onToggleDeviceSelection={handleToggleDeviceSelection}
-                                    exitingTabIds={exitingTabIds}
-                                />
-                            )}
-
-                            <PaginationControls
-                                currentPage={currentPage}
-                                totalPages={totalPages}
-                                onPageChange={setCurrentPage}
-                            />
-                        </div>
-                    </>
-                  )}
-              </div>
-
-              <div
-                className={cn(
-                  "hidden md:block sticky top-24 self-start overflow-hidden z-40",
-                  "transition-all duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]",
-                  selectedTab ? "w-[400px] ml-6 opacity-100" : "w-0 ml-0 opacity-0"
-                )}
-                style={{ height: "calc(100vh - 8rem)" }}
-              >
-                <div className="w-[400px] h-full backdrop-blur-xl bg-white/40 dark:bg-black/40 rounded-[24px] shadow-xl overflow-hidden border border-white/20 dark:border-white/10">
-                   {desktopTab && (
-                      <TabDetails
-                        tab={desktopTab}
-                        view={currentView}
-                        onClose={() => handleSelectTab(null)}
-                        onArchive={handleArchiveTab}
-                        onDelete={handleDeleteTab}
-                      />
-                   )}
-                </div>
-              </div>
-
-              {selectedTab && (
-                  <div 
-                    className={cn(
-                        "fixed inset-0 z-[100] flex items-end justify-center md:hidden",
-                        "bg-black/60 backdrop-blur-sm",
-                        "transition-all duration-300 ease-out animate-in fade-in"
-                    )}
-                    onClick={() => handleSelectTab(null)}
-                  >
-                      <div 
-                        className={cn(
-                            "w-full max-w-md shadow-2xl",
-                            "h-[85vh]",
-                            "backdrop-blur-xl bg-white/60 dark:bg-black/60",
-                            "rounded-t-[32px]",
-                            "overflow-hidden",
-                            "animate-in slide-in-from-bottom-full duration-500 ease-[cubic-bezier(0.32,0.72,0,1)]"
-                        )}
-                        onClick={(e) => e.stopPropagation()}
-                      >
-                          <div className="flex justify-center pt-3 pb-1">
-                              <div className="w-12 h-1.5 rounded-full bg-md-sys-color-outline-variant/40" />
-                          </div>
-
-                          <TabDetails 
-                            tab={selectedTab} 
-                            view={currentView} 
-                            onClose={() => handleSelectTab(null)}
-                            onArchive={handleArchiveTab}
-                            onDelete={handleDeleteTab}
-                          />
-                      </div>
-                  </div>
-              )}
-
-            </div>
-
-            <TipsFooter  />
-            <HomeBottomNavigationBar view={currentView} setView={setViewAdapter} />
-
-            <BulkActionsBar
-              selectedCount={selectedTabIds.size}
-              view={currentView}
-              onClearSelection={() => setSelectedTabIds(new Set())}
-              onArchiveSelected={handleBulkArchive}
-              onDeleteSelected={handleBulkDelete}
-            />
-
-            <CommandPalette
-              isOpen={isCommandPaletteOpen}
-              setIsOpen={setIsCommandPaletteOpen}
-              view={currentView}
-              setView={setViewAdapter}
-              layout={layout}
-              toggleLayout={toggleLayout}
-              orderBy={orderBy}
-              toggleOrderBy={toggleOrderBy}
-              isSelectionMode={isSelectionMode}
-              toggleSelectionMode={toggleSelectionMode}
-              handleRefresh={handleRefresh}
-              tabs={isOpenTabsView ? tabs : archivedTabs}
-              onSelectTab={handleSelectTab}
-            />
-
-            <Snackbar
-                open={toast.show}
-                autoHideDuration={1000}
-                onClose={closeToast}
-                message={toast.message || ""}
-                anchorOrigin={{ vertical: "top", horizontal: "right" }}
-            />
-          </Container>
+  const detailsPanel = (
+    <aside
+      className={cn(
+        "sticky top-0 hidden h-screen shrink-0 overflow-hidden glass-bar transition-[width] duration-200 md:block",
+        selectedTab ? "glass-bar-left w-[360px]" : "w-0"
+      )}
+      aria-hidden={!selectedTab}
+    >
+      <div className="h-full w-[360px]">
+        {desktopTab && (
+          <TabDetails
+            tab={desktopTab}
+            view={currentView}
+            onClose={() => handleSelectTab(null)}
+            onArchive={handleArchiveTab}
+            onDelete={handleDeleteTab}
+          />
+        )}
       </div>
-    </div>
+    </aside>
+  );
+
+  return (
+    <AppShell
+      active={isOpenTabsView ? "open" : "archived"}
+      user={user}
+      isLoading={isLoading}
+      activeCount={totalCount}
+      devices={browsers}
+      selectedDevice={selectedDevice}
+      onSelectDevice={setSelectedDevice}
+      aside={detailsPanel}
+    >
+      <Toolbar
+          title={isOpenTabsView ? "Open tabs" : "Archived tabs"}
+          count={totalCount}
+          isLoading={isLoading}
+          handleRefresh={handleRefresh}
+          searchString={searchString}
+          handleSearch={handleSearch}
+          toggleLayout={toggleLayout}
+          layout={layout}
+          toggleOrderBy={toggleOrderBy}
+          orderBy={orderBy}
+          devices={browsers}
+          selectedDevice={selectedDevice}
+          onSelectDevice={setSelectedDevice}
+          isSelectionMode={isSelectionMode}
+          toggleSelectionMode={toggleSelectionMode}
+          isMobile={isMobile}
+          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
+      />
+
+      {isLoading && urls.length === 0 ? (
+        <div className="space-y-1" aria-hidden>
+          {[0, 1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="shimmer h-9 rounded-lg" />
+          ))}
+        </div>
+      ) : (
+        <div className={cn("transition-opacity", isLoading && "opacity-60")}>
+          {urls.length === 0 && <NoData isEmptySearch={!!searchString} />}
+
+          {urls.length > 0 && layout === "list" && (
+            <UrlList
+              view={currentView}
+              urls={urls}
+              onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+              onSelect={handleSelectTab}
+              selectedId={selectedTab?.uid}
+              isSelectionMode={isSelectionMode}
+              selectedTabIds={selectedTabIds}
+              onToggleTabSelection={handleToggleTabSelection}
+              onToggleDeviceSelection={handleToggleDeviceSelection}
+              exitingTabIds={exitingTabIds}
+              isSearching={!!searchString}
+            />
+          )}
+
+          {urls.length > 0 && layout === "grid" && (
+            <UrlGrid
+              view={currentView}
+              urls={urls}
+              onClear={isOpenTabsView ? clearOpenTabs : clearArchivedTabs}
+              onSelect={handleSelectTab}
+              selectedId={selectedTab?.uid}
+              isSelectionMode={isSelectionMode}
+              selectedTabIds={selectedTabIds}
+              onToggleTabSelection={handleToggleTabSelection}
+              onToggleDeviceSelection={handleToggleDeviceSelection}
+              exitingTabIds={exitingTabIds}
+            />
+          )}
+
+          <PaginationControls
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={setCurrentPage}
+          />
+
+          {urls.length > 0 && layout === "list" && (
+            <p className="hidden pt-1 text-center text-[11px] text-muted-foreground md:block">
+              ↑↓ to move · ↵ to open · / to search · Esc to clear · ⌘K for commands
+            </p>
+          )}
+        </div>
+      )}
+
+      <TipsFooter />
+
+      {/* Mobile: details as a bottom sheet */}
+      {selectedTab && (
+        <div
+          className="fixed inset-0 z-[60] flex items-end bg-black/40 duration-200 animate-in fade-in md:hidden"
+          onClick={() => handleSelectTab(null)}
+        >
+          <div
+            className="h-[80vh] w-full overflow-hidden glass-strong rounded-t-2xl border-x-0 border-b-0 duration-300 animate-in slide-in-from-bottom"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <TabDetails
+              tab={selectedTab}
+              view={currentView}
+              onClose={() => handleSelectTab(null)}
+              onArchive={handleArchiveTab}
+              onDelete={handleDeleteTab}
+            />
+          </div>
+        </div>
+      )}
+
+      <BulkActionsBar
+        selectedCount={selectedTabIds.size}
+        view={currentView}
+        onClearSelection={() => setSelectedTabIds(new Set())}
+        onArchiveSelected={handleBulkArchive}
+        onDeleteSelected={handleBulkDelete}
+      />
+
+      <CommandPalette
+        isOpen={isCommandPaletteOpen}
+        setIsOpen={setIsCommandPaletteOpen}
+        view={currentView}
+        setView={setViewAdapter}
+        layout={layout}
+        toggleLayout={toggleLayout}
+        orderBy={orderBy}
+        toggleOrderBy={toggleOrderBy}
+        isSelectionMode={isSelectionMode}
+        toggleSelectionMode={toggleSelectionMode}
+        handleRefresh={handleRefresh}
+        tabs={isOpenTabsView ? tabs : archivedTabs}
+        onSelectTab={handleSelectTab}
+      />
+
+      <Snackbar
+        open={toast.show}
+        autoHideDuration={1000}
+        onClose={closeToast}
+        message={toast.message || ""}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      />
+    </AppShell>
   );
 };
 

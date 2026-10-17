@@ -2,132 +2,109 @@
 @tailwind components;
 @tailwind utilities;
 
+/*
+ * Quiet glass palette, shared with the browser extension (src/ui/styles/tailwind.css there):
+ * near-neutral grey with a barely-there static tint (see Backdrop.tsx) under mostly opaque
+ * frosted surfaces, one pastel teal signature (#A3E0D2 light) with deep-teal ink text on it,
+ * and a soft hue per device (see utils/deviceColor.ts). No gradients, no glows, no coloured
+ * shadows. Light and dark follow the system unless the user picks a mode in Settings
+ * (toggles the `dark` class).
+ */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
-
+    --background: 228 14% 97.5%;
+    --foreground: 230 18% 11%;
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
-
+    --card-foreground: 230 18% 11%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-
-    /* Dynamic Theme Mapping (Light Mode) */
-    --primary: var(--md-sys-color-primary);
-    --primary-foreground: var(--md-sys-color-on-primary);
-
-    --secondary: var(--md-sys-color-secondary-container);
-    --secondary-foreground: var(--md-sys-color-on-secondary-container);
-
-    --muted: var(--md-sys-color-surface-container-high);
-    --muted-foreground: var(--md-sys-color-outline);
-
-    --accent: var(--md-sys-color-tertiary-container);
-    --accent-foreground: var(--md-sys-color-on-tertiary-container);
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: var(--md-sys-color-outline-variant);
-    --input: var(--md-sys-color-outline);
-    --ring: var(--md-sys-color-primary);
-
-    --radius: 0.5rem;
-
-    /* Branding Colors (Injected by src/theme/injectTheme.ts from palette.ts) */
-    /* Defaults are provided here as fallback */
-    --branding-primary: #8f94fb;
-    --branding-primary-dark: #4e54c8;
-    --branding-secondary: #696969;
-
-    /* Theme Seed Hues (Default: Indigo/Violet) */
-    --seed-primary-hue: 265;
-    --seed-secondary-hue: 260;
-    --seed-tertiary-hue: 330;
-
-    /* MD3 Colors - Light */
-    --md-sys-color-primary: var(--seed-primary-hue) 60% 50%;
-    --md-sys-color-on-primary: 0 0% 100%;
-    --md-sys-color-primary-container: var(--seed-primary-hue) 80% 94%;
-    --md-sys-color-on-primary-container: var(--seed-primary-hue) 60% 20%;
-
-    --md-sys-color-secondary: var(--seed-secondary-hue) 15% 45%;
-    --md-sys-color-on-secondary: 0 0% 100%;
-    --md-sys-color-secondary-container: var(--seed-secondary-hue) 25% 90%;
-    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 15% 15%;
-
-    /* Tertiary - Pink/Raspberry for "Quacky" contrast */
-    --md-sys-color-tertiary: var(--seed-tertiary-hue) 60% 50%;
-    --md-sys-color-on-tertiary: 0 0% 100%;
-    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 80% 94%;
-    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 60% 20%;
-
-    --md-sys-color-surface: 260 20% 98%;
-    --md-sys-color-on-surface: 260 10% 10%;
-    --md-sys-color-surface-container: 260 20% 94%;
-    --md-sys-color-surface-container-low: 260 30% 96%;
-    --md-sys-color-surface-container-high: 260 20% 92%;
-
-    --md-sys-color-outline: 260 10% 50%;
-    --md-sys-color-outline-variant: 260 10% 80%;
+    --popover-foreground: 230 18% 11%;
+    /* Pastel teal fill (#A3E0D2) with deep-teal text on it (#0D3532, >= 7:1).
+       --primary-ink is the readable teal for links, focus and indicators (#167569, 5.4:1 on white). */
+    --primary: 166 50% 76%;
+    --primary-foreground: 174 60% 13%;
+    --primary-ink: 172 68% 27%;
+    --secondary: 228 12% 94%;
+    --secondary-foreground: 230 18% 11%;
+    --muted: 228 12% 94%;
+    --muted-foreground: 230 8% 42%;
+    --accent: 230 12% 93.5%;
+    --accent-foreground: 230 18% 11%;
+    --destructive: 354 66% 48%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 228 12% 89%;
+    --input: 228 11% 85%;
+    --ring: 172 68% 27%;
+    /* Device chips: saturation/lightness applied to a per-item --hue. */
+    --chip-bg-s: 45%;
+    --chip-bg-l: 55%;
+    --chip-bg-a: 0.12;
+    --chip-fg-s: 50%;
+    --chip-fg-l: 31%;
+    --shadow-color: 230 20% 10%;
+    /* Frosted surfaces: tint, alpha, border. Mostly opaque, quiet. */
+    --glass-tint: 0 0% 100%;
+    --glass-a: 0.78;
+    --glass-strong-a: 0.88;
+    --glass-bar-a: 0.94;
+    --glass-border: hsl(230 15% 15% / 0.08);
+    --glass-danger: 354 60% 98%;
+    /* Background tint blobs. */
+    --blob-a: 0.16;
+    --radius: 0.625rem;
+    color-scheme: light;
   }
 
   .dark {
-    --background: 222.2 84% 4.9%;
-    --foreground: 210 40% 98%;
+    --background: 235 10% 8%;
+    --foreground: 230 15% 94%;
+    --card: 235 9% 11%;
+    --card-foreground: 230 15% 94%;
+    --popover: 235 9% 12%;
+    --popover-foreground: 230 15% 94%;
+    /* Pastel teal fill with deep-teal text on it; the ink token is the pastel itself on dark. */
+    --primary: 166 46% 72%;
+    --primary-foreground: 174 60% 11%;
+    --primary-ink: 166 50% 72%;
+    --secondary: 235 8% 15%;
+    --secondary-foreground: 230 15% 94%;
+    --muted: 235 8% 14%;
+    --muted-foreground: 230 8% 64%;
+    --accent: 235 8% 16%;
+    --accent-foreground: 230 15% 94%;
+    --destructive: 354 70% 64%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 235 8% 17%;
+    --input: 235 8% 22%;
+    --ring: 166 50% 72%;
+    --chip-bg-s: 40%;
+    --chip-bg-l: 60%;
+    --chip-bg-a: 0.16;
+    --chip-fg-s: 55%;
+    --chip-fg-l: 74%;
+    --shadow-color: 235 30% 2%;
+    --glass-tint: 235 10% 11%;
+    --glass-a: 0.76;
+    --glass-strong-a: 0.86;
+    --glass-bar-a: 0.92;
+    --glass-border: hsl(0 0% 100% / 0.07);
+    --glass-danger: 354 30% 12%;
+    --blob-a: 0.14;
+    color-scheme: dark;
+  }
 
-    --card: 222.2 84% 4.9%;
-    --card-foreground: 210 40% 98%;
-
-    --popover: 222.2 84% 4.9%;
-    --popover-foreground: 210 40% 98%;
-
-    /* Dynamic Theme Mapping (Dark Mode) */
-    --primary: var(--md-sys-color-primary);
-    --primary-foreground: var(--md-sys-color-on-primary);
-
-    --secondary: var(--md-sys-color-secondary-container);
-    --secondary-foreground: var(--md-sys-color-on-secondary-container);
-
-    --muted: var(--md-sys-color-surface-container-high);
-    --muted-foreground: var(--md-sys-color-outline);
-
-    --accent: var(--md-sys-color-tertiary-container);
-    --accent-foreground: var(--md-sys-color-on-tertiary-container);
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 210 40% 98%;
-
-    --border: var(--md-sys-color-outline-variant);
-    --input: var(--md-sys-color-outline);
-    --ring: var(--md-sys-color-primary);
-
-    /* MD3 Colors - Dark */
-    --md-sys-color-primary: var(--seed-primary-hue) 90% 80%;
-    --md-sys-color-on-primary: var(--seed-primary-hue) 60% 20%;
-    --md-sys-color-primary-container: var(--seed-primary-hue) 60% 35%;
-    --md-sys-color-on-primary-container: var(--seed-primary-hue) 90% 95%;
-
-    --md-sys-color-secondary: var(--seed-secondary-hue) 20% 75%;
-    --md-sys-color-on-secondary: var(--seed-secondary-hue) 20% 20%;
-    --md-sys-color-secondary-container: var(--seed-secondary-hue) 20% 35%;
-    --md-sys-color-on-secondary-container: var(--seed-secondary-hue) 20% 90%;
-
-    /* Tertiary - Pink/Raspberry Dark */
-    --md-sys-color-tertiary: var(--seed-tertiary-hue) 90% 80%;
-    --md-sys-color-on-tertiary: var(--seed-tertiary-hue) 60% 20%;
-    --md-sys-color-tertiary-container: var(--seed-tertiary-hue) 60% 35%;
-    --md-sys-color-on-tertiary-container: var(--seed-tertiary-hue) 90% 95%;
-
-    --md-sys-color-surface: 260 20% 8%;
-    --md-sys-color-on-surface: 260 10% 90%;
-    --md-sys-color-surface-container: 260 20% 12%;
-    --md-sys-color-surface-container-low: 260 20% 10%;
-    --md-sys-color-surface-container-high: 260 20% 17%;
-
-    --md-sys-color-outline: 260 10% 60%;
-    --md-sys-color-outline-variant: 260 10% 30%;
+  /* Optional accent picked in Settings > Appearance. Teal (the default) sets no attribute.
+     Same recipe as the teal: a pastel fill, deep text on it, and a readable ink. */
+  :root[data-accent] {
+    --primary: var(--accent-hue) 55% 80%;
+    --primary-foreground: var(--accent-hue) 55% 16%;
+    --primary-ink: var(--accent-hue) 60% 34%;
+    --ring: var(--accent-hue) 60% 34%;
+  }
+  :root.dark[data-accent] {
+    --primary: var(--accent-hue) 55% 76%;
+    --primary-foreground: var(--accent-hue) 55% 13%;
+    --primary-ink: var(--accent-hue) 60% 76%;
+    --ring: var(--accent-hue) 60% 76%;
   }
 }
 
@@ -135,152 +112,264 @@
   * {
     @apply border-border;
   }
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground antialiased overflow-x-hidden;
+    font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  ::selection {
+    background: hsl(var(--primary) / 0.45);
+    color: inherit;
   }
 }
 
-.area {
-  width: 100%;
-  height: 100px;
-}
-
-.circles {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  margin: 0;
-}
-
-.circles li {
-  position: absolute;
-  display: block;
-  list-style: none;
-  width: 20px;
-  height: 20px;
-  /* Use both the transparent logo AND the gradient. The logo sits on top. */
-  background-image: url("./logo-nobg.svg"), linear-gradient(to left, var(--branding-primary), var(--branding-primary-dark));
-  background-size: cover;
-  background-repeat: no-repeat;
-  border-radius: 20%;
-  animation: animate 15s linear infinite;
-  bottom: -150px;
-}
-
-.circles li:nth-child(1) {
-  left: 25%;
-  width: 80px;
-  height: 80px;
-  animation-delay: 0s;
-}
-
-.circles li:nth-child(2) {
-  left: 10%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 2s;
-  animation-duration: 12s;
-}
-
-.circles li:nth-child(3) {
-  left: 70%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 4s;
-}
-
-.circles li:nth-child(4) {
-  left: 40%;
-  width: 60px;
-  height: 60px;
-  animation-delay: 0s;
-  animation-duration: 18s;
-}
-
-.circles li:nth-child(5) {
-  left: 65%;
-  width: 20px;
-  height: 20px;
-  animation-delay: 0s;
-  animation-duration: 18s;
-}
-
-.circles li:nth-child(6) {
-  left: 75%;
-  width: 110px;
-  height: 110px;
-  animation-delay: 3s;
-}
-
-.circles li:nth-child(7) {
-  left: 35%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 7s;
-}
-
-.circles li:nth-child(8) {
-  left: 50%;
-  width: 25px;
-  height: 25px;
-  animation-delay: 15s;
-  animation-duration: 45s;
-}
-
-.circles li:nth-child(9) {
-  left: 20%;
-  width: 15px;
-  height: 15px;
-  animation-delay: 2s;
-  animation-duration: 35s;
-}
-
-.circles li:nth-child(10) {
-  left: 85%;
-  width: 150px;
-  height: 150px;
-  animation-delay: 0s;
-  animation-duration: 11s;
-}
-
-@keyframes animate {
-  0% {
-    transform: translateY(0) rotate(0deg);
-    opacity: 1;
-    border-radius: 0;
+@layer components {
+  /* 32px square icon button used in headers and toolbars. */
+  .icon-btn {
+    @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg text-muted-foreground transition-colors duration-150 hover:bg-accent hover:text-primary-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50;
+  }
+  .icon-btn-active {
+    @apply bg-accent text-primary-ink;
+  }
+  /* A dense list row: device header or tab. */
+  .row {
+    @apply relative flex h-9 w-full items-center gap-2.5 rounded-lg px-2 text-foreground outline-none transition-[background-color,box-shadow] duration-150 hover:bg-accent/70 focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  .row-active {
+    @apply bg-accent;
+  }
+  /* Highlighted / selected row: a thin teal indicator on the left edge. */
+  .row-active::before,
+  .row-selected::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: hsl(var(--primary-ink));
+  }
+  .row-selected {
+    background-color: hsl(var(--primary) / 0.22);
+  }
+  .row-selected:hover {
+    background-color: hsl(var(--primary) / 0.3);
+  }
+  /* Settings-style section label. */
+  .section-label {
+    @apply px-1 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground;
+  }
+  /* A frosted group of settings rows. */
+  .settings-group {
+    @apply divide-y divide-border overflow-hidden rounded-xl;
+    background-color: hsl(var(--glass-tint) / var(--glass-a));
+    -webkit-backdrop-filter: blur(16px) saturate(115%);
+    backdrop-filter: blur(16px) saturate(115%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.04);
+  }
+  .settings-row {
+    @apply flex min-h-[44px] w-full items-center gap-3 px-3 py-2 text-left text-sm transition-colors;
+  }
+  button.settings-row:hover,
+  a.settings-row:hover {
+    @apply bg-accent/60;
+  }
+  /* Left sidebar navigation item. */
+  .nav-item {
+    @apply relative flex h-8 w-full items-center gap-2 rounded-lg px-2 text-left text-sm text-muted-foreground transition-colors hover:bg-accent/70 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring;
+  }
+  .nav-item-active {
+    @apply bg-accent font-medium text-foreground;
+  }
+  .nav-item-active::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    bottom: 8px;
+    width: 2px;
+    border-radius: 2px;
+    background: hsl(var(--primary-ink));
+  }
+  .nav-item-active > svg {
+    color: hsl(var(--primary-ink));
   }
 
-  100% {
-    transform: translateY(-1000px) rotate(720deg);
-    opacity: 0;
-    border-radius: 50%;
+  /* Signature pastel teal, flat and solid (logo mark, primary buttons). Only a faint neutral
+     top edge, no coloured shadow. */
+  .bg-signature {
+    background-color: hsl(var(--primary));
+    box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.25);
+  }
+
+  /* Per-item colour: set --hue on the element (see utils/deviceColor.ts). */
+  .device-chip,
+  .icon-tile,
+  .device-pill {
+    background: hsl(var(--hue) var(--chip-bg-s) var(--chip-bg-l) / var(--chip-bg-a));
+    color: hsl(var(--hue) var(--chip-fg-s) var(--chip-fg-l));
+  }
+  .device-chip {
+    @apply inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-[7px];
+  }
+  .icon-tile {
+    @apply inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg;
+  }
+  .device-pill {
+    @apply inline-flex h-[18px] min-w-[22px] shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums;
+  }
+
+  /* Frosted glass: mostly opaque tint + backdrop blur, hairline neutral border and a small,
+     faint neutral shadow. No glossy highlight. */
+  .glass,
+  .glass-strong,
+  .glass-bar {
+    background-color: hsl(var(--glass-tint) / var(--glass-a));
+    -webkit-backdrop-filter: blur(16px) saturate(115%);
+    backdrop-filter: blur(16px) saturate(115%);
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 2px hsl(var(--shadow-color) / 0.04);
+  }
+  /* Popovers, dialogs and the search field: a touch more opaque. */
+  .glass-strong {
+    background-color: hsl(var(--glass-tint) / var(--glass-strong-a));
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  /* Sticky bars and the sidebar: full-bleed frosted, content blurs underneath. */
+  .glass-bar {
+    background-color: hsl(var(--glass-tint) / var(--glass-bar-a));
+    border-width: 0;
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  /* Sticky page toolbar inside the content column: the page colour, frosted, so it blends
+     with the backdrop instead of reading as a white block. */
+  .page-bar {
+    background-color: hsl(var(--background) / 0.86);
+    -webkit-backdrop-filter: blur(20px) saturate(115%);
+    backdrop-filter: blur(20px) saturate(115%);
+  }
+  .glass-bar-top {
+    border-bottom: 1px solid var(--glass-border);
+  }
+  .glass-bar-bottom {
+    border-top: 1px solid var(--glass-border);
+  }
+  .glass-bar-right {
+    border-right: 1px solid var(--glass-border);
+  }
+  .glass-bar-left {
+    border-left: 1px solid var(--glass-border);
+  }
+  /* Danger zone: still frosted, unmistakably red. */
+  .glass-danger {
+    background-color: hsl(var(--glass-danger) / 0.88);
+    border-color: hsl(var(--destructive) / 0.28);
+  }
+  /* Search focus: crisp 1px teal border + a thin low-opacity ring. No blur, no glow. */
+  .focus-ring {
+    @apply transition-[box-shadow,border-color] duration-150;
+  }
+  .focus-ring:focus-within {
+    border-color: hsl(var(--primary-ink));
+    box-shadow: 0 0 0 3px hsl(var(--primary-ink) / 0.14);
+  }
+
+  /* Background tint: large, blurred, static, low-opacity blobs (no gradient fills). */
+  .blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(96px);
+    opacity: var(--blob-a);
+    pointer-events: none;
+  }
+
+  .kbd {
+    @apply inline-flex h-[18px] min-w-[18px] items-center justify-center rounded-[5px] border border-border bg-card px-1 font-sans text-[10.5px] font-semibold leading-none text-muted-foreground;
+    box-shadow: 0 1px 0 hsl(var(--border));
+  }
+
+  /* Skeleton placeholder: a soft pulse, no sweep gradient. */
+  .shimmer {
+    @apply bg-foreground/[0.07];
+    animation: skeleton-pulse 1.4s ease-in-out infinite;
   }
 }
 
-.MuiDrawer-paper .Mui-selected,
-.MuiDrawer-paper .Mui-selected .MuiListItemIcon-root {
-  background-color: transparent !important;
-  color: var(--branding-primary) !important;
-  font-weight: 700;
+@keyframes skeleton-pulse {
+  50% {
+    opacity: 0.45;
+  }
 }
 
-.bottom-navigation .circles {
-  filter: blur(2px);
+/* No backdrop-filter (older engines, some Linux GPU setups): go near-opaque so text stays legible. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass,
+  .glass-bar,
+  .settings-group {
+    background-color: hsl(var(--glass-tint) / 0.95);
+  }
+  .glass-strong {
+    background-color: hsl(var(--glass-tint) / 0.97);
+  }
+  .glass-danger {
+    background-color: hsl(var(--glass-danger) / 0.95);
+  }
 }
 
-/* Remove the line for the Accordion */
-.what-is-tabsync-accordion:before {
-  height: 0 !important;
+/* Motion is decoration only: turn it off for people who ask. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.001ms !important;
+  }
 }
 
-.share-card.small .react-share__ShareButton {
-  filter: grayscale(0.8);
-  transition: all 1000ms;
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
 }
 
-.share-card.small .react-share__ShareButton:hover {
+/* Quiet scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground) / 0.5);
+}
+
+/* Share buttons stay quiet until hovered. */
+.share-card .react-share__ShareButton {
+  filter: grayscale(1);
+  opacity: 0.75;
+  transition: filter 150ms, opacity 150ms;
+}
+.share-card .react-share__ShareButton:hover {
   filter: none;
+  opacity: 1;
 }

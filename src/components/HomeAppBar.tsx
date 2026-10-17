@@ -1,47 +1,40 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
+import { QrCode } from "lucide-react";
 
-import { isMobileApp } from "../utils/isMobile";
-
-import FeedbackDialog from "./FeedbackDialog";
-import AccountSettings from "./AccountSettings";
+import { ROUTES } from "../routes";
+import { TABS_VIEWS } from "../interfaces/iView";
 import QRCodeDialog from "./QRCodeDialog";
 import LogoWithTabSync from "./LogoWithTabSync";
-import { cn } from "@/lib/utils";
 
 interface IHomeAppBarProps {
   user?: User;
   isLoading?: boolean;
 }
 
-export const headerHeight = 64;
+export const headerHeight = 48;
 
+/** Mobile top bar: wordmark, app/QR, account. Hidden on desktop. */
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => {
-  const isMobile = isMobileApp();
+  const initial = user?.email?.charAt(0).toUpperCase();
 
   return (
-    <div className="md:hidden"> {/* Hidden on desktop */}
-      <header
-        className={cn(
-          "fixed z-50 flex items-center transition-all duration-300",
-          "top-0 left-0 right-0 h-16",
-          "bg-md-sys-color-surface-container/95 backdrop-blur-md", // Opaque for mobile
-          "shadow-sm border-b border-white/10",
-           isMobile ? "pt-[25px]" : ""
-        )}
-      >
-        <div className="flex w-full items-center px-4 h-full justify-between">
-          <div className="flex items-center">
-            <LogoWithTabSync fontSizeVariant="h6" className="mb-0 text-md-sys-color-primary" />
-          </div>
-          <div className="flex gap-1 items-center">
-            <QRCodeDialog />
-            <FeedbackDialog />
-            <AccountSettings user={user} isLoading={isLoading} />
-          </div>
-        </div>
-      </header>
-    </div>
+    <header className="sticky top-0 z-40 flex h-12 items-center gap-1 glass-bar glass-bar-top px-3 md:hidden">
+      <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="mr-auto">
+        <LogoWithTabSync markClassName="h-7 w-7" />
+      </Link>
+      <QRCodeDialog>
+        <button type="button" className="icon-btn" aria-label="Get the app">
+          <QrCode className="h-4 w-4" />
+        </button>
+      </QRCodeDialog>
+      <Link to={ROUTES.SETTINGS} className="icon-btn" aria-label="Account settings">
+        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-primary-foreground">
+          {isLoading ? "" : initial}
+        </span>
+      </Link>
+    </header>
   );
 };
 

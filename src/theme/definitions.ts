@@ -1,67 +1,25 @@
-
+/**
+ * Accent colours offered in Settings > Appearance.
+ * Teal (the Loop brand, shared with the extension) is the default and uses the design tokens
+ * in index.css verbatim; the others only swap the hue of the pastel fill / ink / ring.
+ * Ids are kept from the previous theme picker so saved choices still resolve.
+ */
 export interface ThemeDefinition {
   id: string;
   name: string;
-  seed: {
-    primaryHue: number;
-    secondaryHue: number;
-    tertiaryHue: number;
-  };
+  /** Hue used for the accent; null means the default token (teal). */
+  hue: number | null;
+  /** Swatch colour shown in the picker (the pastel fill). */
+  swatch: string;
 }
 
+export const DEFAULT_THEME_ID = "teal";
+
 export const THEMES: ThemeDefinition[] = [
-  {
-    id: "indigo",
-    name: "Indigo (Default)",
-    seed: {
-      primaryHue: 265,
-      secondaryHue: 260,
-      tertiaryHue: 330,
-    },
-  },
-  {
-    id: "teal",
-    name: "Teal",
-    seed: {
-      primaryHue: 170,
-      secondaryHue: 180,
-      tertiaryHue: 20,
-    },
-  },
-  {
-    id: "rose",
-    name: "Rose",
-    seed: {
-      primaryHue: 340,
-      secondaryHue: 350,
-      tertiaryHue: 160,
-    },
-  },
-  {
-    id: "blue",
-    name: "Blue",
-    seed: {
-      primaryHue: 210,
-      secondaryHue: 220,
-      tertiaryHue: 30,
-    },
-  },
-  {
-    id: "orange",
-    name: "Orange",
-    seed: {
-      primaryHue: 25,
-      secondaryHue: 35,
-      tertiaryHue: 200,
-    },
-  },
-    {
-    id: "green",
-    name: "Green",
-    seed: {
-      primaryHue: 120,
-      secondaryHue: 130,
-      tertiaryHue: 300,
-    },
-  },
+  { id: "teal", name: "Teal", hue: null, swatch: "hsl(166 50% 76%)" },
+  { id: "blue", name: "Blue", hue: 214, swatch: "hsl(214 55% 80%)" },
+  { id: "indigo", name: "Indigo", hue: 245, swatch: "hsl(245 55% 80%)" },
+  { id: "green", name: "Green", hue: 135, swatch: "hsl(135 55% 80%)" },
+  { id: "orange", name: "Peach", hue: 25, swatch: "hsl(25 55% 80%)" },
+  { id: "rose", name: "Rose", hue: 345, swatch: "hsl(345 55% 80%)" },
 ];
