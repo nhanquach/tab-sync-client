@@ -58,14 +58,16 @@ export const getOpenTabs = async (
   limit?: number,
   searchString?: string,
   deviceName?: string,
-  orderBy?: string
+  orderBy?: string,
+  options?: supabaseClient.GetTabsOptions
 ) => {
   return (await getClient()).getOpenTabs(
     page,
     limit,
     searchString,
     deviceName,
-    orderBy
+    orderBy,
+    options
   );
 };
 
@@ -74,14 +76,16 @@ export const getArchivedTabs = async (
   limit?: number,
   searchString?: string,
   deviceName?: string,
-  orderBy?: string
+  orderBy?: string,
+  options?: supabaseClient.GetTabsOptions
 ) => {
   return (await getClient()).getArchivedTabs(
     page,
     limit,
     searchString,
     deviceName,
-    orderBy
+    orderBy,
+    options
   );
 };
 
