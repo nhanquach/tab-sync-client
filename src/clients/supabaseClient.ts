@@ -5,6 +5,7 @@ import { ITabSyncSettings } from "../interfaces/TabSyncSettings";
 import { ITab } from "../interfaces/iTab";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
+import { IBookmarkRow, IBookmarkSnapshot } from "../interfaces/iBookmark";
 
 const rootClient = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -505,4 +506,43 @@ const getLocalSettings = (): ITabSyncSettings => {
       created_at: "",
     },
   };
+};
+
+/** Every browser of this user with a bookmark backup, newest first. */
+export const getBookmarkSnapshots = async (): Promise<IBookmarkSnapshot[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { data, error } = await client
+    .from(TABLES.BOOKMARK_SNAPSHOTS)
+    .select("device_id,gen,snapshot_at,node_count,link_count,devices(name,browser,os)")
+    .eq("userId", userId)
+    .not("snapshot_at", "is", null)
+    .order("snapshot_at", { ascending: false });
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as IBookmarkSnapshot[];
+};
+
+/** All nodes of one backup, 1,000 rows per request (PostgREST's cap). */
+export const getBookmarkNodes = async (
+  snapshot: Pick<IBookmarkSnapshot, "device_id" | "gen">,
+  onProgress?: (loaded: number) => void
+): Promise<IBookmarkRow[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const rows: IBookmarkRow[] = [];
+  for (let from = 0; ; from += 1000) {
+    const { data, error } = await client
+      .from(TABLES.BOOKMARKS)
+      .select("node_id,parent_node_id,root,position,title,url,date_added")
+      .eq("device_id", snapshot.device_id)
+      .eq("gen", snapshot.gen)
+      .order("node_id")
+      .range(from, from + 999);
+    if (error) throw new Error(error.message);
+    const page = (data ?? []) as IBookmarkRow[];
+    rows.push(...page);
+    onProgress?.(rows.length);
+    if (page.length < 1000) break;
+  }
+  return rows;
 };
