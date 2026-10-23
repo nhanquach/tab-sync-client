@@ -7,7 +7,13 @@ export interface ITab {
   device_id?: string | null;
   title: string;
   url: string;
+  /**
+   * http(s) or data: URL. Null on the server when a data: icon was moved to the
+   * `favicons` table (see favicon_hash); the client fills it in for display.
+   */
   favIconUrl: string;
+  /** md5 of the data: favicon stored in `favicons`, when the row's icon lives there. */
+  favicon_hash?: string | null;
   index: number;
   timeStamp: string;
   deviceName: string;

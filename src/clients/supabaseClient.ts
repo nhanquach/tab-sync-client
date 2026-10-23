@@ -5,6 +5,11 @@ import { ITabSyncSettings } from "../interfaces/TabSyncSettings";
 import { ITab } from "../interfaces/iTab";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
+import {
+  createFaviconResolver,
+  FaviconRow,
+  withResolvedFavicons,
+} from "../lib/faviconResolver";
 
 const rootClient = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -159,23 +164,32 @@ export const deleteAccount = async () => {
   await removeArchivedTabs();
 };
 
-export const getOpenTabs = async (
-  page = 1,
-  limit = 20,
-  searchString = "",
-  deviceName?: string,
-  orderBy = "TIME"
-): Promise<{
-  data: ITab[];
-  count: number;
-  error?: string;
-}> => {
+/** Columns the tab lists use. Never `*`: rows used to carry inline favicons. */
+export const TAB_COLUMNS =
+  "uid,id,url,title,favIconUrl,favicon_hash,index,windowId,deviceName,device_id,timeStamp";
+
+export interface GetTabsOptions {
+  /** Columns to select; defaults to TAB_COLUMNS. */
+  columns?: string;
+  /** Fill favIconUrl from favicon_hash for display (default true). */
+  resolveIcons?: boolean;
+}
+
+type TabsPage = { data: ITab[]; count: number; error?: string };
+
+const getTabsPage = async (
+  table: string,
+  page: number,
+  limit: number,
+  searchString: string,
+  deviceName: string | undefined,
+  orderBy: string,
+  { columns = TAB_COLUMNS, resolveIcons = true }: GetTabsOptions = {}
+): Promise<TabsPage> => {
   const { client, userId } = await getClient();
 
   if (client && userId) {
-    let query = client
-      .from(TABLES.OPEN_TABS)
-      .select("*", { count: "exact" });
+    let query = client.from(table).select(columns, { count: "exact" });
 
     if (deviceName && deviceName !== "All") {
       query = query.eq("deviceName", deviceName);
@@ -197,9 +211,12 @@ export const getOpenTabs = async (
     const to = from + limit - 1;
 
     const { data, error, count } = await query.range(from, to);
+    const rows = ((data ?? []) as unknown as ITab[]);
 
     return {
-      data: data as ITab[],
+      data: resolveIcons
+        ? await withResolvedFavicons(rows, faviconResolver.resolve)
+        : rows,
       count: count || 0,
       error: error?.message,
     };
@@ -207,55 +224,44 @@ export const getOpenTabs = async (
 
   return { data: [], count: 0, error: "No user id" };
 };
+
+export const getOpenTabs = async (
+  page = 1,
+  limit = 20,
+  searchString = "",
+  deviceName?: string,
+  orderBy = "TIME",
+  options?: GetTabsOptions
+): Promise<TabsPage> =>
+  getTabsPage(TABLES.OPEN_TABS, page, limit, searchString, deviceName, orderBy, options);
 
 export const getArchivedTabs = async (
   page = 1,
   limit = 20,
   searchString = "",
   deviceName?: string,
-  orderBy = "TIME"
-): Promise<{
-  data: ITab[];
-  count: number;
-  error?: string;
-}> => {
-  const { client, userId } = await getClient();
+  orderBy = "TIME",
+  options?: GetTabsOptions
+): Promise<TabsPage> =>
+  getTabsPage(TABLES.ARCHIVED_TABS, page, limit, searchString, deviceName, orderBy, options);
 
-  if (client && userId) {
-    let query = client
-      .from(TABLES.ARCHIVED_TABS)
-      .select("*", { count: "exact" });
-
-    if (deviceName && deviceName !== "All") {
-      query = query.eq("deviceName", deviceName);
-    }
-
-    if (searchString) {
-      query = query.or(
-        `title.ilike.%${searchString}%,url.ilike.%${searchString}%`
-      );
-    }
-
-    if (orderBy === "TIME") {
-      query = query.order("timeStamp", { ascending: false });
-    } else {
-      query = query.order("title", { ascending: true });
-    }
-
-    const from = (page - 1) * limit;
-    const to = from + limit - 1;
-
-    const { data, error, count } = await query.range(from, to);
-
-    return {
-      data: data as ITab[],
-      count: count || 0,
-      error: error?.message,
-    };
-  }
-
-  return { data: [], count: 0, error: "No user id" };
+/** Look favicons up by hash (one request; the resolver batches). Readable by any signed-in user. */
+export const getFavicons = async (hashes: string[]): Promise<FaviconRow[]> => {
+  if (!hashes.length) return [];
+  const { client } = await getClient();
+  if (!client) return [];
+  const { data, error } = await client
+    .from(TABLES.FAVICONS)
+    .select("hash,data")
+    .in("hash", hashes);
+  if (error) throw new Error(`getFavicons: ${error.message}`);
+  return (data ?? []) as FaviconRow[];
 };
+
+/** Batched favicon lookups, cached in memory and localStorage. */
+export const faviconResolver = createFaviconResolver({
+  fetchFavicons: getFavicons,
+});
 
 /** Supabase resolves with `{ error }` instead of throwing; turn it into a throw so callers can react. */
 const assertOk = (result: { error: { message: string } | null }, action: string) => {
@@ -334,12 +340,26 @@ export const archiveTab = async (tabs: ITab[]) => {
   const { client, userId } = await getClient();
 
   const tabsWillBeArchived = tabs.map(
-    ({ uid, id, url, favIconUrl, title, index, windowId, deviceName, device_id }) => {
+    ({
+      uid,
+      id,
+      url,
+      favIconUrl,
+      favicon_hash,
+      title,
+      index,
+      windowId,
+      deviceName,
+      device_id,
+    }) => {
       return {
         uid,
         id,
         url,
-        favIconUrl,
+        // A row whose icon lives in `favicons` keeps pointing at it: send the hash,
+        // not the icon resolved for display.
+        favIconUrl: favicon_hash ? null : favIconUrl,
+        favicon_hash: favicon_hash ?? null,
         title,
         index,
         windowId,
@@ -413,7 +433,9 @@ export const archiveOpenTabs = async (deviceName?: string) => {
     1,
     1000,
     "",
-    deviceName
+    deviceName,
+    "TIME",
+    { resolveIcons: false }
   );
 
   if (error) {
@@ -427,7 +449,10 @@ export const archiveOpenTabs = async (deviceName?: string) => {
 };
 
 export const removeArchivedTabs = async (deviceName?: string) => {
-  const archivedTabs = await getArchivedTabs(1, 1000, "", deviceName);
+  const archivedTabs = await getArchivedTabs(1, 1000, "", deviceName, "TIME", {
+    columns: "uid",
+    resolveIcons: false,
+  });
 
   const uids = archivedTabs.data.map((t) => t.uid);
   await removeTab(uids, TABLES.ARCHIVED_TABS);

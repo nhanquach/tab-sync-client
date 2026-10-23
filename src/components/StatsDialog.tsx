@@ -11,6 +11,9 @@ import {
 } from "@/components/ui/dialog";
 import { getOpenTabs, getArchivedTabs } from "@/clients";
 
+/** Stats only count devices and domains: skip icons and unused columns. */
+const STATS_QUERY = { columns: "uid,url,deviceName", resolveIcons: false };
+
 // Simple helper to avoid dependency issues with lodash types
 const groupBy = <T,>(array: T[], key: keyof T): Record<string, T[]> => {
   return array.reduce(
@@ -49,8 +52,8 @@ export const StatsDialog: React.FC<IStatsDialogProps> = ({ children }) => {
     try {
       // Fetch all tabs (limit 1000 to be safe, though 200 is current limit)
       const [openRes, archivedRes] = await Promise.all([
-        getOpenTabs(1, 1000, "", "All", "TIME"),
-        getArchivedTabs(1, 1000, "", "All", "TIME"),
+        getOpenTabs(1, 1000, "", "All", "TIME", STATS_QUERY),
+        getArchivedTabs(1, 1000, "", "All", "TIME", STATS_QUERY),
       ]);
 
       const openTabs = openRes.data || [];
