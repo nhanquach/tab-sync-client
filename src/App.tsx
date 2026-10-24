@@ -12,6 +12,7 @@ import SignUp from "./pages/SignUp";
 import { ROUTES } from "./routes";
 import Home from "./pages/Home";
 import Settings from "./pages/Settings";
+import Bookmarks from "./pages/Bookmarks";
 import LoadingHomeShell from "./components/LoadingHomeShell";
 import { PALETTE } from "./theme/palette";
 import { useAppearance } from "./theme/appearance";
@@ -141,6 +142,7 @@ function AppContent() {
           <Route path={ROUTES.SIGN_IN} element={<SignIn signIn={onSignIn} onResetPassword={onResetPassword} />} />
           <Route path={ROUTES.SIGN_UP} element={<SignUp signUp={onSignUp} />} />
           <Route path={`${ROUTES.HOME}/:view?/:tabId?`} element={user ? <Home user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
+          <Route path={ROUTES.BOOKMARKS} element={user ? <Bookmarks user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
           <Route path={ROUTES.SETTINGS} element={user ? <Settings user={user} /> : <Navigate to={ROUTES.SIGN_IN} />} />
           {/* Password-reset emails land here; open Settings with the change-password form. */}
           <Route path={ROUTES.FORGOT_PASSWORD} element={user ? <Settings user={user} openChangePassword /> : <Navigate to={ROUTES.SIGN_IN} />} />

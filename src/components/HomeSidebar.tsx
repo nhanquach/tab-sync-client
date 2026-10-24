@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { Archive, BarChart3, Layers, MessageSquare, QrCode, Settings } from "lucide-react";
+import { Archive, BarChart3, Bookmark, Layers, MessageSquare, QrCode, Settings } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
@@ -12,7 +12,7 @@ import FeedbackDialog from "./FeedbackDialog";
 import QRCodeDialog from "./QRCodeDialog";
 import { StatsDialog } from "./StatsDialog";
 
-export type SidebarSection = "open" | "archived" | "settings";
+export type SidebarSection = "open" | "archived" | "bookmarks" | "settings";
 
 interface IHomeSidebarProps {
   active: SidebarSection;
@@ -76,6 +76,14 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
         <div className="space-y-0.5">
           {viewLink("open", TABS_VIEWS.OPEN_TABS, "Open tabs", <Layers className={iconCls} />)}
           {viewLink("archived", TABS_VIEWS.ARCHIVED_TABS, "Archived", <Archive className={iconCls} />)}
+          <Link
+            to={ROUTES.BOOKMARKS}
+            className={cn("nav-item", active === "bookmarks" && "nav-item-active")}
+            aria-current={active === "bookmarks" ? "page" : undefined}
+          >
+            <Bookmark className={iconCls} />
+            <span className="min-w-0 flex-1 truncate">Bookmarks</span>
+          </Link>
         </div>
 
         {onSelectDevice && devices && devices.length > 0 && (

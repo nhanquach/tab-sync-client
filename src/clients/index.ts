@@ -1,5 +1,6 @@
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { ITab } from "../interfaces/iTab";
+import { IBookmarkSnapshot } from "../interfaces/iBookmark";
 import * as supabaseClient from "./supabaseClient";
 
 let backend: typeof supabaseClient;
@@ -116,4 +117,15 @@ export const archiveOpenTabs = async (deviceName?: string) => {
 };
 export const removeArchivedTabs = async (deviceName?: string) => {
   return (await getClient()).removeArchivedTabs(deviceName);
+};
+
+export const getBookmarkSnapshots = async () => {
+  return (await getClient()).getBookmarkSnapshots();
+};
+
+export const getBookmarkNodes = async (
+  snapshot: Pick<IBookmarkSnapshot, "device_id" | "gen">,
+  onProgress?: (loaded: number) => void
+) => {
+  return (await getClient()).getBookmarkNodes(snapshot, onProgress);
 };
