@@ -225,6 +225,19 @@
     @apply inline-flex h-[18px] min-w-[22px] shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums;
   }
 
+  /* Notes (same look as the extension). Pinned pick-up note: a soft tint of its device's hue. */
+  .pinned-note {
+    @apply flex items-start gap-2 rounded-lg px-2.5 py-2 text-[13px] leading-[19px] text-foreground;
+    background: hsl(var(--hue) var(--chip-bg-s) var(--chip-bg-l) / calc(var(--chip-bg-a) * 0.75));
+  }
+  .pinned-note-icon {
+    color: hsl(var(--hue) var(--chip-fg-s) var(--chip-fg-l));
+  }
+  /* A tab's "why is this open" note, on the line under its title. */
+  .note-line {
+    @apply flex min-w-0 items-center gap-1 text-xs leading-4 text-primary-ink;
+  }
+
   /* Frosted glass: mostly opaque tint + backdrop blur, hairline neutral border and a small,
      faint neutral shadow. No glossy highlight. */
   .glass,

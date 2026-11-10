@@ -9,6 +9,8 @@ import UrlGridItem from "./UrlGridItem";
 
 import { DeviceChip, DevicePill } from "./DeviceIcon";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
+import PinnedNote from "./PinnedNote";
+import type { NoteLookups } from "../hooks/useNotes";
 
 interface IUrlGridProps {
   view: TABS_VIEWS;
@@ -21,6 +23,7 @@ interface IUrlGridProps {
   onToggleTabSelection?: (id: string) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
   exitingTabIds?: Set<string>;
+  notes?: NoteLookups;
 }
 
 const UrlGrid: React.FC<IUrlGridProps> = ({
@@ -33,7 +36,8 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
   selectedTabIds,
   onToggleTabSelection,
   onToggleDeviceSelection,
-  exitingTabIds
+  exitingTabIds,
+  notes,
 }) => {
   const groupByBrowser = groupBy(urls, "deviceName");
   const browsers = Object.keys(groupByBrowser);
@@ -43,6 +47,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
       {browsers.map((name) => {
         const tabs: ITab[] = groupByBrowser[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.uid));
+        const pinned = view === TABS_VIEWS.OPEN_TABS ? notes?.pickupFor(name, tabs) : undefined;
 
         return (
           <section key={name}>
@@ -75,6 +80,8 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
               <DevicePill name={name}>{tabs.length}</DevicePill>
             </div>
 
+            {pinned && <PinnedNote note={pinned} deviceName={name} className="mb-2" />}
+
             {/* Grid Container */}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {tabs.map((tab: ITab) => {
@@ -93,6 +100,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                       isSelectionMode={isSelectionMode}
                       isChecked={selectedTabIds?.has(tab.uid)}
                       isExiting={exitingTabIds?.has(tab.uid)}
+                      note={notes?.noteFor(tab)}
                     />
                   );
                 })}

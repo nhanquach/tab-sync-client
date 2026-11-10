@@ -38,6 +38,8 @@ import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
 import CommandPalette from "../components/CommandPalette";
+import PinnedNote from "../components/PinnedNote";
+import { useNotes } from "../hooks/useNotes";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +54,9 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  // Notes written in the extension (pick-up notes + "why is this open" tab notes).
+  const notes = useNotes();
+  const refreshNotes = notes.refresh; // stable identity
 
   useEffect(() => {
     if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
@@ -284,8 +289,10 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     onOpenTabChange(() => {
       // Simplest way to handle real-time updates with pagination is to just refresh the current page
       handleGetTabs();
+      // Tabs changed: notes may have moved to the archive (throttled).
+      refreshNotes(false);
     });
-  }, [handleGetTabs]);
+  }, [handleGetTabs, refreshNotes]);
 
   useEffect(() => {
     onArchivedTabChange(() => {
@@ -387,6 +394,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleRefresh = async () => {
     handleGetTabs();
+    notes.refresh();
   };
 
   const showToast = (message: string) => {
@@ -451,6 +459,18 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   };
 
 
+  // Pick-up notes of browsers with no tabs on this page still deserve a spot (top of Open tabs).
+  const orphanPickup = useMemo(() => {
+    if (!isOpenTabsView || searchString) return [];
+    const shownIds = new Set(tabs.map((t) => t.device_id).filter(Boolean));
+    const shownNames = new Set(tabs.map((t) => t.deviceName));
+    return notes.pickup.filter((n) => {
+      const name = n.devices?.name ?? "";
+      if (shownIds.has(n.device_id) || (name && shownNames.has(name))) return false;
+      return selectedDevice === "All" || selectedDevice === name;
+    });
+  }, [isOpenTabsView, searchString, tabs, notes.pickup, selectedDevice]);
+
   const prevSelectedTab = useRef<ITab | null>(null);
   if (selectedTab) {
     prevSelectedTab.current = selectedTab;
@@ -481,6 +501,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
             onClose={() => handleSelectTab(null)}
             onArchive={handleArchiveTab}
             onDelete={handleDeleteTab}
+            note={notes.noteFor(desktopTab)}
           />
         )}
       </div>
@@ -526,6 +547,14 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         </div>
       ) : (
         <div className={cn("transition-opacity", isLoading && "opacity-60")}>
+          {orphanPickup.length > 0 && (
+            <div className="mb-3 space-y-1.5">
+              {orphanPickup.map((n) => (
+                <PinnedNote key={n.device_id} note={n} deviceName={n.devices?.name || "Another browser"} showDevice />
+              ))}
+            </div>
+          )}
+
           {urls.length === 0 && <NoData isEmptySearch={!!searchString} />}
 
           {urls.length > 0 && layout === "list" && (
@@ -541,6 +570,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onToggleDeviceSelection={handleToggleDeviceSelection}
               exitingTabIds={exitingTabIds}
               isSearching={!!searchString}
+              notes={notes}
             />
           )}
 
@@ -556,6 +586,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onToggleTabSelection={handleToggleTabSelection}
               onToggleDeviceSelection={handleToggleDeviceSelection}
               exitingTabIds={exitingTabIds}
+              notes={notes}
             />
           )}
 
@@ -591,6 +622,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onClose={() => handleSelectTab(null)}
               onArchive={handleArchiveTab}
               onDelete={handleDeleteTab}
+              note={notes.noteFor(selectedTab)}
             />
           </div>
         </div>

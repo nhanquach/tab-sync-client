@@ -129,3 +129,15 @@ export const getBookmarkNodes = async (
 ) => {
   return (await getClient()).getBookmarkNodes(snapshot, onProgress);
 };
+
+export const getNotes = async () => {
+  return (await getClient()).getNotes();
+};
+
+export const getArchivedNotes = async () => {
+  return (await getClient()).getArchivedNotes();
+};
+
+export const deleteArchivedNote = async (id: number) => {
+  return (await getClient()).deleteArchivedNote(id);
+};

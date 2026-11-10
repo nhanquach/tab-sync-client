@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Archive, Bookmark, Layers, Settings } from "lucide-react";
+import { Archive, Bookmark, Layers, Settings, StickyNote } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
@@ -14,6 +14,7 @@ interface IHomeBottomNavigationBarProps {
 const items: { section: SidebarSection; to: string; label: string; Icon: typeof Layers }[] = [
   { section: "open", to: `${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`, label: "Open", Icon: Layers },
   { section: "archived", to: `${ROUTES.HOME}/${TABS_VIEWS.ARCHIVED_TABS}`, label: "Archived", Icon: Archive },
+  { section: "notes", to: ROUTES.NOTES, label: "Notes", Icon: StickyNote },
   { section: "bookmarks", to: ROUTES.BOOKMARKS, label: "Bookmarks", Icon: Bookmark },
   { section: "settings", to: ROUTES.SETTINGS, label: "Settings", Icon: Settings },
 ];
@@ -25,7 +26,7 @@ const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({ acti
       className="fixed inset-x-0 bottom-0 z-40 glass-bar glass-bar-bottom pb-[env(safe-area-inset-bottom)] md:hidden"
       aria-label="Main"
     >
-      <div className="grid h-14 grid-cols-4">
+      <div className="grid h-14 grid-cols-5">
         {items.map(({ section, to, label, Icon }) => {
           const isActive = active === section;
           return (

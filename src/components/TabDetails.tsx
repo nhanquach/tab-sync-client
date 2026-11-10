@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Archive, Check, Copy, ExternalLink, Share2, Trash2, X } from "lucide-react";
+import { Archive, Check, Copy, ExternalLink, Share2, StickyNote, Trash2, X } from "lucide-react";
 import dayjs from "dayjs";
 
 import { ITab } from "../interfaces/iTab";
@@ -8,6 +8,8 @@ import { Button } from "@/components/ui/button";
 import { hostOf } from "../utils/tabMeta";
 import { DeviceChip } from "./DeviceIcon";
 import Favicon from "./Favicon";
+import { ITabNote } from "../interfaces/iNote";
+import { timeAgo } from "../utils/tabMeta";
 
 interface ITabDetailsProps {
   tab: ITab;
@@ -15,6 +17,8 @@ interface ITabDetailsProps {
   onClose: () => void;
   onArchive?: (tab: ITab) => void;
   onDelete?: (tab: ITab) => void;
+  /** "Why is this open" note written in the extension. */
+  note?: ITabNote;
 }
 
 const TabDetails: React.FC<ITabDetailsProps> = ({
@@ -23,6 +27,7 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
   onClose,
   onArchive,
   onDelete,
+  note,
 }) => {
   const [isCopied, setIsCopied] = useState(false);
 
@@ -51,6 +56,23 @@ const TabDetails: React.FC<ITabDetailsProps> = ({
             <p className="truncate text-xs text-muted-foreground">{hostOf(tab.url)}</p>
           </div>
         </div>
+
+        {note && (
+          <section className="space-y-2">
+            <h3 className="section-label">Why it&apos;s open</h3>
+            <div className="settings-group">
+              <div className="flex items-start gap-2.5 px-3 py-2.5 text-sm">
+                <StickyNote className="mt-0.5 h-4 w-4 shrink-0 text-primary-ink" aria-hidden />
+                <p className="min-w-0 flex-1 break-words leading-5">
+                  {note.body}
+                  <span className="mt-0.5 block text-xs text-muted-foreground">
+                    Noted {timeAgo(note.updated_at)} · edit it in the TabSync extension
+                  </span>
+                </p>
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="space-y-2">
           <h3 className="section-label">Details</h3>

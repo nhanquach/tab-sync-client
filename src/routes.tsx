@@ -5,4 +5,5 @@ export const ROUTES = {
   FORGOT_PASSWORD: "/forgot-password",
   HOME: "/home",
   BOOKMARKS: "/bookmarks",
+  NOTES: "/notes",
 } as const;

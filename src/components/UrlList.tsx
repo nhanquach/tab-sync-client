@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 import UrlListItem from "./UrlListItem";
 import { DeviceChip, DevicePill } from "./DeviceIcon";
+import PinnedNote from "./PinnedNote";
+import type { NoteLookups } from "../hooks/useNotes";
 
 interface IUrlListProps {
   view: TABS_VIEWS;
@@ -21,6 +23,8 @@ interface IUrlListProps {
   exitingTabIds?: Set<string>;
   /** While searching every group is shown expanded. */
   isSearching?: boolean;
+  /** Notes written in the extension: tab notes beside tabs, pick-up notes on top of device groups. */
+  notes?: NoteLookups;
 }
 
 interface IGroup {
@@ -57,6 +61,7 @@ const UrlList: React.FC<IUrlListProps> = ({
   onToggleDeviceSelection,
   exitingTabIds,
   isSearching = false,
+  notes,
 }) => {
   const groups = useMemo<IGroup[]>(() => {
     const map = new Map<string, ITab[]>();
@@ -161,9 +166,10 @@ const UrlList: React.FC<IUrlListProps> = ({
           const { group } = row;
           const open = isOpen(group.name);
           const allSelected = group.tabs.every((t) => selectedTabIds?.has(t.uid));
+          const pinned = view === TABS_VIEWS.OPEN_TABS ? notes?.pickupFor(group.name, group.tabs) : undefined;
           return (
+            <React.Fragment key={`device:${group.name}`}>
             <div
-              key={`device:${group.name}`}
               role="button"
               tabIndex={-1}
               aria-expanded={open}
@@ -212,6 +218,8 @@ const UrlList: React.FC<IUrlListProps> = ({
               )}
               <DevicePill name={group.name}>{group.tabs.length}</DevicePill>
             </div>
+            {pinned && <PinnedNote note={pinned} deviceName={group.name} className="mb-1 ml-[42px] mr-2 mt-0.5" />}
+            </React.Fragment>
           );
         }
 
@@ -234,6 +242,7 @@ const UrlList: React.FC<IUrlListProps> = ({
             isSelectionMode={isSelectionMode}
             isChecked={selectedTabIds?.has(tab.uid)}
             isExiting={exitingTabIds?.has(tab.uid)}
+            note={notes?.noteFor(tab)}
           />
         );
       })}

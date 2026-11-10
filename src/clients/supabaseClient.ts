@@ -6,6 +6,7 @@ import { ITab } from "../interfaces/iTab";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
 import { IBookmarkRow, IBookmarkSnapshot } from "../interfaces/iBookmark";
+import { IArchivedNote, IPickupNote, ITabNote } from "../interfaces/iNote";
 
 const rootClient = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -545,4 +546,51 @@ export const getBookmarkNodes = async (
     if (page.length < 1000) break;
   }
   return rows;
+};
+
+// ---------------------------------------------------------------------------
+// Notes (written by the extension; extension repo supabase/migrations/20261110_notes.sql)
+// ---------------------------------------------------------------------------
+
+/** Every pick-up note and live tab note of this user (both capped server-side). */
+export const getNotes = async (): Promise<{ pickup: IPickupNote[]; tabNotes: ITabNote[] }> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const [pickup, tabNotes] = await Promise.all([
+    client.from(TABLES.DEVICE_NOTES).select("device_id,body,updated_at,devices(name)").eq("user_id", userId),
+    client
+      .from(TABLES.TAB_NOTES)
+      .select("device_id,url,title,body,updated_at")
+      .eq("user_id", userId)
+      .order("updated_at", { ascending: false })
+      .limit(1000),
+  ]);
+  if (pickup.error) throw new Error(pickup.error.message);
+  if (tabNotes.error) throw new Error(tabNotes.error.message);
+  return {
+    pickup: (pickup.data ?? []) as unknown as IPickupNote[],
+    tabNotes: (tabNotes.data ?? []) as ITabNote[],
+  };
+};
+
+/** The Notes archive, newest first (the server keeps at most 200 per user). */
+export const getArchivedNotes = async (): Promise<IArchivedNote[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { data, error } = await client
+    .from(TABLES.TAB_NOTE_ARCHIVE)
+    .select("id,device_id,url,title,body,noted_at,archived_at,devices(name,browser)")
+    .eq("user_id", userId)
+    .order("archived_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(200);
+  if (error) throw new Error(error.message);
+  return (data ?? []) as unknown as IArchivedNote[];
+};
+
+export const deleteArchivedNote = async (id: number) => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { error } = await client.from(TABLES.TAB_NOTE_ARCHIVE).delete().eq("id", id).eq("user_id", userId);
+  if (error) throw new Error(error.message);
 };
