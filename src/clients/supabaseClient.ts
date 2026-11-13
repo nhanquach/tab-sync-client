@@ -8,6 +8,8 @@ import { HOME_PAGE } from "../utils/constants";
 import { IBookmarkRow, IBookmarkSnapshot } from "../interfaces/iBookmark";
 import { IDevice, INote } from "../interfaces/iNote";
 import { canAttachUrl, cleanNote, cleanTitle, NOTE_COLUMNS } from "../utils/notes";
+import { IBookmarkHit, INoteHit, ISearchResults, SearchGroup } from "../interfaces/iSearch";
+import { allWordsFilter, SEARCH_LIMIT } from "../utils/search";
 
 const rootClient = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -677,4 +679,130 @@ export const deleteNote = async (id: string) => {
   if (!client || !userId) throw new Error("Not signed in");
   const { error } = await client.from(TABLES.NOTES).delete().eq("id", id).eq("user_id", userId);
   if (error) throw error;
+};
+
+// ---------------------------------------------------------------------------
+// Command palette: search everything, server-side, a few rows per group.
+// Every query runs through RLS (the user's own rows only) and is capped at
+// SEARCH_LIMIT rows, so nothing pulls whole tables into the browser.
+// ---------------------------------------------------------------------------
+
+/** Small per-session caches for names the palette shows next to results. */
+const PALETTE_CACHE_MS = 5 * 60_000;
+let devicesCache: { at: number; data: Promise<IDevice[]> } | null = null;
+let snapshotsCache: { at: number; data: Promise<IBookmarkSnapshot[]> } | null = null;
+
+const cached = <T,>(entry: { at: number; data: Promise<T> } | null, load: () => Promise<T>, set: (e: { at: number; data: Promise<T> } | null) => void) => {
+  if (entry && Date.now() - entry.at < PALETTE_CACHE_MS) return entry.data;
+  const data = load().catch((e) => {
+    set(null); // don't cache failures
+    throw e;
+  });
+  set({ at: Date.now(), data });
+  return data;
+};
+
+const paletteDevices = () => cached(devicesCache, getDevices, (e) => (devicesCache = e));
+const paletteSnapshots = () => cached(snapshotsCache, getBookmarkSnapshots, (e) => (snapshotsCache = e));
+
+/** Device names for palette commands (cached for a few minutes). */
+export const getPaletteDevices = async (): Promise<IDevice[]> => paletteDevices();
+
+const TAB_COLUMNS = "uid,device_id,title,url,favIconUrl,deviceName,timeStamp";
+
+const searchTabsIn = async (table: string, filter: string, signal?: AbortSignal): Promise<ITab[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  let query = client
+    .from(table)
+    .select(TAB_COLUMNS)
+    .eq("userId", userId)
+    .or(filter)
+    .order("timeStamp", { ascending: false })
+    .limit(SEARCH_LIMIT);
+  if (signal) query = query.abortSignal(signal);
+  const { data, error } = await query;
+  if (error) throw error;
+  return (data ?? []) as unknown as ITab[];
+};
+
+const searchBookmarks = async (words: string, signal?: AbortSignal): Promise<IBookmarkHit[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const snapshots = await paletteSnapshots();
+  if (!snapshots.length) return [];
+  // Only each browser's committed generation (an upload in progress writes the other one).
+  const perDevice = snapshots
+    .slice(0, 20)
+    .map((s) => `and(device_id.eq.${s.device_id},gen.eq.${s.gen},${words})`)
+    .join(",");
+  let query = client
+    .from(TABLES.BOOKMARKS)
+    .select("device_id,node_id,title,url,date_added")
+    .eq("userId", userId)
+    .not("url", "is", null)
+    .or(perDevice)
+    .order("date_added", { ascending: false, nullsFirst: false })
+    .limit(SEARCH_LIMIT);
+  if (signal) query = query.abortSignal(signal);
+  const { data, error } = await query;
+  if (error) throw error;
+  const names = new Map(snapshots.map((s) => [s.device_id, s.devices?.name || ""]));
+  return ((data ?? []) as Omit<IBookmarkHit, "deviceName">[]).map((b) => ({ ...b, deviceName: names.get(b.device_id) || "" }));
+};
+
+const searchNotesOnServer = async (words: string, signal?: AbortSignal): Promise<INoteHit[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  let query = client
+    .from(TABLES.NOTES)
+    .select(NOTE_COLUMNS)
+    .eq("user_id", userId)
+    .or(`and(${words})`)
+    // Live notes first, then archived; newest first within each.
+    .order("archived_at", { ascending: false, nullsFirst: true })
+    .order("updated_at", { ascending: false })
+    .limit(SEARCH_LIMIT);
+  if (signal) query = query.abortSignal(signal);
+  const { data, error } = await query;
+  if (error) throw error;
+  const devices = await paletteDevices().catch(() => [] as IDevice[]);
+  const names = new Map(devices.map((d) => [d.id, d.name]));
+  return ((data ?? []) as INote[]).map((n) => ({ ...n, deviceName: names.get(n.device_id) || "" }));
+};
+
+/**
+ * Search open tabs (every device), archived tabs, bookmark backups and notes
+ * (live + archived) for every word of `query` in title / URL (and note text).
+ * Each group is one request; a group that fails (offline, table missing) comes
+ * back empty and is listed in `failed`, the others still show.
+ */
+export const searchEverything = async (
+  query: string,
+  { notes = false, signal }: { notes?: boolean; signal?: AbortSignal } = {}
+): Promise<ISearchResults> => {
+  const tabWords = allWordsFilter(["title", "url"], query);
+  const empty: ISearchResults = { tabs: [], archived: [], bookmarks: [], notes: [], failed: [] };
+  if (!tabWords) return empty;
+  const tabFilter = `and(${tabWords})`;
+  const noteWords = allWordsFilter(["body", "title", "url"], query);
+
+  const settle = async <T,>(group: SearchGroup, run: () => Promise<T[]>): Promise<T[]> => {
+    try {
+      return await run();
+    } catch (e) {
+      if (signal?.aborted) return [];
+      console.warn(`[palette] ${group} search failed`, e);
+      empty.failed.push(group);
+      return [];
+    }
+  };
+
+  const [tabs, archived, bookmarks, noteHits] = await Promise.all([
+    settle("tabs", () => searchTabsIn(TABLES.OPEN_TABS, tabFilter, signal)),
+    settle("archived", () => searchTabsIn(TABLES.ARCHIVED_TABS, tabFilter, signal)),
+    settle("bookmarks", () => searchBookmarks(tabWords, signal)),
+    notes ? settle("notes", () => searchNotesOnServer(noteWords, signal)) : Promise.resolve([] as INoteHit[]),
+  ]);
+  return { tabs, archived, bookmarks, notes: noteHits, failed: empty.failed };
 };
