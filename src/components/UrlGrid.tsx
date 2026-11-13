@@ -9,8 +9,8 @@ import UrlGridItem from "./UrlGridItem";
 
 import { DeviceChip, DevicePill } from "./DeviceIcon";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
-import PinnedNote from "./PinnedNote";
-import type { NoteLookups } from "../hooks/useNotes";
+import DeviceNotes from "./notes/DeviceNotes";
+import type { NotesState } from "../hooks/useNotes";
 
 interface IUrlGridProps {
   view: TABS_VIEWS;
@@ -23,7 +23,7 @@ interface IUrlGridProps {
   onToggleTabSelection?: (id: string) => void;
   onToggleDeviceSelection?: (deviceName: string, select: boolean) => void;
   exitingTabIds?: Set<string>;
-  notes?: NoteLookups;
+  notes?: NotesState;
 }
 
 const UrlGrid: React.FC<IUrlGridProps> = ({
@@ -47,7 +47,8 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
       {browsers.map((name) => {
         const tabs: ITab[] = groupByBrowser[name];
         const allSelected = tabs.every(t => selectedTabIds?.has(t.uid));
-        const pinned = view === TABS_VIEWS.OPEN_TABS ? notes?.pickupFor(name, tabs) : undefined;
+        const groupNotes =
+          view === TABS_VIEWS.OPEN_TABS && notes?.ready ? notes.notesForGroup(name, tabs)?.notes ?? [] : [];
 
         return (
           <section key={name}>
@@ -80,7 +81,7 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
               <DevicePill name={name}>{tabs.length}</DevicePill>
             </div>
 
-            {pinned && <PinnedNote note={pinned} deviceName={name} className="mb-2" />}
+            {groupNotes.length > 0 && notes && <DeviceNotes notes={groupNotes} state={notes} className="glass mb-2 rounded-xl p-1" />}
 
             {/* Grid Container */}
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
@@ -100,7 +101,6 @@ const UrlGrid: React.FC<IUrlGridProps> = ({
                       isSelectionMode={isSelectionMode}
                       isChecked={selectedTabIds?.has(tab.uid)}
                       isExiting={exitingTabIds?.has(tab.uid)}
-                      note={notes?.noteFor(tab)}
                     />
                   );
                 })}

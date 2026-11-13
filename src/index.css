@@ -225,17 +225,52 @@
     @apply inline-flex h-[18px] min-w-[22px] shrink-0 items-center justify-center rounded-full px-1.5 text-[11px] font-semibold tabular-nums;
   }
 
-  /* Notes (same look as the extension). Pinned pick-up note: a soft tint of its device's hue. */
-  .pinned-note {
-    @apply flex items-start gap-2 rounded-lg px-2.5 py-2 text-[13px] leading-[19px] text-foreground;
-    background: hsl(var(--hue) var(--chip-bg-s) var(--chip-bg-l) / calc(var(--chip-bg-a) * 0.75));
+  /* Notes (same look as the extension). One note: text, optional link, time; actions float in on hover. */
+  .note-item {
+    @apply relative flex items-start gap-1 rounded-lg px-2.5 py-2 text-foreground transition-colors duration-150 hover:bg-accent/70;
   }
-  .pinned-note-icon {
-    color: hsl(var(--hue) var(--chip-fg-s) var(--chip-fg-l));
+  .note-actions {
+    @apply pointer-events-none absolute right-1.5 top-1.5 flex items-center rounded-lg p-0.5 opacity-0 transition-opacity duration-150;
+    background-color: hsl(var(--glass-tint) / var(--glass-strong-a));
+    border: 1px solid var(--glass-border);
+    box-shadow: 0 1px 3px hsl(230 15% 15% / 0.06);
   }
-  /* A tab's "why is this open" note, on the line under its title. */
-  .note-line {
-    @apply flex min-w-0 items-center gap-1 text-xs leading-4 text-primary-ink;
+  .note-item:hover .note-actions,
+  .note-item:focus-within .note-actions {
+    @apply pointer-events-auto opacity-100;
+  }
+  /* Touch screens can't hover: keep the actions visible, in the flow. */
+  @media (hover: none) {
+    .note-actions {
+      @apply pointer-events-auto static -mr-1 border-0 bg-transparent opacity-100 shadow-none;
+    }
+  }
+  .note-link {
+    @apply inline-flex items-center gap-1 font-medium text-primary-ink underline-offset-2 hover:underline;
+  }
+  .note-link-chip {
+    @apply inline-flex max-w-full items-center gap-1 rounded-md px-1.5 py-0.5 text-xs font-medium text-primary-ink;
+    background-color: hsl(var(--primary-ink) / 0.08);
+  }
+  .note-more {
+    @apply inline-flex h-7 w-full items-center gap-1 rounded-md px-2.5 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/70 hover:text-primary-ink;
+  }
+  .note-select {
+    @apply h-7 min-w-0 max-w-[260px] rounded-md bg-transparent px-1.5 text-xs font-medium text-foreground outline-none;
+    border: 1px solid var(--glass-border);
+  }
+  .note-select:focus {
+    border-color: hsl(var(--primary-ink));
+  }
+  .note-select option {
+    @apply bg-background text-foreground;
+  }
+  /* Editor: the search field's crisp teal focus border on a frosted surface. */
+  .note-editor {
+    @apply rounded-lg px-3 pb-2 pt-2.5;
+    background-color: hsl(var(--glass-tint) / var(--glass-strong-a));
+    border: 1px solid hsl(var(--primary-ink));
+    box-shadow: 0 0 0 3px hsl(var(--primary-ink) / 0.14);
   }
 
   /* Frosted glass: mostly opaque tint + backdrop blur, hairline neutral border and a small,

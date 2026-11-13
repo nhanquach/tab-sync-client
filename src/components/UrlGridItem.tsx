@@ -1,11 +1,10 @@
 import React from "react";
-import { Check, StickyNote } from "lucide-react";
+import { Check } from "lucide-react";
 
 import { ITab } from "../interfaces/iTab";
 import { cn } from "@/lib/utils";
 import { hostOf, timeAgo } from "../utils/tabMeta";
 import Favicon from "./Favicon";
-import { ITabNote } from "../interfaces/iNote";
 
 interface IUrlGridItemProps {
   tab: ITab;
@@ -14,10 +13,9 @@ interface IUrlGridItemProps {
   isSelectionMode?: boolean;
   isChecked?: boolean;
   isExiting?: boolean;
-  note?: ITabNote;
 }
 
-const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked, isExiting, note }) => {
+const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, isSelectionMode, isChecked, isExiting }) => {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" || e.key === " ") {
       e.preventDefault();
@@ -74,12 +72,6 @@ const UrlGridItem: React.FC<IUrlGridItemProps> = ({ tab, onSelect, isSelected, i
       >
         {tab.title}
       </a>
-      {note && (
-        <p className="note-line items-start" title={note.body}>
-          <StickyNote className="mt-0.5 h-3 w-3 shrink-0" aria-hidden />
-          <span className="line-clamp-2">{note.body}</span>
-        </p>
-      )}
     </div>
   );
 };

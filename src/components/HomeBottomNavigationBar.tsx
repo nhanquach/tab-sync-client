@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
 import { ROUTES } from "../routes";
 import type { SidebarSection } from "./HomeSidebar";
+import { useNotesAvailable } from "../hooks/useNotes";
 
 interface IHomeBottomNavigationBarProps {
   active: SidebarSection;
@@ -21,13 +22,16 @@ const items: { section: SidebarSection; to: string; label: string; Icon: typeof 
 
 /** Mobile bottom tab bar. Hidden on desktop. */
 const HomeBottomNavigationBar: React.FC<IHomeBottomNavigationBarProps> = ({ active }) => {
+  // Notes appear once the backend has the notes table.
+  const notesAvailable = useNotesAvailable();
+  const shown = items.filter((i) => i.section !== "notes" || notesAvailable || active === "notes");
   return (
     <nav
       className="fixed inset-x-0 bottom-0 z-40 glass-bar glass-bar-bottom pb-[env(safe-area-inset-bottom)] md:hidden"
       aria-label="Main"
     >
-      <div className="grid h-14 grid-cols-5">
-        {items.map(({ section, to, label, Icon }) => {
+      <div className={cn("grid h-14", shown.length === 5 ? "grid-cols-5" : "grid-cols-4")}>
+        {shown.map(({ section, to, label, Icon }) => {
           const isActive = active === section;
           return (
             <Link

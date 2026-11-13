@@ -1,30 +1,35 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { getNotes } from "../clients";
-import { IPickupNote, ITabNote } from "../interfaces/iNote";
-import { indexTabNotes, noteKey, pickupForGroup } from "../utils/notes";
+import { addNote, getDevices, getNotes, getNotesCount, setNoteArchived, updateNote } from "../clients";
+import { IDevice, INote } from "../interfaces/iNote";
+import { deviceIdForGroup, groupNotesByDevice, sortDevices, upsertNote } from "../utils/notes";
 
-/** Don't re-read notes more often than this when tabs change in realtime. */
-const MIN_REFRESH_MS = 30_000;
+export interface INoteLink {
+  url: string;
+  title?: string | null;
+}
 
 /**
- * Pick-up notes and tab notes for the tab lists. Notes are extra: if they can't
- * load (offline, or the database isn't migrated yet) the lists simply show none.
+ * Live notes of every browser + the user's devices, with add / edit / archive.
+ * Notes are extra: if they can't load (offline, or the database isn't migrated
+ * yet) `ready` stays false and the lists render as before.
  */
 export const useNotes = () => {
-  const [pickup, setPickup] = useState<IPickupNote[]>([]);
-  const [tabNotes, setTabNotes] = useState<Map<string, ITabNote>>(new Map());
-  const last = useRef(0);
+  const [notes, setNotes] = useState<INote[] | null>(null);
+  const [devices, setDevices] = useState<IDevice[]>([]);
+  const [failed, setFailed] = useState(false);
 
-  const refresh = useCallback(async (force = true) => {
-    if (!force && Date.now() - last.current < MIN_REFRESH_MS) return;
-    last.current = Date.now();
+  const refresh = useCallback(async () => {
     try {
-      const notes = await getNotes();
-      setPickup(notes.pickup);
-      setTabNotes(indexTabNotes(notes.tabNotes));
+      const [live, devs] = await Promise.all([getNotes(), getDevices().catch(() => [] as IDevice[])]);
+      setNotes(live);
+      setDevices(sortDevices(devs));
+      setFailed(false);
+      notesAvailable = Promise.resolve(true);
     } catch (e) {
       console.warn("[notes] unavailable", e);
+      setNotes(null);
+      setFailed(true);
     }
   }, []);
 
@@ -32,16 +37,77 @@ export const useNotes = () => {
     refresh();
   }, [refresh]);
 
-  const noteFor = useCallback(
-    (tab: { device_id?: string | null; url: string }) => tabNotes.get(noteKey(tab.device_id, tab.url)),
-    [tabNotes]
-  );
-  const pickupFor = useCallback(
-    (groupName: string, tabs: { device_id?: string | null }[]) => pickupForGroup(pickup, groupName, tabs),
-    [pickup]
+  const byDevice = useMemo(() => groupNotesByDevice(notes ?? []), [notes]);
+
+  const deviceName = useCallback(
+    (id: string) => devices.find((d) => d.id === id)?.name || "Another browser",
+    [devices]
   );
 
-  return useMemo(() => ({ pickup, noteFor, pickupFor, refresh }), [pickup, noteFor, pickupFor, refresh]);
+  /** Notes for a tab group in the lists (grouped by device name). */
+  const notesForGroup = useCallback(
+    (groupName: string, tabs: { device_id?: string | null }[]) => {
+      const id = deviceIdForGroup(groupName, tabs, devices);
+      return id ? { deviceId: id, notes: byDevice.get(id) ?? [] } : undefined;
+    },
+    [byDevice, devices]
+  );
+
+  const add = useCallback(async (deviceId: string, body: string, link: INoteLink | null) => {
+    const saved = await addNote({ deviceId, body, url: link?.url, title: link?.title });
+    setNotes((prev) => upsertNote(prev ?? [], saved));
+    return saved;
+  }, []);
+
+  const save = useCallback(async (note: INote, body: string, link: INoteLink | null) => {
+    const saved = await updateNote(note.id, { body, url: link?.url ?? null, title: link?.title ?? null });
+    setNotes((prev) => upsertNote(prev ?? [], saved));
+  }, []);
+
+  /** Optimistic: the note leaves the list, and comes back if the server refuses. */
+  const archive = useCallback(async (note: INote) => {
+    setNotes((prev) => (prev ?? []).filter((n) => n.id !== note.id));
+    try {
+      await setNoteArchived(note.id, true);
+    } catch (e) {
+      setNotes((prev) => upsertNote(prev ?? [], note));
+      throw e;
+    }
+  }, []);
+
+  return useMemo(
+    () => ({ ready: notes !== null, failed, notes: notes ?? [], devices, byDevice, deviceName, notesForGroup, refresh, add, save, archive }),
+    [notes, failed, devices, byDevice, deviceName, notesForGroup, refresh, add, save, archive]
+  );
 };
 
-export type NoteLookups = Pick<ReturnType<typeof useNotes>, "noteFor" | "pickupFor">;
+/**
+ * Is the notes table there (migration run)? One cheap HEAD request per page
+ * load, shared by every caller. Navigation hides the Notes entry until it is.
+ */
+let notesAvailable: Promise<boolean> | null = null;
+export const checkNotesAvailable = () => {
+  if (!notesAvailable) {
+    notesAvailable = getNotesCount()
+      .then(() => true)
+      .catch(() => {
+        notesAvailable = null; // try again on the next page
+        return false;
+      });
+  }
+  return notesAvailable;
+};
+
+export const useNotesAvailable = () => {
+  const [available, setAvailable] = useState(false);
+  useEffect(() => {
+    let alive = true;
+    checkNotesAvailable().then((ok) => alive && setAvailable(ok));
+    return () => {
+      alive = false;
+    };
+  }, []);
+  return available;
+};
+
+export type NotesState = ReturnType<typeof useNotes>;

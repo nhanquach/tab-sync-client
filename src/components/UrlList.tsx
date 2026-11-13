@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 import UrlListItem from "./UrlListItem";
 import { DeviceChip, DevicePill } from "./DeviceIcon";
-import PinnedNote from "./PinnedNote";
-import type { NoteLookups } from "../hooks/useNotes";
+import DeviceNotes from "./notes/DeviceNotes";
+import type { NotesState } from "../hooks/useNotes";
 
 interface IUrlListProps {
   view: TABS_VIEWS;
@@ -23,8 +23,8 @@ interface IUrlListProps {
   exitingTabIds?: Set<string>;
   /** While searching every group is shown expanded. */
   isSearching?: boolean;
-  /** Notes written in the extension: tab notes beside tabs, pick-up notes on top of device groups. */
-  notes?: NoteLookups;
+  /** Notes of each browser, shown under its group (Open tabs only). */
+  notes?: NotesState;
 }
 
 interface IGroup {
@@ -166,7 +166,8 @@ const UrlList: React.FC<IUrlListProps> = ({
           const { group } = row;
           const open = isOpen(group.name);
           const allSelected = group.tabs.every((t) => selectedTabIds?.has(t.uid));
-          const pinned = view === TABS_VIEWS.OPEN_TABS ? notes?.pickupFor(group.name, group.tabs) : undefined;
+          const groupNotes =
+            view === TABS_VIEWS.OPEN_TABS && notes?.ready ? notes.notesForGroup(group.name, group.tabs)?.notes ?? [] : [];
           return (
             <React.Fragment key={`device:${group.name}`}>
             <div
@@ -218,7 +219,9 @@ const UrlList: React.FC<IUrlListProps> = ({
               )}
               <DevicePill name={group.name}>{group.tabs.length}</DevicePill>
             </div>
-            {pinned && <PinnedNote note={pinned} deviceName={group.name} className="mb-1 ml-[42px] mr-2 mt-0.5" />}
+            {open && !isSearching && groupNotes.length > 0 && notes && (
+              <DeviceNotes notes={groupNotes} state={notes} className="mb-1 ml-[30px] mr-1" />
+            )}
             </React.Fragment>
           );
         }
@@ -242,7 +245,6 @@ const UrlList: React.FC<IUrlListProps> = ({
             isSelectionMode={isSelectionMode}
             isChecked={selectedTabIds?.has(tab.uid)}
             isExiting={exitingTabIds?.has(tab.uid)}
-            note={notes?.noteFor(tab)}
           />
         );
       })}

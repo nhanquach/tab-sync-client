@@ -1,12 +1,11 @@
 import React from "react";
-import { Check, StickyNote } from "lucide-react";
+import { Check } from "lucide-react";
 import dayjs from "dayjs";
 
 import { ITab } from "../interfaces/iTab";
 import { cn } from "@/lib/utils";
 import { hostOf } from "../utils/tabMeta";
 import Favicon from "./Favicon";
-import { ITabNote } from "../interfaces/iNote";
 
 interface IUrlListItem {
   tab: ITab;
@@ -19,8 +18,6 @@ interface IUrlListItem {
   isActive?: boolean;
   rowIndex?: number;
   onHover?: () => void;
-  /** "Why is this open" note from the extension. */
-  note?: ITabNote;
 }
 
 /** A dense tab row: favicon, title, hostname. Click shows details; the title opens the tab. */
@@ -34,7 +31,6 @@ const UrlListItem: React.FC<IUrlListItem> = ({
   isActive,
   rowIndex,
   onHover,
-  note,
 }) => {
   const host = hostOf(tab.url);
 
@@ -47,14 +43,13 @@ const UrlListItem: React.FC<IUrlListItem> = ({
       onMouseMove={onHover}
       className={cn(
         "row group cursor-pointer pl-[42px]",
-        note && "h-auto min-h-9 py-1.5",
         isActive && "row-active",
         isSelected && !isSelectionMode && "row-selected",
         isChecked && isSelectionMode && "row-selected",
         isExiting && "pointer-events-none duration-300 animate-out fade-out slide-out-to-left-2 fill-mode-forwards"
       )}
       onClick={() => !isExiting && onSelect?.(tab)}
-      title={`${tab.title}\n${note ? `Note: ${note.body}\n` : ""}${tab.url}\n${tab.deviceName} · ${dayjs(tab.timeStamp).format("MMM D, HH:mm")}`}
+      title={`${tab.title}\n${tab.url}\n${tab.deviceName} · ${dayjs(tab.timeStamp).format("MMM D, HH:mm")}`}
     >
       {isSelectionMode && (
         <span
@@ -70,7 +65,6 @@ const UrlListItem: React.FC<IUrlListItem> = ({
 
       <Favicon src={tab.favIconUrl} />
 
-      <span className={note ? "flex min-w-0 flex-col" : "contents"}>
       <a
         href={tab.url}
         target="_blank"
@@ -87,13 +81,6 @@ const UrlListItem: React.FC<IUrlListItem> = ({
       >
         {tab.title || host}
       </a>
-      {note && (
-        <span className="note-line mt-0.5">
-          <StickyNote className="h-3 w-3 shrink-0" aria-hidden />
-          <span className="truncate">{note.body}</span>
-        </span>
-      )}
-      </span>
       <span className="min-w-[16px] flex-1" aria-hidden />
 
       <span className="max-w-[30%] shrink-0 truncate text-xs text-muted-foreground sm:max-w-[35%]">{host}</span>
