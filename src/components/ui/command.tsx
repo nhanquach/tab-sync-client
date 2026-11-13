@@ -3,7 +3,7 @@ import { Command as CommandPrimitive } from "cmdk"
 import { Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog"
 
 const Command = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive>,
@@ -20,13 +20,20 @@ const Command = React.forwardRef<
 ))
 Command.displayName = CommandPrimitive.displayName
 
-type CommandDialogProps = React.ComponentProps<typeof Dialog>
+type CommandDialogProps = React.ComponentProps<typeof Dialog> & {
+  /** Props for the inner cmdk root (shouldFilter, controlled value, …). */
+  commandProps?: React.ComponentPropsWithoutRef<typeof CommandPrimitive>
+}
 
-const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
+const CommandDialog = ({ children, commandProps, ...props }: CommandDialogProps) => {
   return (
     <Dialog {...props}>
-      <DialogContent className="overflow-hidden p-0 sm:max-w-xl top-[20%] translate-y-0 data-[state=open]:slide-in-from-top-[18%] data-[state=closed]:slide-out-to-top-[18%] [&>button.icon-btn]:hidden">
-        <Command className="[&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-4 [&_[cmdk-input-wrapper]_svg]:w-4 [&_[cmdk-input]]:h-11 [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4">
+      <DialogContent
+        aria-describedby={undefined}
+        className="palette-dialog gap-0 overflow-hidden p-0 sm:max-w-2xl top-3 sm:top-[14%] translate-y-0 data-[state=open]:slide-in-from-top-[10%] data-[state=closed]:slide-out-to-top-[10%] [&>button.icon-btn]:hidden"
+      >
+        <DialogTitle className="sr-only">Command palette</DialogTitle>
+        <Command {...commandProps} className="bg-transparent [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-muted-foreground [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-4 [&_[cmdk-input-wrapper]_svg]:w-4 [&_[cmdk-input]]:h-11 [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4">
           {children}
         </Command>
       </DialogContent>
@@ -36,10 +43,10 @@ const CommandDialog = ({ children, ...props }: CommandDialogProps) => {
 
 const CommandInput = React.forwardRef<
   React.ElementRef<typeof CommandPrimitive.Input>,
-  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input>
->(({ className, ...props }, ref) => (
-  <div className="flex items-center border-b border-border px-3" cmdk-input-wrapper="">
-    <Search className="mr-2 h-4 w-4 shrink-0 text-muted-foreground" />
+  React.ComponentPropsWithoutRef<typeof CommandPrimitive.Input> & { endAdornment?: React.ReactNode }
+>(({ className, endAdornment, ...props }, ref) => (
+  <div className="flex items-center gap-2 border-b border-border px-3" cmdk-input-wrapper="">
+    <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
     <CommandPrimitive.Input
       ref={ref}
       className={cn(
@@ -48,6 +55,7 @@ const CommandInput = React.forwardRef<
       )}
       {...props}
     />
+    {endAdornment}
   </div>
 ))
 
@@ -59,7 +67,7 @@ const CommandList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <CommandPrimitive.List
     ref={ref}
-    className={cn("max-h-[420px] overflow-y-auto overflow-x-hidden", className)}
+    className={cn("max-h-[min(420px,55vh)] overflow-y-auto overflow-x-hidden", className)}
     {...props}
   />
 ))

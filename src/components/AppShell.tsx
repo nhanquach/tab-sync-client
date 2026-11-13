@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { User } from "@supabase/supabase-js";
 
 import { cn } from "@/lib/utils";
@@ -6,6 +6,9 @@ import HomeSidebar, { SidebarSection } from "./HomeSidebar";
 import HomeAppBar from "./HomeAppBar";
 import HomeBottomNavigationBar from "./HomeBottomNavigationBar";
 import Backdrop from "./Backdrop";
+import CommandPalette, { IPaletteCommand } from "./CommandPalette";
+import { CommandPaletteContext } from "./command/CommandPaletteContext";
+import { StatsDialog } from "./StatsDialog";
 
 interface IAppShellProps {
   active: SidebarSection;
@@ -17,12 +20,25 @@ interface IAppShellProps {
   onSelectDevice?: (device: string) => void;
   /** Optional right-hand panel on desktop (e.g. tab details). */
   aside?: React.ReactNode;
+  /** Commands of this page for the ⌘K palette (refresh, layout, …). */
+  commands?: IPaletteCommand[];
   children: React.ReactNode;
 }
 
 /** Desktop: slim sidebar + centred content column. Mobile: top bar + bottom tabs. */
-const AppShell: React.FC<IAppShellProps> = ({ aside, children, ...sidebar }) => {
+const AppShell: React.FC<IAppShellProps> = ({ aside, children, commands, ...sidebar }) => {
+  // ⌘K command palette, on every page (desktop shortcut, toolbar ⌘ button, phone top bar).
+  const [paletteOpen, setPaletteOpen] = useState(false);
+  const [paletteInitial, setPaletteInitial] = useState("");
+  const [insightsOpen, setInsightsOpen] = useState(false);
+  const openPalette = useCallback((initial = "") => {
+    setPaletteInitial(initial);
+    setPaletteOpen(true);
+  }, []);
+  const palette = useMemo(() => ({ open: openPalette }), [openPalette]);
+
   return (
+    <CommandPaletteContext.Provider value={palette}>
     <div className="relative isolate min-h-screen text-foreground md:flex">
       <Backdrop />
       <HomeSidebar {...sidebar} />
@@ -35,7 +51,19 @@ const AppShell: React.FC<IAppShellProps> = ({ aside, children, ...sidebar }) => 
       {aside}
 
       <HomeBottomNavigationBar active={sidebar.active} />
+
+      <CommandPalette
+        isOpen={paletteOpen}
+        setIsOpen={setPaletteOpen}
+        initialQuery={paletteInitial}
+        pageCommands={commands}
+        devices={sidebar.devices}
+        onSelectDevice={sidebar.onSelectDevice}
+        onOpenInsights={() => setInsightsOpen(true)}
+      />
+      <StatsDialog open={insightsOpen} onOpenChange={setInsightsOpen} />
     </div>
+    </CommandPaletteContext.Provider>
   );
 };
 

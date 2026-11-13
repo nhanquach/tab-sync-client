@@ -273,6 +273,43 @@
     box-shadow: 0 0 0 3px hsl(var(--primary-ink) / 0.14);
   }
 
+  /* Command palette (⌘K): teal selection, matched words in teal ink, quiet key hints. */
+  .palette-dialog [cmdk-item][data-selected="true"] {
+    background-color: hsl(var(--primary) / 0.32);
+    box-shadow: inset 2px 0 0 hsl(var(--primary-ink));
+  }
+  .dark .palette-dialog [cmdk-item][data-selected="true"] {
+    background-color: hsl(var(--primary) / 0.12);
+  }
+  .palette-dialog [cmdk-item][data-selected="true"] .palette-icon {
+    @apply text-primary-ink;
+  }
+  .palette-icon {
+    @apply inline-flex h-5 w-5 shrink-0 items-center justify-center text-muted-foreground;
+  }
+  .palette-mark {
+    @apply bg-transparent font-semibold text-primary-ink;
+  }
+  .palette-badge {
+    @apply shrink-0 rounded-md px-1.5 py-0.5 text-[11px] font-semibold text-primary-ink;
+    background-color: hsl(var(--primary-ink) / 0.1);
+  }
+  .palette-footer {
+    @apply hidden items-center gap-3 border-t border-border px-3 py-2 text-[11px] text-muted-foreground sm:flex;
+  }
+  .palette-footer kbd {
+    @apply mr-0.5 inline-flex h-[18px] min-w-[18px] items-center justify-center rounded px-1 font-sans text-[10px] font-medium text-foreground;
+    border: 1px solid var(--glass-border);
+    background-color: hsl(var(--glass-tint) / var(--glass-strong-a));
+  }
+  .note-focus {
+    animation: note-focus 2.4s ease-out 1;
+  }
+  @keyframes note-focus {
+    0%, 40% { background-color: hsl(var(--primary) / 0.45); box-shadow: inset 2px 0 0 hsl(var(--primary-ink)); }
+    100% { background-color: transparent; box-shadow: inset 2px 0 0 transparent; }
+  }
+
   /* Frosted glass: mostly opaque tint + backdrop blur, hairline neutral border and a small,
      faint neutral shadow. No glossy highlight. */
   .glass,

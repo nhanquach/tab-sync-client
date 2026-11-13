@@ -159,3 +159,16 @@ export const setNoteArchived = async (id: string, archived: boolean) => {
 export const deleteNote = async (id: string) => {
   return (await getClient()).deleteNote(id);
 };
+
+// Command palette search (server-side, a few rows per group).
+
+export const searchEverything = async (
+  query: string,
+  options?: { notes?: boolean; signal?: AbortSignal }
+) => {
+  return (await getClient()).searchEverything(query, options);
+};
+
+export const getPaletteDevices = async () => {
+  return (await getClient()).getPaletteDevices();
+};

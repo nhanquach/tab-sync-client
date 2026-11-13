@@ -24,12 +24,16 @@ const groupBy = <T,>(array: T[], key: keyof T): Record<string, T[]> => {
 };
 
 interface IStatsDialogProps {
-  /** Element that opens the dialog. */
-  children: React.ReactNode;
+  /** Element that opens the dialog (omit when controlled, e.g. from the command palette). */
+  children?: React.ReactNode;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
 }
 
-export const StatsDialog: React.FC<IStatsDialogProps> = ({ children }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const StatsDialog: React.FC<IStatsDialogProps> = ({ children, open, onOpenChange }) => {
+  const [ownOpen, setOwnOpen] = useState(false);
+  const isOpen = open ?? ownOpen;
+  const setIsOpen = onOpenChange ?? setOwnOpen;
   const [isLoading, setIsLoading] = useState(false);
   const [stats, setStats] = useState<{
     totalOpen: number;
@@ -100,7 +104,7 @@ export const StatsDialog: React.FC<IStatsDialogProps> = ({ children }) => {
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger asChild>{children}</DialogTrigger>
+      {children && <DialogTrigger asChild>{children}</DialogTrigger>}
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Insights</DialogTitle>
