@@ -1,7 +1,12 @@
 import { IDevice, INote } from "../interfaces/iNote";
 
 /** Same limits as the extension and the database (enforced there). */
-export const NOTE_MAX = 280;
+/**
+ * Longest note body, in characters (code points, like Postgres char_length).
+ * The single source of the limit in the web app; the database CHECK matches it
+ * (tab-sync-extension supabase/migrations/20261110_notes.sql: between 1 and 5000).
+ */
+export const NOTE_BODY_MAX = 5000;
 export const NOTE_TITLE_MAX = 300;
 export const NOTE_URL_MAX_BYTES = 2048;
 export const NOTES_PER_DEVICE_CAP = 1000;
@@ -23,23 +28,26 @@ export const normalizeUrl = (input: string) => {
   return /^[a-z][a-z0-9+.-]*:/i.test(t) ? t : `https://${t}`;
 };
 
-/** Trim, fold newlines/tabs to spaces, cut to `max` characters (by code point, like Postgres). */
-export const cleanNote = (text: string, max = NOTE_MAX) =>
-  Array.from(
-    text
-      .replace(/[\r\n\t]+/g, " ")
-      .replace(/ {2,}/g, " ")
-      .trim()
-  )
-    .slice(0, max)
-    .join("");
+/**
+ * Clean a note body (Markdown source) for saving: normalize line endings, trim
+ * the ends, cut to `max` characters (by code point, like Postgres). Newlines,
+ * indentation and tabs inside are kept: Markdown needs them. Returns "" for a
+ * blank note.
+ */
+export const cleanNote = (text: string, max = NOTE_BODY_MAX) => {
+  const normalized = text.replace(/\r\n?/g, "\n").trim();
+  return Array.from(normalized).slice(0, max).join("").trimEnd();
+};
 
 export const cleanTitle = (title: string | null | undefined) =>
   Array.from((title ?? "").trim())
     .slice(0, NOTE_TITLE_MAX)
     .join("");
 
-export const charsLeft = (text: string, max = NOTE_MAX) => max - Array.from(text).length;
+/** Characters used, counted the way Postgres char_length does (code points). */
+export const charCount = (text: string) => Array.from(text).length;
+
+export const charsLeft = (text: string, max = NOTE_BODY_MAX) => max - Array.from(text).length;
 
 /** Newest first: live notes by when written, archived ones by when archived. */
 export const sortNotes = (notes: INote[]) =>

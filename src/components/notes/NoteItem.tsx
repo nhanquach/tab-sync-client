@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import { INote } from "../../interfaces/iNote";
 import { INoteLink } from "../../hooks/useNotes";
 import { hostOf, timeAgo } from "../../utils/tabMeta";
+import NoteBody from "./NoteBody";
 import NoteEditor from "./NoteEditor";
 
 interface INoteItemProps {
@@ -18,7 +19,7 @@ interface INoteItemProps {
   compact?: boolean;
 }
 
-/** One note (same look as the extension): text, optional link, time; actions on hover / focus. */
+/** One note (same look as the extension): Markdown body (collapsed when long), optional link, time; actions on hover / focus. */
 const NoteItem: React.FC<INoteItemProps> = ({ note, onSave, onArchive, onRestore, onDelete, label, compact }) => {
   const [editing, setEditing] = useState(false);
   const [busy, setBusy] = useState(false);
@@ -56,9 +57,9 @@ const NoteItem: React.FC<INoteItemProps> = ({ note, onSave, onArchive, onRestore
   return (
     <div className={cn("note-item", busy && "opacity-50")} role="listitem" data-note-id={note.id}>
       <div className="min-w-0 flex-1">
-        <p className={cn("break-words text-sm leading-5", compact && "line-clamp-2")} title={note.body}>
-          {note.body}
-        </p>
+        <div className="text-sm">
+          <NoteBody body={note.body} compact={compact} />
+        </div>
         <div className="mt-0.5 flex min-w-0 items-center gap-1.5 text-xs leading-4 text-muted-foreground">
           {note.url && (
             <a href={note.url} target="_blank" rel="noopener noreferrer" className="note-link min-w-0" title={note.url}>

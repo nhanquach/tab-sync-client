@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useId, useRef, useState } from "react";
 import { Link2, Plus, X } from "lucide-react";
 
 import { IDevice } from "../../interfaces/iNote";
 import { INoteLink } from "../../hooks/useNotes";
-import { canAttachUrl, charsLeft, cleanNote, NOTE_MAX, noteErrorMessage, normalizeUrl } from "../../utils/notes";
+import { canAttachUrl, charCount, cleanNote, NOTE_BODY_MAX, noteErrorMessage, normalizeUrl } from "../../utils/notes";
 import { hostOf } from "../../utils/tabMeta";
+import NoteMarkdown from "./LazyNoteMarkdown";
 
 interface INoteEditorProps {
   initial?: string;
@@ -21,7 +22,11 @@ interface INoteEditorProps {
   autoFocus?: boolean;
 }
 
-/** Note editor (same look as the extension): text, optional link, Enter saves, Esc cancels. */
+/**
+ * Note editor (same look as the extension): Markdown source in a plain textarea
+ * (grows to about 10 lines, then scrolls), a live "N / 5000" counter, a Preview
+ * toggle, optional link. Enter is a new line; Cmd/Ctrl+Enter saves; Esc cancels.
+ */
 const NoteEditor: React.FC<INoteEditorProps> = ({
   initial = "",
   initialLink = null,
@@ -40,8 +45,11 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
   const [linkInput, setLinkInput] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState("");
+  const [preview, setPreview] = useState(false);
+  const hintId = useId();
   const ref = useRef<HTMLTextAreaElement>(null);
-  const left = charsLeft(text);
+  const count = charCount(text);
+  const over = count > NOTE_BODY_MAX;
   const clean = cleanNote(text);
 
   useEffect(() => {
@@ -51,21 +59,22 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
     el.setSelectionRange(el.value.length, el.value.length);
   }, [autoFocus]);
 
+  // Grow with the text (up to about 10 lines, then scroll).
   useEffect(() => {
     const el = ref.current;
-    if (!el) return;
+    if (!el || preview) return;
     el.style.height = "auto";
-    el.style.height = `${Math.min(el.scrollHeight, 120)}px`;
-  }, [text]);
+    el.style.height = `${Math.min(el.scrollHeight, 216)}px`;
+  }, [text, preview]);
 
   const pendingUrl = linkInput !== null ? normalizeUrl(linkInput) : "";
   const linkInvalid = linkInput !== null && linkInput.trim() !== "" && !canAttachUrl(pendingUrl);
 
   const save = async () => {
-    if (!clean || left < 0 || linkInvalid) return;
+    if (!clean || over || linkInvalid) return;
     const finalLink =
       linkInput !== null && linkInput.trim() ? { url: pendingUrl, title: hostOf(pendingUrl) } : link;
-    if (clean === initial.trim() && (finalLink?.url ?? null) === (initialLink?.url ?? null)) {
+    if (clean === cleanNote(initial) && (finalLink?.url ?? null) === (initialLink?.url ?? null)) {
       onCancel();
       return;
     }
@@ -82,7 +91,7 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
 
   const onKeyDown = (e: React.KeyboardEvent) => {
     e.stopPropagation();
-    if (e.key === "Enter" && !e.shiftKey && !e.nativeEvent.isComposing) {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey) && !e.nativeEvent.isComposing) {
       e.preventDefault();
       save();
     } else if (e.key === "Escape") {
@@ -112,17 +121,47 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
           </select>
         </label>
       )}
-      <textarea
-        ref={ref}
-        rows={1}
-        value={text}
-        maxLength={NOTE_MAX}
-        onChange={(e) => setText(e.target.value.replace(/[\r\n]+/g, " "))}
-        placeholder={placeholder}
-        aria-label={label}
-        disabled={busy}
-        className="block w-full resize-none bg-transparent text-sm leading-5 outline-none placeholder:text-muted-foreground"
-      />
+      {preview ? (
+        <div className="note-md-preview text-sm" aria-label="Preview">
+          {clean ? <NoteMarkdown body={clean} /> : <span className="text-muted-foreground">Nothing to preview</span>}
+        </div>
+      ) : (
+        <textarea
+          ref={ref}
+          rows={2}
+          value={text}
+          onChange={(e) => setText(e.target.value)}
+          placeholder={placeholder}
+          aria-label={label}
+          aria-describedby={hintId}
+          disabled={busy}
+          spellCheck
+          className="block w-full resize-none bg-transparent text-sm leading-5 outline-none placeholder:text-muted-foreground"
+        />
+      )}
+      <div className="mt-1 flex items-center gap-1.5 text-[11px] leading-4 text-muted-foreground">
+        <span id={hintId} title="Headings, **bold**, _italic_, lists, - [ ] tasks, [links](https://…), `code`">
+          Markdown supported
+        </span>
+        <span aria-hidden>·</span>
+        <button
+          type="button"
+          className="note-md-preview-toggle"
+          onClick={() => setPreview(!preview)}
+          aria-pressed={preview}
+          disabled={busy}
+        >
+          {preview ? "Edit" : "Preview"}
+        </button>
+        <span className="flex-1" />
+        <span
+          className={`tabular-nums ${over ? "font-semibold text-destructive" : ""}`}
+          aria-live={over ? "polite" : "off"}
+          title={over ? `${count - NOTE_BODY_MAX} over the limit` : undefined}
+        >
+          {count} / {NOTE_BODY_MAX}
+        </span>
+      </div>
       {link && linkInput === null && (
         <div className="note-link-chip mt-1.5" title={link.url}>
           <Link2 className="h-3 w-3 shrink-0" aria-hidden />
@@ -162,7 +201,7 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
         </div>
       )}
       <div className="mt-1.5 flex items-center gap-1.5">
-        {!link && linkInput === null ? (
+        {!link && linkInput === null && (
           <button
             type="button"
             onClick={() => setLinkInput("")}
@@ -172,10 +211,6 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
             <Plus className="h-3.5 w-3.5" aria-hidden />
             Add link
           </button>
-        ) : (
-          <span className={`text-[11px] tabular-nums ${left < 0 ? "font-semibold text-destructive" : "text-muted-foreground"}`}>
-            {left < 20 ? `${left} left` : `${NOTE_MAX - left}/${NOTE_MAX}`}
-          </span>
         )}
         {(error || linkInvalid) && (
           <span role="alert" className="min-w-0 truncate text-[11px] text-destructive">
@@ -193,7 +228,8 @@ const NoteEditor: React.FC<INoteEditorProps> = ({
         </button>
         <button
           type="button"
-          disabled={busy || !clean || left < 0 || linkInvalid}
+          disabled={busy || !clean || over || linkInvalid}
+          title="Save (Ctrl/⌘ + Enter)"
           onClick={save}
           className="bg-signature h-7 rounded-md px-2.5 text-xs font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
