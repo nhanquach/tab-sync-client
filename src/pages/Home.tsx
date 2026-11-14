@@ -38,6 +38,9 @@ import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
 import CommandPalette from "../components/CommandPalette";
+import DeviceNotes from "../components/notes/DeviceNotes";
+import { DeviceChip } from "../components/DeviceIcon";
+import { useNotes } from "../hooks/useNotes";
 
 interface IHomeProps {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -52,6 +55,8 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
   const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
+  // Notes of each browser (written in the extension or on /notes), shown under device groups.
+  const notes = useNotes();
 
   useEffect(() => {
     if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
@@ -387,6 +392,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const handleRefresh = async () => {
     handleGetTabs();
+    notes.refresh();
   };
 
   const showToast = (message: string) => {
@@ -450,6 +456,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
     });
   };
 
+
+  // Notes of browsers with no tabs on this page still deserve a spot (top of Open tabs).
+  const orphanNotes = useMemo(() => {
+    if (!isOpenTabsView || searchString || !notes.ready) return [];
+    const shownIds = new Set(tabs.map((t) => t.device_id).filter(Boolean));
+    const shownNames = new Set(tabs.map((t) => t.deviceName));
+    return Array.from(notes.byDevice.entries())
+      .map(([deviceId, list]) => ({ deviceId, name: notes.deviceName(deviceId), list }))
+      .filter(({ deviceId, name }) => !shownIds.has(deviceId) && !shownNames.has(name))
+      .filter(({ name }) => selectedDevice === "All" || selectedDevice === name);
+  }, [isOpenTabsView, searchString, tabs, notes, selectedDevice]);
 
   const prevSelectedTab = useRef<ITab | null>(null);
   if (selectedTab) {
@@ -526,6 +543,26 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         </div>
       ) : (
         <div className={cn("transition-opacity", isLoading && "opacity-60")}>
+          {orphanNotes.length > 0 && (
+            <div className="mb-3 space-y-2">
+              {orphanNotes.map(({ deviceId, name, list }) => (
+                <DeviceNotes
+                  key={deviceId}
+                  notes={list}
+                  state={notes}
+                  className="glass rounded-xl p-1"
+                  title={
+                    <div className="flex h-8 items-center gap-2 px-2 text-[13px] font-semibold">
+                      <DeviceChip name={name} size="sm" />
+                      <span className="min-w-0 truncate">{name}</span>
+                      <span className="text-xs font-normal text-muted-foreground">· notes</span>
+                    </div>
+                  }
+                />
+              ))}
+            </div>
+          )}
+
           {urls.length === 0 && <NoData isEmptySearch={!!searchString} />}
 
           {urls.length > 0 && layout === "list" && (
@@ -541,6 +578,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onToggleDeviceSelection={handleToggleDeviceSelection}
               exitingTabIds={exitingTabIds}
               isSearching={!!searchString}
+              notes={notes}
             />
           )}
 
@@ -556,6 +594,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
               onToggleTabSelection={handleToggleTabSelection}
               onToggleDeviceSelection={handleToggleDeviceSelection}
               exitingTabIds={exitingTabIds}
+              notes={notes}
             />
           )}
 

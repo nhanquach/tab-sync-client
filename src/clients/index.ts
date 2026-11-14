@@ -129,3 +129,33 @@ export const getBookmarkNodes = async (
 ) => {
   return (await getClient()).getBookmarkNodes(snapshot, onProgress);
 };
+
+// Notes, organized by browser (archive is a state).
+
+export const getDevices = async () => {
+  return (await getClient()).getDevices();
+};
+
+export const getNotes = async (options?: { archived?: boolean }) => {
+  return (await getClient()).getNotes(options);
+};
+
+export const getNotesCount = async () => {
+  return (await getClient()).getNotesCount();
+};
+
+export const addNote = async (input: { deviceId: string; body: string; url?: string | null; title?: string | null }) => {
+  return (await getClient()).addNote(input);
+};
+
+export const updateNote = async (id: string, patch: { body?: string; url?: string | null; title?: string | null }) => {
+  return (await getClient()).updateNote(id, patch);
+};
+
+export const setNoteArchived = async (id: string, archived: boolean) => {
+  return (await getClient()).setNoteArchived(id, archived);
+};
+
+export const deleteNote = async (id: string) => {
+  return (await getClient()).deleteNote(id);
+};
