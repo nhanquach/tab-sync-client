@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { addNote, getDevices, getNotes, getNotesCount, setNoteArchived, updateNote } from "../clients";
 import { IDevice, INote } from "../interfaces/iNote";
 import { deviceIdForGroup, groupNotesByDevice, sortDevices, upsertNote } from "../utils/notes";
+import { preloadNoteMarkdown } from "../components/notes/noteMarkdownLoader";
 
 export interface INoteLink {
   url: string;
@@ -23,6 +24,7 @@ export const useNotes = () => {
     try {
       const [live, devs] = await Promise.all([getNotes(), getDevices().catch(() => [] as IDevice[])]);
       setNotes(live);
+      if (live.length) preloadNoteMarkdown();
       setDevices(sortDevices(devs));
       setFailed(false);
       notesAvailable = Promise.resolve(true);
