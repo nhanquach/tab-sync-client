@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState, useRef } from "react";
 import { Snackbar } from "@mui/material";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { ArrowDownAZ, Clock, LayoutGrid, List, ListChecks, RefreshCw } from "lucide-react";
 
 import {
   getOpenTabs,
@@ -37,7 +38,7 @@ import { cn } from "@/lib/utils";
 import TabDetails from "../components/TabDetails";
 import BulkActionsBar from "../components/BulkActionsBar";
 import PaginationControls from "../components/PaginationControls";
-import CommandPalette from "../components/CommandPalette";
+import { IPaletteCommand } from "../components/CommandPalette";
 import DeviceNotes from "../components/notes/DeviceNotes";
 import { DeviceChip } from "../components/DeviceIcon";
 import { useNotes } from "../hooks/useNotes";
@@ -54,7 +55,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [toast, setToast] = useState({ show: false, message: "" });
   const [isLoading, setIsLoading] = useState(true);
-  const [isCommandPaletteOpen, setIsCommandPaletteOpen] = useState(false);
   // Notes of each browser (written in the extension or on /notes), shown under device groups.
   const notes = useNotes();
 
@@ -182,6 +182,17 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
 
   const [searchString, setSearchString] = useState<string>("");
   const [selectedDevice, setSelectedDevice] = useState<string>("All");
+
+  // "?device=Name" (from the command palette on another page) filters by that device once.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const deviceParam = searchParams.get("device");
+  useEffect(() => {
+    if (deviceParam === null) return;
+    setSelectedDevice(deviceParam || "All");
+    const next = new URLSearchParams(searchParams);
+    next.delete("device");
+    setSearchParams(next, { replace: true });
+  }, [deviceParam, searchParams, setSearchParams]);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const ITEMS_PER_PAGE = 20;
 
@@ -474,9 +485,45 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
   }
   const desktopTab = selectedTab || prevSelectedTab.current;
 
-  const setViewAdapter = (newView: TABS_VIEWS) => {
-      navigate(`${ROUTES.HOME}/${newView}`);
+  // Page commands for the ⌘K palette. Handlers go through a ref so the list stays stable.
+  const paletteHandlers = useRef({ handleRefresh: () => {}, toggleLayout: () => {}, toggleOrderBy: () => {}, toggleSelectionMode: () => {} });
+  paletteHandlers.current = {
+    handleRefresh: () => void handleRefresh(),
+    toggleLayout,
+    toggleOrderBy,
+    toggleSelectionMode,
   };
+  const paletteCommands = useMemo<IPaletteCommand[]>(
+    () => [
+      { id: "refresh", label: "Refresh tabs", icon: <RefreshCw />, keywords: "reload sync", run: () => paletteHandlers.current.handleRefresh() },
+      ...(isMobile
+        ? []
+        : [
+            {
+              id: "layout",
+              label: `Switch to ${layout === "grid" ? "list" : "grid"} view`,
+              icon: layout === "grid" ? <List /> : <LayoutGrid />,
+              keywords: "layout grid list",
+              run: () => paletteHandlers.current.toggleLayout(),
+            },
+          ]),
+      {
+        id: "sort",
+        label: `Sort by ${orderBy === ORDER.TIME ? "title" : "time"}`,
+        icon: orderBy === ORDER.TIME ? <ArrowDownAZ /> : <Clock />,
+        keywords: "order sort",
+        run: () => paletteHandlers.current.toggleOrderBy(),
+      },
+      {
+        id: "select",
+        label: `${isSelectionMode ? "Exit" : "Enter"} selection mode`,
+        icon: <ListChecks />,
+        keywords: "select bulk archive delete",
+        run: () => paletteHandlers.current.toggleSelectionMode(),
+      },
+    ],
+    [isMobile, layout, orderBy, isSelectionMode]
+  );
 
   if (!currentView || !Object.values(TABS_VIEWS).includes(currentView)) {
       return null;
@@ -514,6 +561,7 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
       selectedDevice={selectedDevice}
       onSelectDevice={setSelectedDevice}
       aside={detailsPanel}
+      commands={paletteCommands}
     >
       <Toolbar
           title={isOpenTabsView ? "Open tabs" : "Archived tabs"}
@@ -532,7 +580,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
           isSelectionMode={isSelectionMode}
           toggleSelectionMode={toggleSelectionMode}
           isMobile={isMobile}
-          onOpenCommandPalette={() => setIsCommandPaletteOpen(true)}
       />
 
       {isLoading && urls.length === 0 ? (
@@ -643,21 +690,6 @@ const Home: React.FC<IHomeProps> = ({ user }) => {
         onDeleteSelected={handleBulkDelete}
       />
 
-      <CommandPalette
-        isOpen={isCommandPaletteOpen}
-        setIsOpen={setIsCommandPaletteOpen}
-        view={currentView}
-        setView={setViewAdapter}
-        layout={layout}
-        toggleLayout={toggleLayout}
-        orderBy={orderBy}
-        toggleOrderBy={toggleOrderBy}
-        isSelectionMode={isSelectionMode}
-        toggleSelectionMode={toggleSelectionMode}
-        handleRefresh={handleRefresh}
-        tabs={isOpenTabsView ? tabs : archivedTabs}
-        onSelectTab={handleSelectTab}
-      />
 
       <Snackbar
         open={toast.show}

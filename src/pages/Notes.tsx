@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { User } from "@supabase/supabase-js";
+import { useSearchParams } from "react-router-dom";
 import { Archive, ExternalLink, Plus, RefreshCw, Search, StickyNote, X } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -85,7 +86,7 @@ const Notes: React.FC<INotesProps> = ({ user }) => {
     if (filter === "archived") loadArchived();
   };
 
-  const list = filter === "live" ? state.notes : archived ?? [];
+  const list = useMemo(() => (filter === "live" ? state.notes : archived ?? []), [filter, state.notes, archived]);
   const results = useMemo(() => searchNotes(list, query, state.deviceName), [list, query, state.deviceName]);
   const groups = useMemo(() => {
     const byDevice = groupNotesByDevice(results);
@@ -97,6 +98,40 @@ const Notes: React.FC<INotesProps> = ({ user }) => {
   }, [results, state.devices]);
 
   const defaultDevice = state.devices[0]?.id ?? null;
+
+  // From the command palette: "?focus=<id>[&archived=1]" scrolls to a note and flashes it;
+  // "?new=1" opens the composer. Params are dropped once handled.
+  const [searchParams, setSearchParams] = useSearchParams();
+  const focusParam = searchParams.get("focus");
+  const archivedParam = searchParams.get("archived") === "1";
+  const newParam = searchParams.get("new") === "1";
+  const [focusId, setFocusId] = useState<string | null>(null);
+  const dropParams = useCallback(
+    (...keys: string[]) => {
+      const next = new URLSearchParams(searchParams);
+      keys.forEach((k) => next.delete(k));
+      setSearchParams(next, { replace: true });
+    },
+    [searchParams, setSearchParams]
+  );
+  useEffect(() => {
+    if (!focusParam) return;
+    setFocusId(focusParam);
+    setQuery("");
+    setComposeFor(null);
+    setFilter(archivedParam ? "archived" : "live");
+    if (archivedParam) setArchived(null); // reload so the note is there
+    dropParams("focus", "archived");
+  }, [focusParam, archivedParam, dropParams]);
+  useEffect(() => {
+    if (!newParam || !state.ready) return;
+    if (defaultDevice) {
+      setFilter("live");
+      setQuery("");
+      setComposeFor(defaultDevice);
+    }
+    dropParams("new");
+  }, [newParam, state.ready, defaultDevice, dropParams]);
 
   /** Restore / delete in the archive: drop from the list, put back if refused. */
   const drop = (fn: (n: INote) => Promise<unknown>) => async (note: INote) => {
@@ -123,8 +158,20 @@ const Notes: React.FC<INotesProps> = ({ user }) => {
     }
   };
 
+
   const unavailable = state.failed;
   const loading = filter === "live" ? !state.ready && !state.failed : archived === null;
+
+  useEffect(() => {
+    if (!focusId) return;
+    const el = document.querySelector<HTMLElement>(`[data-note-id="${CSS.escape(focusId)}"]`);
+    if (!el) return;
+    el.scrollIntoView({ block: "center", behavior: "smooth" });
+    el.classList.remove("note-focus");
+    void el.offsetWidth; // restart the flash
+    el.classList.add("note-focus");
+    setFocusId(null);
+  }, [focusId, groups, loading]);
   const total = filter === "live" ? state.notes.length : archived?.length ?? 0;
 
   return (
