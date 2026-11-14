@@ -38,6 +38,7 @@ import { hostOf, timeAgo } from "../utils/tabMeta";
 import { highlightParts, matchesAllWords, parsePaletteQuery, SEARCH_MIN_CHARS } from "../utils/search";
 import Favicon from "./Favicon";
 import { DeviceChip } from "./DeviceIcon";
+import { noteSnippet } from "../utils/noteMarkdown";
 
 /** A command a page adds to the palette (refresh, layout, sort, …). */
 export interface IPaletteCommand {
@@ -430,7 +431,7 @@ const CommandPalette: React.FC<ICommandPaletteProps> = ({
                       <span className="palette-icon">{n.archived_at ? <Archive /> : <StickyNote />}</span>
                       <span className="min-w-0 flex-1">
                         <span className="block truncate">
-                          <Highlight text={n.body} query={query} />
+                          <Highlight text={noteSnippet(n.body, query)} query={query} />
                         </span>
                         {n.url && (
                           <span className="flex min-w-0 items-center gap-1 text-xs text-primary-ink">

@@ -76,3 +76,25 @@ export const markdownToPlain = (md: string) => {
     (_, i: string) => escaped[Number(i)] ?? ""
   );
 };
+
+/**
+ * A one-line, plain-text snippet of a note for search rows (the command
+ * palette): Markdown syntax stripped, and for a long note the text around the
+ * first matching word, so a match deep in a 5,000-character note is visible.
+ */
+export const noteSnippet = (body: string, query = "", max = 160) => {
+  const plain = markdownToPlain(body);
+  if (plain.length <= max) return plain;
+  const lower = plain.toLowerCase();
+  const hit = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((w) => lower.indexOf(w))
+    .filter((i) => i >= 0)
+    .sort((a, b) => a - b)[0];
+  if (hit === undefined || hit < max - 40)
+    return `${plain.slice(0, max).trimEnd()}…`;
+  const start = Math.max(0, hit - 40);
+  return `…${plain.slice(start, start + max).trim()}…`;
+};
