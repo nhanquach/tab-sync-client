@@ -6,6 +6,8 @@ import { ITab } from "../interfaces/iTab";
 import { IDatabaseUpdatePayload } from "../interfaces/IDatabaseUpdate";
 import { HOME_PAGE } from "../utils/constants";
 import { IBookmarkRow, IBookmarkSnapshot } from "../interfaces/iBookmark";
+import { IDevice, INote } from "../interfaces/iNote";
+import { canAttachUrl, cleanNote, cleanTitle, NOTE_COLUMNS } from "../utils/notes";
 
 const rootClient = createClient(
   import.meta.env.VITE_SUPABASE_URL!,
@@ -545,4 +547,134 @@ export const getBookmarkNodes = async (
     if (page.length < 1000) break;
   }
   return rows;
+};
+
+// ---------------------------------------------------------------------------
+// Notes, organized by browser (extension repo: supabase/migrations/20261110_notes.sql).
+// Archive is a state (archived_at). Limits are enforced by the database.
+// ---------------------------------------------------------------------------
+
+/** This user's browsers (not retired), for naming note groups and the "write for" picker. */
+export const getDevices = async (): Promise<IDevice[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { data, error } = await client
+    .from(TABLES.DEVICES)
+    .select("id,name,browser,os,last_seen_at")
+    .eq("user_id", userId)
+    .is("retired_at", null);
+  if (error) throw error;
+  return (data ?? []) as IDevice[];
+};
+
+/** Live notes (newest first) or archived notes (newest archived first), paged past the 1,000-row cap. */
+export const getNotes = async ({ archived = false } = {}): Promise<INote[]> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const out: INote[] = [];
+  const PAGE = 1000;
+  for (let from = 0; ; from += PAGE) {
+    let query = client.from(TABLES.NOTES).select(NOTE_COLUMNS).eq("user_id", userId);
+    query = archived ? query.not("archived_at", "is", null) : query.is("archived_at", null);
+    const { data, error } = await query
+      .order(archived ? "archived_at" : "created_at", { ascending: false })
+      .order("id", { ascending: false })
+      .range(from, from + PAGE - 1);
+    if (error) throw error;
+    const rows = (data ?? []) as INote[];
+    out.push(...rows);
+    if (rows.length < PAGE || from >= PAGE * 19) break;
+  }
+  return out;
+};
+
+/** Probe: throws if the notes table isn't there yet (migration not run). No rows downloaded. */
+export const getNotesCount = async (): Promise<number> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { count, error } = await client
+    .from(TABLES.NOTES)
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", userId)
+    .is("archived_at", null);
+  if (error) throw error;
+  return count ?? 0;
+};
+
+/** Write a note for one of the user's browsers. */
+export const addNote = async (input: {
+  deviceId: string;
+  body: string;
+  url?: string | null;
+  title?: string | null;
+}): Promise<INote> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const body = cleanNote(input.body);
+  if (!body) throw new Error("Empty note");
+  const url = canAttachUrl(input.url) ? input.url : null;
+  const { data, error } = await client
+    .from(TABLES.NOTES)
+    .insert({
+      user_id: userId,
+      device_id: input.deviceId,
+      body,
+      url,
+      title: url ? cleanTitle(input.title) || null : null,
+    })
+    .select(NOTE_COLUMNS)
+    .single();
+  if (error) throw error;
+  return data as INote;
+};
+
+/** Edit text and/or link (url: null detaches it). */
+export const updateNote = async (
+  id: string,
+  patch: { body?: string; url?: string | null; title?: string | null }
+): Promise<INote> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const row: Record<string, unknown> = {};
+  if (patch.body !== undefined) {
+    const body = cleanNote(patch.body);
+    if (!body) throw new Error("Empty note");
+    row.body = body;
+  }
+  if (patch.url !== undefined) {
+    const url = canAttachUrl(patch.url) ? patch.url : null;
+    row.url = url;
+    row.title = url ? cleanTitle(patch.title) || null : null;
+  }
+  const { data, error } = await client
+    .from(TABLES.NOTES)
+    .update(row)
+    .eq("id", id)
+    .eq("user_id", userId)
+    .select(NOTE_COLUMNS)
+    .single();
+  if (error) throw error;
+  return data as INote;
+};
+
+/** Archive (hide from its browser's list) or restore. The server stamps archived_at. */
+export const setNoteArchived = async (id: string, archived: boolean): Promise<INote> => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { data, error } = await client
+    .from(TABLES.NOTES)
+    .update({ archived_at: archived ? new Date().toISOString() : null })
+    .eq("id", id)
+    .eq("user_id", userId)
+    .select(NOTE_COLUMNS)
+    .single();
+  if (error) throw error;
+  return data as INote;
+};
+
+export const deleteNote = async (id: string) => {
+  const { client, userId } = await getClient();
+  if (!client || !userId) throw new Error("Not signed in");
+  const { error } = await client.from(TABLES.NOTES).delete().eq("id", id).eq("user_id", userId);
+  if (error) throw error;
 };

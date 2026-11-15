@@ -3,4 +3,6 @@ export const TABLES = {
     ARCHIVED_TABS: 'archived_tabs',
     BOOKMARKS: 'bookmarks',
     BOOKMARK_SNAPSHOTS: 'bookmark_snapshots',
+    DEVICES: 'devices',
+    NOTES: 'notes',
 };

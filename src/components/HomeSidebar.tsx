@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { Archive, BarChart3, Bookmark, Layers, MessageSquare, QrCode, Settings } from "lucide-react";
+import { Archive, BarChart3, Bookmark, Layers, MessageSquare, QrCode, Settings, StickyNote } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { TABS_VIEWS } from "../interfaces/iView";
@@ -9,10 +9,11 @@ import { ROUTES } from "../routes";
 import LogoWithTabSync from "./LogoWithTabSync";
 import { DeviceChip } from "./DeviceIcon";
 import FeedbackDialog from "./FeedbackDialog";
+import { useNotesAvailable } from "../hooks/useNotes";
 import QRCodeDialog from "./QRCodeDialog";
 import { StatsDialog } from "./StatsDialog";
 
-export type SidebarSection = "open" | "archived" | "bookmarks" | "settings";
+export type SidebarSection = "open" | "archived" | "notes" | "bookmarks" | "settings";
 
 interface IHomeSidebarProps {
   active: SidebarSection;
@@ -48,6 +49,8 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
   selectedDevice = "All",
   onSelectDevice,
 }) => {
+  // Notes appear once the backend has the notes table.
+  const notesAvailable = useNotesAvailable();
   const initial = user?.email?.charAt(0).toUpperCase();
 
   const viewLink = (section: SidebarSection, view: TABS_VIEWS, label: string, icon: React.ReactNode) => (
@@ -76,6 +79,16 @@ const HomeSidebar: React.FC<IHomeSidebarProps> = ({
         <div className="space-y-0.5">
           {viewLink("open", TABS_VIEWS.OPEN_TABS, "Open tabs", <Layers className={iconCls} />)}
           {viewLink("archived", TABS_VIEWS.ARCHIVED_TABS, "Archived", <Archive className={iconCls} />)}
+          {(notesAvailable || active === "notes") && (
+            <Link
+              to={ROUTES.NOTES}
+              className={cn("nav-item", active === "notes" && "nav-item-active")}
+              aria-current={active === "notes" ? "page" : undefined}
+            >
+              <StickyNote className={iconCls} />
+              <span className="min-w-0 flex-1 truncate">Notes</span>
+            </Link>
+          )}
           <Link
             to={ROUTES.BOOKMARKS}
             className={cn("nav-item", active === "bookmarks" && "nav-item-active")}

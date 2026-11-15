@@ -7,6 +7,8 @@ import { cn } from "@/lib/utils";
 import { newestTimeStamp, timeAgo } from "../utils/tabMeta";
 import UrlListItem from "./UrlListItem";
 import { DeviceChip, DevicePill } from "./DeviceIcon";
+import DeviceNotes from "./notes/DeviceNotes";
+import type { NotesState } from "../hooks/useNotes";
 
 interface IUrlListProps {
   view: TABS_VIEWS;
@@ -21,6 +23,8 @@ interface IUrlListProps {
   exitingTabIds?: Set<string>;
   /** While searching every group is shown expanded. */
   isSearching?: boolean;
+  /** Notes of each browser, shown under its group (Open tabs only). */
+  notes?: NotesState;
 }
 
 interface IGroup {
@@ -57,6 +61,7 @@ const UrlList: React.FC<IUrlListProps> = ({
   onToggleDeviceSelection,
   exitingTabIds,
   isSearching = false,
+  notes,
 }) => {
   const groups = useMemo<IGroup[]>(() => {
     const map = new Map<string, ITab[]>();
@@ -161,9 +166,11 @@ const UrlList: React.FC<IUrlListProps> = ({
           const { group } = row;
           const open = isOpen(group.name);
           const allSelected = group.tabs.every((t) => selectedTabIds?.has(t.uid));
+          const groupNotes =
+            view === TABS_VIEWS.OPEN_TABS && notes?.ready ? notes.notesForGroup(group.name, group.tabs)?.notes ?? [] : [];
           return (
+            <React.Fragment key={`device:${group.name}`}>
             <div
-              key={`device:${group.name}`}
               role="button"
               tabIndex={-1}
               aria-expanded={open}
@@ -212,6 +219,10 @@ const UrlList: React.FC<IUrlListProps> = ({
               )}
               <DevicePill name={group.name}>{group.tabs.length}</DevicePill>
             </div>
+            {open && !isSearching && groupNotes.length > 0 && notes && (
+              <DeviceNotes notes={groupNotes} state={notes} className="mb-1 ml-[30px] mr-1" />
+            )}
+            </React.Fragment>
           );
         }
 

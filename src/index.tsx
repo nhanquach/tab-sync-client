@@ -9,6 +9,7 @@ import App from "./App.tsx";
 import { initAppearance } from "./theme/appearance";
 
 import "./index.css";
+import "./styles/note-markdown.css";
 
 // Apply light/dark + accent before the first paint.
 initAppearance();
