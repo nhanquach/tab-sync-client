@@ -55,7 +55,7 @@ const NoteItem: React.FC<INoteItemProps> = ({ note, onSave, onArchive, onRestore
   const when = note.archived_at ? `archived ${timeAgo(note.archived_at)}` : timeAgo(note.created_at);
 
   return (
-    <div className={cn("note-item", busy && "opacity-50")} role="listitem">
+    <div className={cn("note-item", busy && "opacity-50")} role="listitem" data-note-id={note.id}>
       <div className="min-w-0 flex-1">
         <div className="text-sm">
           <NoteBody body={note.body} compact={compact} />

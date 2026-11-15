@@ -18,6 +18,7 @@ import { ORDER } from "../utils/constants";
 import { useKeyPress } from "../hooks/useKeyPress";
 import { cn } from "@/lib/utils";
 import { DeviceChip } from "./DeviceIcon";
+import { useCommandPalette } from "./command/CommandPaletteContext";
 
 import {
   DropdownMenu,
@@ -45,7 +46,8 @@ interface IToolbarProps {
   isSelectionMode?: boolean;
   toggleSelectionMode?: () => void;
   isMobile?: boolean;
-  onOpenCommandPalette?: () => void;
+  /** Show the ⌘ button that opens the command palette (default true). */
+  showCommandPalette?: boolean;
 }
 
 /** Page header (product label + title + actions) and the search field. */
@@ -66,9 +68,10 @@ const Toolbar: React.FC<IToolbarProps> = ({
   isSelectionMode,
   toggleSelectionMode,
   isMobile = false,
-  onOpenCommandPalette,
+  showCommandPalette = true,
 }) => {
   const searchBoxRef = useRef<HTMLInputElement>(null);
+  const palette = useCommandPalette();
 
   // The sticky bar only frosts once the list scrolls under it; at rest it is part of the page.
   const [isStuck, setIsStuck] = useState(false);
@@ -204,13 +207,13 @@ const Toolbar: React.FC<IToolbarProps> = ({
             <ListChecks className="h-4 w-4" />
           </button>
         )}
-        {onOpenCommandPalette && (
+        {showCommandPalette && (
           <button
             type="button"
             className="icon-btn hidden md:inline-flex"
-            onClick={onOpenCommandPalette}
-            aria-label="Open command palette"
-            title="Command palette (⌘K)"
+            onClick={() => palette.open()}
+            aria-label="Search everything and run commands"
+            title="Search everything & commands (⌘K)"
           >
             <Command className="h-4 w-4" />
           </button>

@@ -1,12 +1,13 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { User } from "@supabase/supabase-js";
-import { QrCode } from "lucide-react";
+import { Command, QrCode } from "lucide-react";
 
 import { ROUTES } from "../routes";
 import { TABS_VIEWS } from "../interfaces/iView";
 import QRCodeDialog from "./QRCodeDialog";
 import LogoWithTabSync from "./LogoWithTabSync";
+import { useCommandPalette } from "./command/CommandPaletteContext";
 
 interface IHomeAppBarProps {
   user?: User;
@@ -18,12 +19,16 @@ export const headerHeight = 48;
 /** Mobile top bar: wordmark, app/QR, account. Hidden on desktop. */
 const HomeAppBar: React.FC<IHomeAppBarProps> = ({ user, isLoading = false }) => {
   const initial = user?.email?.charAt(0).toUpperCase();
+  const palette = useCommandPalette();
 
   return (
     <header className="sticky top-0 z-40 flex h-12 items-center gap-1 glass-bar glass-bar-top px-3 md:hidden">
       <Link to={`${ROUTES.HOME}/${TABS_VIEWS.OPEN_TABS}`} className="mr-auto">
         <LogoWithTabSync markClassName="h-7 w-7" />
       </Link>
+      <button type="button" className="icon-btn" onClick={() => palette.open()} aria-label="Search everything and run commands" title="Search & commands">
+        <Command className="h-4 w-4" />
+      </button>
       <QRCodeDialog>
         <button type="button" className="icon-btn" aria-label="Get the app">
           <QrCode className="h-4 w-4" />
