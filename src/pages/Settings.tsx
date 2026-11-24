@@ -24,7 +24,7 @@ import { StatsDialog } from "../components/StatsDialog";
 import QRCodeDialog from "../components/QRCodeDialog";
 import InstallPwaDialog from "../components/InstallPwaDialog";
 import FeedbackDialog from "../components/FeedbackDialog";
-import { EXTENSION_PAGE } from "../utils/constants";
+import { getExtensionPage } from "../utils/constants";
 
 interface ISettingsProps {
   user: User;
@@ -138,7 +138,7 @@ const Settings: React.FC<ISettingsProps> = ({ user, openChangePassword = false }
             <InstallPwaDialog>
               <RowButton icon={<Tile hue={HUE.install} icon={Smartphone} />}>Install the app</RowButton>
             </InstallPwaDialog>
-            <a href={EXTENSION_PAGE} target="_blank" rel="noopener noreferrer" className="settings-row">
+            <a href={getExtensionPage()} target="_blank" rel="noopener noreferrer" className="settings-row">
               <Tile hue={HUE.extension} icon={ExternalLink} />
               <span className="min-w-0 flex-1 truncate">Get the browser extension</span>
               <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />

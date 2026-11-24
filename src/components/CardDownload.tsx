@@ -1,7 +1,7 @@
 import React, { memo } from "react";
 import { ExternalLink } from "lucide-react";
 
-import { EXTENSION_PAGE } from "../utils/constants";
+import { EXTENSION_PAGE, FIREFOX_EXTENSION_PAGE } from "../utils/constants";
 import { cn } from "@/lib/utils";
 
 interface IDownLoadCardProps {
@@ -18,10 +18,10 @@ const DownloadCard: React.FC<IDownLoadCardProps> = ({ className }) => {
           <span className="min-w-0 flex-1">Chrome, Edge &amp; other Chromium browsers</span>
           <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
         </a>
-        <div className="settings-row text-muted-foreground">
+        <a href={FIREFOX_EXTENSION_PAGE} target="_blank" rel="noopener noreferrer" className="settings-row">
           <span className="min-w-0 flex-1">Firefox</span>
-          <span className="text-xs">Coming soon</span>
-        </div>
+          <ExternalLink className="h-3.5 w-3.5 shrink-0 text-muted-foreground" aria-hidden />
+        </a>
       </div>
     </section>
   );

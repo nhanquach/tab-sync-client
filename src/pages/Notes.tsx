@@ -13,7 +13,7 @@ import NoteItem from "../components/notes/NoteItem";
 import { useNotes } from "../hooks/useNotes";
 import { timeAgo } from "../utils/tabMeta";
 import { groupNotesByDevice, NOTE_ARCHIVE_CAP, noteErrorMessage, searchNotes } from "../utils/notes";
-import { EXTENSION_PAGE } from "../utils/constants";
+import { getExtensionPage } from "../utils/constants";
 
 interface INotesProps {
   user: User;
@@ -46,7 +46,7 @@ const EmptyState: React.FC<{ archived: boolean; onWrite?: () => void; hasDevices
     )}
     {!archived && !hasDevices && (
       <a
-        href={EXTENSION_PAGE}
+        href={getExtensionPage()}
         target="_blank"
         rel="noopener noreferrer"
         className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-ink hover:underline"

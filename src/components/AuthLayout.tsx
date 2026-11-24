@@ -1,6 +1,6 @@
 import React from "react";
 
-import { EXTENSION_PAGE } from "../utils/constants";
+import { getExtensionPage } from "../utils/constants";
 import LogoWithTabSync from "./LogoWithTabSync";
 import InstallPwaDialog from "./InstallPwaDialog";
 import QRCodeDialog from "./QRCodeDialog";
@@ -24,7 +24,7 @@ const AuthLayout: React.FC<IAuthLayoutProps> = ({ isMobile, children }) => {
         <div className="glass-strong rounded-2xl p-6">{children}</div>
         <p className="mt-3 text-center text-xs text-muted-foreground">Sync your open tabs across browsers and devices.</p>
         <div className="mt-6 flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
-          <a href={EXTENSION_PAGE} target="_blank" rel="noopener noreferrer" className={linkCls}>
+          <a href={getExtensionPage()} target="_blank" rel="noopener noreferrer" className={linkCls}>
             Get the extension
           </a>
           <InstallPwaDialog>

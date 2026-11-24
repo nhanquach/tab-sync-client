@@ -28,7 +28,7 @@ import {
   snapshotName,
   toNetscapeHtml,
 } from "../utils/bookmarks";
-import { EXTENSION_PAGE } from "../utils/constants";
+import { getExtensionPage } from "../utils/constants";
 
 interface IBookmarksProps {
   user: User;
@@ -147,7 +147,7 @@ const EmptyState: React.FC = () => (
       them into another browser with one click, or export them here as a file any browser can import, Safari included.
     </p>
     <a
-      href={EXTENSION_PAGE}
+      href={getExtensionPage()}
       target="_blank"
       rel="noopener noreferrer"
       className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-ink hover:underline"
