@@ -28,7 +28,8 @@ import {
   snapshotName,
   toNetscapeHtml,
 } from "../utils/bookmarks";
-import { EXTENSION_PAGE } from "../utils/constants";
+import ExtensionStoresDialog from "../components/ExtensionStoresDialog";
+import { getExtensionPage } from "../utils/extension";
 
 interface IBookmarksProps {
   user: User;
@@ -146,14 +147,27 @@ const EmptyState: React.FC = () => (
       click <span className="font-medium text-foreground">Back up</span>. Folders and their order are kept. Then restore
       them into another browser with one click, or export them here as a file any browser can import, Safari included.
     </p>
-    <a
-      href={EXTENSION_PAGE}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="mt-4 inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-ink hover:underline"
-    >
-      Get the extension <ExternalLink className="h-3.5 w-3.5" aria-hidden />
-    </a>
+    <div className="mt-4 flex flex-wrap items-center justify-center gap-x-2.5 gap-y-1.5">
+      <a
+        href={getExtensionPage()}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="inline-flex items-center gap-1.5 text-[13px] font-medium text-primary-ink hover:underline"
+      >
+        Get the extension <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+      </a>
+      <span className="text-xs text-muted-foreground/60" aria-hidden>
+        ·
+      </span>
+      <ExtensionStoresDialog>
+        <button
+          type="button"
+          className="text-xs text-muted-foreground underline-offset-4 hover:text-foreground hover:underline"
+        >
+          Choose browser
+        </button>
+      </ExtensionStoresDialog>
+    </div>
   </div>
 );
 
