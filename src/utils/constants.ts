@@ -4,13 +4,6 @@ export const EXTENSION_PAGE =
 export const FIREFOX_EXTENSION_PAGE =
   "https://addons.mozilla.org/en-US/firefox/addon/tabsync-your-tabs-everywhere/";
 
-export function getExtensionPage(): string {
-  if (typeof navigator !== "undefined" && /firefox/i.test(navigator.userAgent)) {
-    return FIREFOX_EXTENSION_PAGE;
-  }
-  return EXTENSION_PAGE;
-}
-
 export const LAYOUT_KEY = "displayMode";
 export const LAST_SAVED_DISPLAYED_BROWSERS_KEY = "lastSavedDisplayedBrowsers";
 export const LAST_SAVED_ORDER_BY_KEY = "lastSavedOrderBy";

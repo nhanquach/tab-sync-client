@@ -24,7 +24,8 @@ import { StatsDialog } from "../components/StatsDialog";
 import QRCodeDialog from "../components/QRCodeDialog";
 import InstallPwaDialog from "../components/InstallPwaDialog";
 import FeedbackDialog from "../components/FeedbackDialog";
-import { getExtensionPage } from "../utils/constants";
+import ExtensionStoresDialog from "../components/ExtensionStoresDialog";
+import { getExtensionPage } from "../utils/extension";
 
 interface ISettingsProps {
   user: User;
@@ -138,11 +139,27 @@ const Settings: React.FC<ISettingsProps> = ({ user, openChangePassword = false }
             <InstallPwaDialog>
               <RowButton icon={<Tile hue={HUE.install} icon={Smartphone} />}>Install the app</RowButton>
             </InstallPwaDialog>
-            <a href={getExtensionPage()} target="_blank" rel="noopener noreferrer" className="settings-row">
-              <Tile hue={HUE.extension} icon={ExternalLink} />
-              <span className="min-w-0 flex-1 truncate">Get the browser extension</span>
-              <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden />
-            </a>
+            <div className="flex min-h-[44px] w-full items-stretch text-sm">
+              <a
+                href={getExtensionPage()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2 text-left transition-colors hover:bg-accent/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+              >
+                <Tile hue={HUE.extension} icon={ExternalLink} />
+                <span className="min-w-0 flex-1 truncate">Get the browser extension</span>
+              </a>
+              <ExtensionStoresDialog>
+                <button
+                  type="button"
+                  className="flex shrink-0 items-center gap-1 border-l border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-accent/60 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring"
+                  aria-label="Choose browser store"
+                >
+                  Choose browser
+                  <ChevronRight className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                </button>
+              </ExtensionStoresDialog>
+            </div>
             <StatsDialog>
               <RowButton icon={<Tile hue={HUE.insights} icon={BarChart3} />}>Insights</RowButton>
             </StatsDialog>

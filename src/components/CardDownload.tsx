@@ -6,13 +6,14 @@ import { cn } from "@/lib/utils";
 
 interface IDownLoadCardProps {
   className?: string;
+  showHeading?: boolean;
 }
 
 /** Links to the browser extension, as a bordered settings-style group. */
-const DownloadCard: React.FC<IDownLoadCardProps> = ({ className }) => {
+const DownloadCard: React.FC<IDownLoadCardProps> = ({ className, showHeading = true }) => {
   return (
     <section className={cn("space-y-2", className)}>
-      <h3 className="section-label">Browser extension</h3>
+      {showHeading && <h3 className="section-label">Browser extension</h3>}
       <div className="settings-group">
         <a href={EXTENSION_PAGE} target="_blank" rel="noopener noreferrer" className="settings-row">
           <span className="min-w-0 flex-1">Chrome, Edge &amp; other Chromium browsers</span>
